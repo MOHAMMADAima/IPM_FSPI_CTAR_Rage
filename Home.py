@@ -70,7 +70,7 @@ def main():
         st.session_state['dataframes'] = dataframes
 
         # Display main page content
-        st.header(f"Contenu du fichier: {list(dataframes.keys()[0])}")
+        st.header(f"Contenu du fichier: {list(dataframes.keys())[0]}")
         st.dataframe(df.head())
 
 
