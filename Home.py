@@ -70,7 +70,7 @@ def main():
         # Loop through uploaded files and read them into pandas dataframes
         for uploaded_file in uploaded_files:
             try:
-                df = pd.read_csv(uploaded_file, encoding=encoding)
+                df = pd.read_csv(uploaded_file, encoding=encoding, sep=';')
                 dataframes[uploaded_file.name] = df
             except UnicodeDecodeError as e:
                 st.error(f"Erreur de décodage pour le fichier {uploaded_file.name}: {e}")
