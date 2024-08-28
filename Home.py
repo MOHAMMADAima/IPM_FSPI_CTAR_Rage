@@ -69,11 +69,11 @@ def main():
 
        
         # Display main page content
-        st.header(f"Contenu du fichier: {dataframes.keys(0)}")
+        st.header(f"Contenu du fichier: {dataframes.keys()}")
         st.dataframe(df.head())
 
         # Display the sub-page table content based on selected main page (if needed)
-        sub_page_options = dataframes[dataframes.keys(0)].columns.tolist()
+        sub_page_options = dataframes[dataframes.keys()].columns.tolist()
         
     
 
