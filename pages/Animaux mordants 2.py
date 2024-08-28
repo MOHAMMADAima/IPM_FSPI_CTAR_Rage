@@ -33,6 +33,7 @@ if 'dataframes' in st.session_state:
             'rgb(255, 235, 59)',   # Yellow
         ]
 
+        # Mapping for label replacement
         label_mapping = {
             'A': 'Sauvage',
             'B': 'Errant disparu',
@@ -43,56 +44,56 @@ if 'dataframes' in st.session_state:
             'G': 'Domestique mort'
         }
 
-        figures = []
-        for animal in unique_animals:
-            df_animal = ipm[ipm['animal'] == animal]
+        # Dropdown for selecting an animal
+        selected_animal = st.selectbox("Sélectionnez un animal à analyser", options=unique_animals)
+
+        if selected_animal:
+            # Filter DataFrame for the selected animal
+            df_animal = ipm[ipm['animal'] == selected_animal]
             
+            # Count unique categories of typeanimal for the selected animal
             unique_categories = df_animal['typanim'].nunique()
             
             if unique_categories == 1:
-
+                # Create a simple pie chart for single category
                 fig = go.Figure(go.Pie(
-                    labels=[label_mapping[df_animal['typanim'].iloc[0]]],  
+                    labels=[label_mapping[df_animal['typanim'].iloc[0]]],  # Replace label according to mapping
                     values=[len(df_animal)],
-                    name=animal,  
-                    marker=dict(colors=[modern_colors[0]]),  
+                    name=selected_animal,  # Set legend name
+                    marker=dict(colors=[modern_colors[0]]),  # Set color using the modern color palette
                 ))
-
+                
+                # Update layout for better visualization
                 fig.update_layout(
-                    title_text=f"Mode de vie de l'animal mordant : {animal}",
+                    title_text=f"Mode de vie de l'animal mordant : {selected_animal}",
                     margin=dict(t=40, l=40, r=40, b=40),  # Adjust margins
                     showlegend=True,
                 )
             else:
-                # Count occurrences of each typeanimal for the current animal
+                # Count occurrences of each typeanimal for the selected animal
                 typeanimal_counts = df_animal['typanim'].value_counts().reset_index()
                 typeanimal_counts.columns = ['typanim', 'count']
                 
                 # Replace labels according to mapping
                 typeanimal_counts['typanim'] = typeanimal_counts['typanim'].replace(label_mapping)
                 
-                # Create the pie chart
+                # Create the pie chart for multiple categories
                 fig = go.Figure(go.Pie(
                     labels=typeanimal_counts['typanim'],
-                    name=animal,
+                    name=selected_animal,
                     values=typeanimal_counts['count'],
                     marker=dict(colors=modern_colors[:len(typeanimal_counts)]),  # Use modern colors
                 ))
                 
                 # Update layout for better visualization
                 fig.update_layout(
-                    title_text=f"Mode de vie de l'animal mordant : {animal}",
+                    title_text=f"Mode de vie de l'animal mordant : {selected_animal}",
                     margin=dict(t=40, l=40, r=40, b=40),  # Adjust margins
                     showlegend=True,
                 )
-            
-            # Add the figure to the list
-            figures.append(fig)
 
-        # Display the figures
-        for idx, fig in enumerate(figures):
+            # Display the figure
             st.plotly_chart(fig)
-            st.markdown("<hr>", unsafe_allow_html=True)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
