@@ -50,7 +50,14 @@ if 'dataframes' in st.session_state:
         }, inplace=True)
 
         # Fill NaN values with 0
+        # Convert all categorical columns to strings before filling NaNs
+        for col in grouped.select_dtypes(include='category').columns:
+            grouped[col] = grouped[col].astype(str)
+        
         grouped.fillna(0, inplace=True)
+        
+        # Convert back to categorical if needed
+        # (Optional, based on your use case)
 
         # Create a combined plot
         fig = go.Figure()
