@@ -3,7 +3,9 @@ import pandas as pd
 import plotly.express as px
 
 # Set Streamlit page configuration
-st.set_page_config(page_title="Analyse des Morsures Transdermiques", page_icon="📊")
+st.set_page_config(page_title="Analyse des Morsures Transdermiques par Animal", page_icon="🐾", layout="wide")
+
+st.title("Analyse des Morsures Transdermiques par Groupe d'Âge, Partie du Corps, Sexe et Type d'Animal")
 
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:
@@ -36,46 +38,70 @@ if 'dataframes' in st.session_state:
             'Parties génitales': 'geni_cont'
         }
 
-        # Create a DataFrame to store the counts of 'MT' values for each body part, age group, and gender
-        mt_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'Gender', 'MT Count'])
+        # Create a DataFrame to store the counts of 'MT' values for each body part, age group, gender, and animal type
+        mt_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'Gender', 'Animal Type', 'MT Count'])
 
-        # Count the number of 'MT' values for each body part, age group, and gender
+        # Count the number of 'MT' values for each body part, age group, gender, and animal type
         for part, column in body_parts.items():
             for gender in ipm['sexe'].dropna().unique():
-                part_counts = ipm[(ipm[column] == 'MT') & (ipm['sexe'] == gender)].groupby('Age Group').size().reset_index(name='MT Count')
-                part_counts['Body Part'] = part
-                part_counts['Gender'] = gender
-                mt_counts = pd.concat([mt_counts, part_counts], ignore_index=True)
+                for animal_type in ipm['typanim'].dropna().unique():
+                    part_counts = ipm[(ipm[column] == 'MT') & (ipm['sexe'] == gender) & (ipm['typanim'] == animal_type)].groupby('Age Group').size().reset_index(name='MT Count')
+                    part_counts['Body Part'] = part
+                    part_counts['Gender'] = gender
+                    part_counts['Animal Type'] = animal_type
+                    mt_counts = pd.concat([mt_counts, part_counts], ignore_index=True)
+
+        # Replace 'M' and 'F' with male and female icons
+        gender_icons = {'M': '♂', 'F': '♀'}
+        mt_counts['Gender'] = mt_counts['Gender'].map(gender_icons)
 
         # Create a multi-bar plot
         fig = px.bar(
-            mt_counts,
+            mt_counts, 
             x='Age Group', 
             y='MT Count', 
             color='Body Part', 
             barmode='group',
             facet_col='Gender', 
-            facet_col_wrap=2,
-            title="Nombre de lésions 'MT' par groupe d'âge, partie du corps et sexe",
+            facet_col_wrap=2, 
+            facet_row='Animal Type',
+            title="Nombre de lésions 'MT' par groupe d'âge, partie du corps, sexe et type d'animal",
             labels={
                 'MT Count': 'Nombre de MT', 
                 'Age Group': "Groupe d'âge", 
                 'Body Part': 'Partie du corps', 
-                'Gender': 'Sexe'
+                'Gender': 'Sexe', 
+                'Animal Type': ''
             },
-            category_orders={'Gender': ['M', 'F']}
+            category_orders={
+                'Gender': ['♂', '♀'], 
+                'Animal Type': sorted(ipm['typanim'].dropna().unique())
+            }
         )
 
         # Update layout
         fig.update_layout(
-            title="Facteurs de risque des morsures transdermiques (âge, partie du corps et genre)",
-            xaxis=dict(title="Groupe d'âge"),
-            yaxis=dict(title="Nombre de Morsure Transdermique"),
-            legend=dict(title="Partie du corps", orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.6),
-            height=700,  # Adjust the height as needed
+            title="Facteurs de risque des morsures transdermiques (MT) : âge, partie du corps, sexe et type d'animal",
+            xaxis=dict(title="Groupe d'âge", tickfont=dict(size=10)),
+            yaxis=dict(title="Nombre de MT", tickfont=dict(size=10)),
+            legend=dict(title="Partie du corps :", orientation="h", yanchor="bottom", y=1.01, xanchor="auto", x=0.5),
+            height=1600,  # Adjust the height as needed
             width=1000,
-            margin=dict(b=100)  # Add margin at the bottom for the legend
+            margin=dict(b=250)  # Add margin at the bottom for the legend
         )
+
+        # Zoom into individual subplots
+        fig.update_yaxes(matches=None)  # Allow individual zooming for subplots
+
+        # Reduce the size of the 'typanim' value labels
+        fig.for_each_annotation(lambda a: a.update(text=a.text.split('=')[-1]))
+
+        # Set the same size for all x and y labels
+        fig.update_xaxes(tickfont=dict(size=10))
+        fig.update_yaxes(tickfont=dict(size=10))
+
+        # Align y-axis labels on the left
+        fig.update_yaxes(automargin=True)
 
         # Display the figure
         st.plotly_chart(fig)
