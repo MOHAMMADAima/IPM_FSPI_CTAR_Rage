@@ -52,7 +52,6 @@ def main():
     # Allow multiple CSV files to be uploaded
     uploaded_files = st.file_uploader("Sélectionnez les fichiers CSV", type=["csv"], accept_multiple_files=True)
 
-    
     # Check if any files have been uploaded
     if uploaded_files:
         # Create an empty dictionary to hold the dataframes
@@ -67,12 +66,19 @@ def main():
                 st.error(f"Erreur de décodage pour le fichier {uploaded_file.name}: {e}")
                 continue
 
-       
+        # Save the dataframes in the session state
+        st.session_state['dataframes'] = dataframes
+
         # Display main page content
-        st.header(f"Contenu du fichier: {dataframes.keys()}")
+        st.header(f"Contenu du fichier: {list(dataframes.keys())}")
         st.dataframe(df.head())
 
-       
+        # Provide a link to the histogram page
+        st.markdown("### Allez à l'analyse de l'histogramme [ici](histogram)")
+
+    else:
+        st.warning("Veuillez télécharger au moins un fichier CSV.")
+
 
 if __name__ == '__main__':
     main()
