@@ -70,11 +70,9 @@ def main():
         st.session_state['dataframes'] = dataframes
 
         # Display main page content
-        st.header(f"Contenu du fichier: {list(dataframes.keys())}")
+        st.header(f"Contenu du fichier: {list(dataframes.keys()[0])}")
         st.dataframe(df.head())
 
-        # Provide a link to the histogram page
-        st.markdown("### Allez à l'analyse de l'histogramme [ici](histogram)")
 
     else:
         st.warning("Veuillez télécharger au moins un fichier CSV.")
