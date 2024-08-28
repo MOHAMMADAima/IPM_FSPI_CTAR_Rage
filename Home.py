@@ -4,14 +4,14 @@ import pandas as pd
 # Set page title and icon
 st.set_page_config(
     page_title="API Cleaning",
-    page_icon="🌐",  # You can use a different icon here
+    page_icon="🌐"
 )
 
-# Custom colors
+# Custom colors for the theme
 primary_color = "#4c8dc1"  # Blue
 secondary_color = "#ffffff"  # White
 
-# Set theme
+# Set theme using markdown
 st.markdown(
     f"""
     <style>
@@ -43,34 +43,44 @@ st.markdown(
 # Header
 st.title("Bienvenue sur CTAR Indicateurs 🌐")
 st.markdown("<br>", unsafe_allow_html=True)
-
 st.markdown("###### Une application d'analyse des indicateurs de performance des CTAR de Madagascar, à l'initiative de IPM.")
 st.markdown("#### Instructions :")
-st.markdown("1. **Téléchargez votre fichier :**")
-st.markdown("   - Sélectionnez et téléchargez le fichier Excel contenant les données à analyser.")
+st.markdown("1. **Téléchargez votre fichier CSV :**")
+st.markdown("   - Sélectionnez et téléchargez les fichiers CSV contenant les données à analyser.")
 st.markdown("2. **Vérifiez les Pays :**")
 
 def main():
-    st.markdown("<h3 style='text-align: left; margin-top: 20px;'>1. Télécharger votre fichier :</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: left; margin-top: 20px;'>1. Téléchargez vos fichiers :</h3>", unsafe_allow_html=True)
 
-    uploaded_file = st.file_uploader("Sélectionnez un fichier Excel (.xlsx ou .xls)", type=["xlsx", "xls"], key="file")
+    # Allow multiple CSV files to be uploaded
+    uploaded_files = st.file_uploader("Sélectionnez les fichiers CSV", type=["csv"], accept_multiple_files=True)
 
+    # Check if any files have been uploaded
+    if uploaded_files:
+        # Create an empty dictionary to hold the dataframes
+        dataframes = {}
 
-    if uploaded_file is not None:
-        st.session_state.uploaded_data = pd.read_excel(uploaded_file)
+        # Loop through uploaded files and read them into pandas dataframes
+        for uploaded_file in uploaded_files:
+            df = pd.read_csv(uploaded_file)
+            dataframes[uploaded_file.name] = df
 
-        st.write("Aperçu des données :")
-        st.dataframe(st.session_state.uploaded_data.head())
-        st.markdown("<br>", unsafe_allow_html=True)
+        # Sidebar for main page selection
+        page_selection = st.sidebar.selectbox('Sélectionnez une Page (Fichier)', list(dataframes.keys()))
 
-        # Instruct the user to go to the Pays page
-        st.markdown("<p style='font-size: large;'>Le fichier a été téléchargé avec succès.</p>", unsafe_allow_html=True)
-        st.markdown("<p> Pour vérifier les pays, aller à la page <b>Etape1 (Pays)</b>.</p>", unsafe_allow_html=True)
+        # Display main page content
+        st.header(f"Contenu du fichier: {page_selection}")
+        st.dataframe(dataframes[page_selection].head())
+
+        # Display the sub-page table content based on selected main page (if needed)
+        sub_page_options = dataframes[page_selection].columns.tolist()
+        sub_page_selection = st.sidebar.selectbox('Sélectionnez une Colonne', sub_page_options)
+
+        st.subheader(f"Contenu de la colonne: {sub_page_selection}")
+        st.write(dataframes[page_selection][sub_page_selection])
 
 if __name__ == '__main__':
     main()
-
-# Main content
 
 # Footer
 st.markdown("<br><br><br>", unsafe_allow_html=True)
