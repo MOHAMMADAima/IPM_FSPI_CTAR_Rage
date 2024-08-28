@@ -29,7 +29,7 @@ if 'dataframes' in st.session_state:
         # Calculate dose_ML as 0.2 times poids
         df['dose_ML'] = round(0.2 * df['poids'], 2)
 
-        # Create dose_bin column
+        # Create dose_bin column if it does not exist or overwrite if it does
         df['dose_bin'] = pd.cut(df['dose_ML'], bins=[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, float('inf')], right=False)
 
         # Aggregate data to calculate min and max dose_ML for each serother, age_bin, dose_bin, and categorie
