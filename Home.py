@@ -55,6 +55,13 @@ def main():
     # Allow multiple CSV files to be uploaded
     uploaded_files = st.file_uploader("Sélectionnez les fichiers CSV", type=["csv"], accept_multiple_files=True)
 
+    # Provide an option for the user to specify the encoding
+    encoding = st.sidebar.selectbox(
+        "Sélectionnez l'encodage du fichier",
+        options=["utf-8", "ISO-8859-1", "cp1252", "latin1", "utf-16"],
+        index=0
+    )
+
     # Check if any files have been uploaded
     if uploaded_files:
         # Create an empty dictionary to hold the dataframes
@@ -62,8 +69,12 @@ def main():
 
         # Loop through uploaded files and read them into pandas dataframes
         for uploaded_file in uploaded_files:
-            df = pd.read_csv(uploaded_file)
-            dataframes[uploaded_file.name] = df
+            try:
+                df = pd.read_csv(uploaded_file, encoding=encoding)
+                dataframes[uploaded_file.name] = df
+            except UnicodeDecodeError as e:
+                st.error(f"Erreur de décodage pour le fichier {uploaded_file.name}: {e}")
+                continue
 
         # Sidebar for main page selection
         page_selection = st.sidebar.selectbox('Sélectionnez une Page (Fichier)', list(dataframes.keys()))
