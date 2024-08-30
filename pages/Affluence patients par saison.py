@@ -73,7 +73,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             x=df_year['month'],
             y=df_year['count'],
             mode='lines+markers',
-            name=str(year),  # Ensure year is displayed as integer
+            name=int(year),  # Ensure year is displayed as integer
             marker=dict(size=8, color=color_map[i % len(color_map)]),  # Ensure unique color
             line=dict(width=2),
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
@@ -127,7 +127,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
         # Add season text inside the colored rectangles
         annotations.append(dict(
-            x=(start_month -1)/10  if end_month < start_month else (start_month + end_month-1 )/2 ,
+            x=(start_month)/10  if end_month < start_month else (start_month + end_month-1 )/2 ,
             y=min_count - range_margin,  # Position text inside the rectangle
             text=season,
             showarrow=False,
@@ -157,7 +157,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             'xanchor': 'center'
         },
         height=700,  # Increase figure height
-        width=1400,  # Increase figure width for better visibility
+        width=2400,  # Increase figure width for better visibility
         legend_title='Légende'
     )
 
