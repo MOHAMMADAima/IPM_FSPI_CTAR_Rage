@@ -73,13 +73,13 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             x=df_year['month'],
             y=df_year['count'],
             mode='lines+markers',
-            name=int(year),  # Ensure year is displayed as integer
+            name=str(year),  # Ensure year is displayed as integer
             marker=dict(size=8, color=color_map[i % len(color_map)]),  # Ensure unique color
             line=dict(width=2),
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
         ))
 
-    # Define background colors for each season
+    # Define background colors for each season and corresponding text
     season_backgrounds = {
         'Lohataona (été)': (9.5, 11.5, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
         'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
@@ -88,9 +88,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     }
 
     shapes = []
+    annotations = []
 
     # Add season backgrounds to match the x-axis labels
-    for season, (start_month, end_month, color, _) in season_backgrounds.items():
+    for season, (start_month, end_month, color, text_color) in season_backgrounds.items():
         if end_month < start_month:
             shapes.append(dict(
                 type='rect',
@@ -124,34 +125,21 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 layer='below'
             ))
 
-    # Create the legend text for the bottom rectangle
-    season_legend = '<br>'.join([
-        f"<div style='display:inline-block; width:100px; padding:5px;'><span style='background-color:{color}; padding:5px; color:white;'>{season}</span></div>"
-        for season, (_, _, _, color) in season_backgrounds.items()
-    ])
-
-    # Update layout to fit data and include the legend rectangle
-    fig.update_layout(
-        shapes=shapes + [dict(
-            type='rect',
-            x0=-0.5,
-            x1=12.5,
-            y0=min_count - range_margin - 5,  # Place rectangle just below the plot
-            y1=min_count - range_margin - 2,  # Height of the rectangle
-            fillcolor='rgba(240, 240, 240, 0.8)',  # Light background color for the legend
-            line=dict(width=0),
-            layer='below'
-        )],
-        annotations=[dict(
-            x=0,
-            y=min_count - range_margin - 3.5,  # Vertical position inside the rectangle
-            text=season_legend,
+        # Add season text inside the colored rectangles
+        annotations.append(dict(
+            x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 12) / 2,
+            y=min_count - range_margin - 0.5,  # Position text inside the rectangle
+            text=season,
             showarrow=False,
-            xanchor='left',
-            yanchor='bottom',
-            font=dict(size=14, color='black'),
-            align='left'
-        )],
+            font=dict(size=12, color=text_color),
+            xanchor="center",
+            yanchor="bottom"
+        ))
+
+    # Update layout to fit data and include the season text in rectangles
+    fig.update_layout(
+        shapes=shapes,
+        annotations=annotations,
         xaxis=dict(
             tickvals=months,
             ticktext=month_names,
