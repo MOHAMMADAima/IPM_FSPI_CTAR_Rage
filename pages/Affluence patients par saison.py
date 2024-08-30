@@ -127,7 +127,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
         # Add background text for each season within the background color
         annotations.append(dict(
-            x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 12) / 2,
+            x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 10) / 2,
             y=(min_count + max_count) / 2,  # Position text in the center vertically within the rectangle
             text=season,
             showarrow=False,
