@@ -55,7 +55,6 @@ if 'dataframes' in st.session_state:
         ctar['date_de_consultation'] = pd.to_datetime(ctar['date_de_consultation'])
         ctar['year'] = ctar['date_de_consultation'].dt.year
         
-        
         # Group by 'id_ctar' and 'year', then count the occurrences
         yearly_recurrence = ctar.groupby(['id_ctar', 'year']).size().reset_index(name='nombre de visite patients')
         
@@ -84,8 +83,9 @@ if 'dataframes' in st.session_state:
             lon=longitudes,
             mode='markers+text',
             marker=go.scattermapbox.Marker(
-                size=[10 + (pop / 500) for pop in populations],  # Adjust size based on town values
+                size=[15 + (pop / 500) for pop in populations],  # Increase size of dots
                 color='darkorange',
+                opacity=0.8  # Optional: adjust opacity
             ),
             text=[f"CTAR {name}: {value} patients" for name, value in zip(town_names, populations)],
             textposition='top center',
@@ -100,7 +100,7 @@ if 'dataframes' in st.session_state:
                 zoom=5
             ),
             title=f"Nombre de visite patients dans les CTARs en {selected_year}",
-            showlegend=True
+            showlegend=False  # Hide the legend
         )
         
         # Show the map
