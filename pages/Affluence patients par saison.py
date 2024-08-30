@@ -81,10 +81,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Define background colors for each season and add background text
     season_backgrounds = {
-        'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
-        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
-        'Fararano (automne)': (3, 6, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
-        'Ritinina (hiver)': (6, 9, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
+        'Lohataona (été)': (9, 11, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
+        'Fahavratra (pluie)': (11, 4, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
+        'Fararano (automne)': (4, 5, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
+        'Ritinina (hiver)': (5, 8, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
     }
 
     shapes = []
@@ -96,7 +96,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             shapes.append(dict(
                 type='rect',
                 x0=start_month - 0.5,
-                x1=12 + 0.5,  # Extend to December
+                x1=12,  # Extend to December
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
@@ -131,7 +131,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             y=max_count + range_margin * 0.9,
             text=season,
             showarrow=False,
-            font=dict(size=18, color=text_color),
+            font=dict(size=16, color=text_color),
             xanchor="center"
         ))
 
