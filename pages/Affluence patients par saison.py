@@ -82,7 +82,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Define background colors for each season and add background text
     season_backgrounds = {
         'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
-        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
+        'Fahavratra (pluie)': (12, 2, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
         'Fararano (automne)': (3, 6, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
         'Ritinina (hiver)': (6, 9, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
     }
