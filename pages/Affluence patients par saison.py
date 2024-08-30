@@ -105,7 +105,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ))
             shapes.append(dict(
                 type='rect',
-                x0=1 - 0.5,  # Start from January
+                x0=1 - 1,  # Start from January
                 x1=end_month + 0.5,
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
