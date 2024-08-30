@@ -73,7 +73,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             x=df_year['month'],
             y=df_year['count'],
             mode='lines+markers',
-            name=int(year),  # Ensure year is displayed as integer
+            name=str(year),  # Ensure year is displayed as integer
             marker=dict(size=8, color=color_map[i % len(color_map)]),  # Ensure unique color
             line=dict(width=2),
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
@@ -81,10 +81,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Define background colors for each season and corresponding text
     season_backgrounds = {
-        'Lohataona (été)': (9.5, 11.5, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
         'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
         'Fararano (automne)': (3.5, 6, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
-        'Ritinina (hiver)': (6.5, 9, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
+        'Ritinina (hiver)': (6.5, 9, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)'),
+        'Lohataona (été)': (9.5, 11.5, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)')
     }
 
     shapes = []
@@ -127,12 +127,12 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
         # Add season text inside the colored rectangles
         annotations.append(dict(
-            x=(start_month + end_month-1) / 2 if end_month > start_month else (start_month + end_month + 11) / 2,
+            x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 12) / 2,
             y=min_count - range_margin - 0.5,  # Position text inside the rectangle
             text=season,
             showarrow=False,
-            font=dict(size=14, color=text_color),
-            xanchor="left",
+            font=dict(size=12, color=text_color),
+            xanchor="center",
             yanchor="bottom"
         ))
 
@@ -145,7 +145,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ticktext=month_names,
             title='Mois',
             type='category',
-            range=[-1, 11]  # Set x-axis range to fit all months
+            range=[-0.5, 12]  # Set x-axis range to fit all months
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
