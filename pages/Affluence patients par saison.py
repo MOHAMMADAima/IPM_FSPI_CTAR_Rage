@@ -65,10 +65,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Define background colors for each season
     season_backgrounds = {
-        'été-Lohataona': (9, 12, 'rgba(255, 223, 186, 0.3)'),
-        'pluie-Fahavratra': (12, 3, 'rgba(186, 225, 255, 0.3)'),
-        'automne-Fararano': (3, 6, 'rgba(255, 186, 186, 0.3)'),
-        'hiver-Ritinina': (6, 9, 'rgba(186, 255, 201, 0.3)')
+        'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)'),
+        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)'),
+        'Fararano (automne)': (3, 6, 'rgba(255, 186, 186, 0.3)'),
+        'Ritinina (hiver)': (6, 9, 'rgba(186, 255, 201, 0.3)')
     }
 
     # Add background rectangles for each season
@@ -79,16 +79,13 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             x0=start_month,
             x1=end_month if end_month > start_month else end_month + 12,
             y0=0,
-            y1=monthly_counts_all_years['count'].max(),
+            y1=monthly_counts_all_years['count'].max() * 1.1,  # Slightly increase max to ensure full coverage
             fillcolor=color,
             line=dict(width=0),
             layer='below'
         ))
 
-    # Construct season subtitles
-    season_subtitle = ', '.join(season for season in season_backgrounds.keys())
-
-    # Update layout to fit data, center graph, and set autoscale
+    # Update layout to fit data, zoom on lines, and center the graph
     fig.update_layout(
         shapes=shapes,
         xaxis=dict(
@@ -96,25 +93,28 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ticktext=month_names,
             title='Mois',
             type='category',
-            range=[-0.5, 12]
+            range=[0.5, 12.5]  # Adjust x-axis range for better zoom on lines
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
-            autorange=True  # Autoscale Y-axis to fit data
+            range=[0, monthly_counts_all_years['count'].max() * 1.2],  # Zoom in by adjusting the y-axis range
+            fixedrange=True  # Prevent y-axis from adjusting on interaction
         ),
         title={
-            'text': f"Affluence des patients venus au CTAR IPM sur période saisonnière d'une année<br><sup>{season_subtitle}</sup>",
+            'text': "Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
             'y': 0.95,
             'x': 0.5,
             'xanchor': 'center',
             'yanchor': 'top'
         },
         legend_title='Année',
-        margin=dict(l=40, r=40, t=40, b=40)
+        margin=dict(l=40, r=40, t=60, b=40),  # Increase top margin for larger title
+        height=600,  # Increase figure height
+        width=1000  # Increase figure width
     )
 
     # Show the plot in Streamlit
-    st.plotly_chart(fig, use_container_width=True)  # Adjust to container width to center graph
+    st.plotly_chart(fig, use_container_width=False)  # Set use_container_width=False to respect custom width
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
