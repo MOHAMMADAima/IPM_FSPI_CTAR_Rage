@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # Set Streamlit page configuration
-st.set_page_config(page_title="Analyse des Morsures Transdermiques par Animal", page_icon="🐾", layout="wide")
+st.set_page_config(page_title="Analyse des Morsures Transdermiques par Type d'Animal", page_icon="🐾", layout="wide")
 
 st.title("Analyse des Morsures Transdermiques par Groupe d'Âge, Partie du Corps, Sexe et Type d'Animal")
 
@@ -37,6 +37,20 @@ if 'dataframes' in st.session_state:
             'Dos': 'dos_cont',
             'Parties génitales': 'geni_cont'
         }
+
+        # Map animal type letters to the corresponding labels
+        animal_type_mapping = {
+            'A': 'Sauvage', 
+            'B': 'Errant disparu', 
+            'C': 'Errant vivant', 
+            'D': 'Domestique Propriétaire Connu', 
+            'E': 'Domestique Disparu', 
+            'F': 'Domestique Abbatu', 
+            'G': 'Domestique Mort'
+        }
+
+        # Replace 'typanim' column values with the corresponding labels
+        ipm['typanim'] = ipm['typanim'].map(animal_type_mapping)
 
         # Create a DataFrame to store the counts of 'MT' values for each body part, age group, gender, and animal type
         mt_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'Gender', 'Animal Type', 'MT Count'])
@@ -75,7 +89,7 @@ if 'dataframes' in st.session_state:
             },
             category_orders={
                 'Gender': ['♂', '♀'], 
-                'Animal Type': sorted(ipm['typanim'].dropna().unique())
+                'Animal Type': sorted(animal_type_mapping.values())  # Use mapped values for sorting
             }
         )
 
