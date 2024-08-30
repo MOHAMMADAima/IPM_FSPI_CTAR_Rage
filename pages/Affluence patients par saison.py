@@ -47,6 +47,12 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     months = list(range(1, 13))
     month_names = [pd.to_datetime(f'2022-{i:02d}-01').strftime('%b') for i in months]
 
+    # Determine the min and max count values for centering the y-axis
+    min_count = monthly_counts['count'].min()
+    max_count = monthly_counts['count'].max()
+    center = (min_count + max_count) / 2
+    range_margin = (max_count - min_count) * 0.2  # Add some margin around the lines
+
     # Create a scatter plot with lines for each year using Plotly
     fig = go.Figure()
 
@@ -79,13 +85,24 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             x0=start_month,
             x1=end_month if end_month > start_month else end_month + 12,
             y0=0,
-            y1=monthly_counts_all_years['count'].max() * 1.1,  # Slightly increase max to ensure full coverage
+            y1=max_count + range_margin,
             fillcolor=color,
             line=dict(width=0),
             layer='below'
         ))
 
-    # Update layout to fit data, zoom on lines, and center the graph
+    # Add dummy traces for each season to include them in the legend
+    for season, (start_month, end_month, color) in season_backgrounds.items():
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode='markers',
+            marker=dict(size=10, color=color),
+            name=season,
+            legendgroup='season',
+            showlegend=True
+        ))
+
+    # Update layout to fit data and zoom on lines
     fig.update_layout(
         shapes=shapes,
         xaxis=dict(
@@ -93,28 +110,18 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ticktext=month_names,
             title='Mois',
             type='category',
-            range=[0.5, 12.5]  # Adjust x-axis range for better zoom on lines
+            range=[-0.5, 12]
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
-            range=[0, monthly_counts_all_years['count'].max() * 1.2],  # Zoom in by adjusting the y-axis range
-            fixedrange=True  # Prevent y-axis from adjusting on interaction
+            range=[center - range_margin, center + range_margin]  # Center y-axis around the lines
         ),
-        title={
-            'text': "Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
-            'y': 0.95,
-            'x': 0.5,
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        legend_title='Année',
-        margin=dict(l=40, r=40, t=60, b=40),  # Increase top margin for larger title
-        height=600,  # Increase figure height
-        width=1000  # Increase figure width
+        title="Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
+        legend_title='Légende'
     )
 
     # Show the plot in Streamlit
-    st.plotly_chart(fig, use_container_width=False)  # Set use_container_width=False to respect custom width
+    st.plotly_chart(fig)
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
