@@ -45,7 +45,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     monthly_counts_all_years = ipm.groupby(['month']).size().reset_index(name='count')
 
     # Define the month order for consistent x-axis labeling (January to December)
-    months = list(range(1, 13))  # January to December
+    months = list(range(0, 12))  # January to December
     month_names = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 
         'Sep', 'Oct', 'Nov', 'Dec'
