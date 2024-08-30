@@ -14,6 +14,26 @@ if 'dataframes' in st.session_state:
     if selected_file:
         ctar = dataframes[selected_file]
 
+        # Apply preprocessing
+        ctar['nb_lesion'] = ctar['nb_lesion'].replace({
+            '01': '1', '02': '2', '03': '3', '04': '4', '05': '5', 
+            '06': '6', '07': '7', '08': '8', '09': '9', '022': '22', 
+            '052': '52', '002': '2', '021': '21'
+        })
+
+        # Replace NaN values for specific rows and columns
+        ctar.at[26659, 'ctar'] = 'Antsohihy'
+        ctar.at[36582, 'ctar'] = 'Morondava'
+        ctar.at[38479, 'ctar'] = 'Vangaindrano'
+        ctar.at[42574, 'ctar'] = 'Fianarantsoa'
+        ctar.at[42575, 'ctar'] = 'Fianarantsoa'
+
+        non_rempli_cols = ['lavage_savon', 'sat', 'vat', 'vaccin_antirabique', 'antibiotique']
+        non_rempli_rows = [76734, 76902, 76994]
+        for col in non_rempli_cols:
+            for row in non_rempli_rows:
+                ctar.at[row, col] = 'Non rempli'
+
         # Fill NaNs with -1 and convert to int
         ctar['nb_lesion_filled'] = ctar['nb_lesion'].fillna(-1).astype(int)
 
