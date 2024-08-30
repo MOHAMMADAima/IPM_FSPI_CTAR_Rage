@@ -54,7 +54,7 @@ if 'dataframes' in st.session_state:
         # Preprocess the data
         ctar['date_de_consultation'] = pd.to_datetime(ctar['date_de_consultation'])
         ctar['year'] = ctar['date_de_consultation'].dt.year
-        ctar['year']=ctar['year'].astype(int)
+        
         
         # Group by 'id_ctar' and 'year', then count the occurrences
         yearly_recurrence = ctar.groupby(['id_ctar', 'year']).size().reset_index(name='nombre de visite patients')
@@ -67,7 +67,7 @@ if 'dataframes' in st.session_state:
         yearly_recurrence['gps_coordinates'] = yearly_recurrence['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[1])
         
         # Select the year to visualize
-        selected_year = st.selectbox("Select Year", options=yearly_recurrence['year'].unique())
+        selected_year = st.selectbox("Select Year", options=yearly_recurrence['year'].astype(int).unique())
         
         # Filter data for the selected year
         filtered_data = yearly_recurrence[yearly_recurrence['year'] == selected_year]
