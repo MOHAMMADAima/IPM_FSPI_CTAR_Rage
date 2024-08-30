@@ -1,12 +1,12 @@
-import streamlit as st
-import folium
 import pandas as pd
+import folium
 import matplotlib.pyplot as plt
 import io
 import base64
 from streamlit_folium import st_folium
+import streamlit as st
 
-# Data preparation
+# Corrected Data Preparation
 data = {
     'CTAR': [
         'AMBATOMAINTY', 'AMBATONDRAZAKA', 'AMBOSITRA', 'AMBOVOMBE ANDROY',
@@ -22,13 +22,13 @@ data = {
     'MARS': [None, 200, None, None, 200, None, 75, None, 50, None, 100, 100, 60, 20, 100, None, 150, None, 40, None, 75, 200, 125, 100, 130, 150, 100, 100, None, 100, 25],
     'AVRIL': [None, 50, 50, None, 100, None, 125, None, None, 150, 100, 100, 115, None, None, None, None, None, None, None, 100, None, None, 75, 100, None, 100, 200, None, 100],
     'MAI': [None, 100, 100, None, 225, 100, 100, 70, None, None, 100, 100, 120, 50, 100, 100, None, None, None, 80, 75, 50, 100, None, 25, 100, None, 240, 100, 100],
-    'JUIN': [None, 100, None, None, 70, None, 150, 70, None, None, 100, None, 80, None, None, None, None, None, None, None, 100, 100, None, 100, None, 200, None, 200, None, None],
-    'JUILL': [None, 100, None, None, 140, None, None, None, None, None, None, 100, 120, None, 100, None, None, None, None, None, 100, 150, None, None, 100, None, None, 300, None, 100],
-    'AOUT': [None, 300, None, None, 200, None, 200, None, None, None, None, 100, 120, None, 100, 30, 150, 80, None, None, None, 100, 200, None, 100, None, 300, None, None, 100],
-    'SEPT': [None, None, 100, None, 200, None, 200, None, None, None, None, 100, 160, None, 100, None, None, None, 80, None, None, 200, None, 120, None, 100, None, 300, None, 100],
-    'OCT': [None, 100, None, None, 100, None, 200, None, None, 150, 100, 100, 100, None, 100, None, None, None, None, None, 200, None, 100, None, None, None, 300, None, None, 100],
+    'JUIN': [None, 100, None, None, 140, None, 150, 70, None, None, 100, None, 80, None, None, None, None, None, None, None, 100, 150, None, None, 100, None, None, 200, None, None],
+    'JUILL': [None, 100, None, None, 200, None, None, None, None, None, None, 100, 120, None, 100, 30, 150, 80, None, None, None, 100, 200, None, 100, None, None, 300, None, 100],
+    'AOUT': [None, 300, None, None, 200, None, 200, None, None, None, None, 100, 160, None, 100, 30, 150, 80, None, None, None, 100, 200, None, 100, None, 300, None, None, 100],
+    'SEPT': [None, None, 100, None, 200, None, 200, None, None, None, None, 100, 100, None, 100, None, None, None, None, None, 200, None, 100, None, None, None, 300, None, None, 100],
+    'OCT': [None, 100, None, None, 100, None, 200, None, None, 150, 100, 100, 100, None, 100, None, None, 80, None, 80, 100, None, 100, 80, 100, None, 300, None, None, 100],
     'NOV': [None, 200, 100, 100, 100, None, 150, None, None, 150, 500, 100, 100, None, 100, None, None, 80, None, 80, 100, None, None, 150, 200, None, 100, None, None, 100],
-    'DEC': [None, 200, None, 103, 100, 200, 200, 12, 340, 500, 16, 400, 100, 120, 50, None, 450, 80, 80, 25, 100, None, 100, 80, 100, None, 300, None, None, 80],
+    'DEC': [None, 200, None, 103, 100, 200, 200, 12, 340, 500, 16, 400, 100, 120, 50, None, 450, 80, 80, 25, 1020, 1250, 525, 300, 1065, 1745, 101, 2120, 400, 605, 780],
     'TOTAUX': [None, 1550, 650, 103, 1735, 650, 1180, 12, 340, 500, 500, 400, 1095, 120, 800, 30, 450, 80, 80, 25, 1020, 1250, 525, 300, 1065, 1745, 101, 2120, 400, 605, 780],
     'ID_CTAR': [100, 7, 30, 103, 13, 10, 14, 12, 2, 102, 16, 17, 18, 19, 31, 97, 15, 23, 4, 21, 8, 22, 9, 24, 1, 101, 28, 26, 27, 3]
 }
