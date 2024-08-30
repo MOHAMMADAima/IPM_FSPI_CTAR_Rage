@@ -38,92 +38,131 @@ towns_info = {
     103: ("Ambovombe", (-25.1744, 46.0876))
 }
 
-# Streamlit page
-st.title("CTAR Analysis: Map and Quality Histogram")
-
-# File uploader for data
-uploaded_file = st.file_uploader("Upload the CSV file named 'verorab'", type="csv")
-
-if uploaded_file is not None:
-    # Load the dataframe
-    verorab = pd.read_csv(uploaded_file)
+# Streamlit page for uploading files
+def home_page():
+    st.title("Upload Data Files")
     
-    # Rename columns to avoid confusion
-    verorab.rename(columns={'ID_CTAR': 'id_ctar'}, inplace=True)
+    # File uploader for the home page
+    uploaded_file = st.file_uploader("Upload a CSV file named 'verorab'", type="csv")
     
-    # Check for necessary columns
-    required_columns = ['id_ctar', 'JANV', 'FEV', 'MARS', 'AVRIL', 'MAI', 'JUIN', 'JUILL', 'AOUT', 'SEPT', 'OCT', 'NOV', 'DEC', 'TOTAUX']
-    if all(col in verorab.columns for col in required_columns):
-        # Melt the DataFrame to long format for easier plotting
-        melted_verorab = verorab.melt(id_vars=['id_ctar'], value_vars=['JANV', 'FEV', 'MARS', 'AVRIL', 'MAI', 'JUIN', 'JUILL', 'AOUT', 'SEPT', 'OCT', 'NOV', 'DEC'],
-                                      var_name='Month', value_name='Quality_Metric')
+    if uploaded_file is not None:
+        # Load the dataframe into session state
+        df = pd.read_csv(uploaded_file)
         
-        # Replace NaN with 0 for the quality metrics
-        melted_verorab['Quality_Metric'].fillna(0, inplace=True)
+        # Save to session state
+        if 'dataframes' not in st.session_state:
+            st.session_state['dataframes'] = {}
         
-        # Map id_ctar to town names and coordinates
-        melted_verorab['town_name'] = melted_verorab['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[0])
-        melted_verorab['gps_coordinates'] = melted_verorab['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[1])
+        st.session_state['dataframes']['verorab'] = df
         
-        # Select CTAR to analyze
-        selected_ctar = st.selectbox("Select CTAR", options=melted_verorab['town_name'].unique())
+        st.success("File uploaded successfully! Now go to the analysis page.")
 
-        # Filter data for the selected CTAR
-        filtered_data = melted_verorab[melted_verorab['town_name'] == selected_ctar]
+# Streamlit page for analysis
+def analysis_page():
+    st.title("CTAR Analysis: Map and Quality Histogram")
+    
+    # Check if dataframes are available in session state
+    if 'dataframes' in st.session_state:
+        dataframes = st.session_state['dataframes']
         
-        # Extract data for map
-        latitudes = [coord[0] for coord in filtered_data['gps_coordinates']]
-        longitudes = [coord[1] for coord in filtered_data['gps_coordinates']]
-        quality_metrics = filtered_data['Quality_Metric']
+        # Select a file to analyze from the uploaded files
+        selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
         
-        # Create a scatter mapbox plot
-        fig_map = go.Figure(go.Scattermapbox(
-            lat=latitudes,
-            lon=longitudes,
-            mode='markers',
-            marker=go.scattermapbox.Marker(
-                size=10,
-                color='darkorange',
-                opacity=0.8
-            ),
-            text=[f"CTAR {selected_ctar}: {value:.2f}" for value in quality_metrics],
-            hoverinfo='text'
-        ))
-        
-        fig_map.update_layout(
-            width=1200,
-            height=900,
-            mapbox=dict(
-                style="open-street-map",
-                center=dict(lat=np.mean(latitudes), lon=np.mean(longitudes)),
-                zoom=5
-            ),
-            title=f"CTAR {selected_ctar} Locations",
-            showlegend=False
-        )
-        
-        st.plotly_chart(fig_map)
-        
-        # Histogram of quality metrics per month
-        fig_hist = go.Figure()
-        
-        for month in filtered_data['Month'].unique():
-            month_data = filtered_data[filtered_data['Month'] == month]
-            fig_hist.add_trace(go.Histogram(
-                x=month_data['Quality_Metric'],
-                name=month,
-                opacity=0.75
-            ))
-        
-        fig_hist.update_layout(
-            barmode='overlay',
-            title=f"Histogram of Quality Metrics for CTAR {selected_ctar}",
-            xaxis_title="Quality Metric",
-            yaxis_title="Frequency",
-            xaxis=dict(type='category')
-        )
-        
-        st.plotly_chart(fig_hist)
-        
+        # Load the selected dataframe
+        if selected_file:
+            verorab = dataframes[selected_file]
+            
+            # Rename columns to avoid confusion
+            verorab.rename(columns={'ID_CTAR': 'id_ctar'}, inplace=True)
+            
+            # Check for necessary columns
+            required_columns = ['id_ctar', 'JANV', 'FEV', 'MARS', 'AVRIL', 'MAI', 'JUIN', 'JUILL', 'AOUT', 'SEPT', 'OCT', 'NOV', 'DEC', 'TOTAUX']
+            if all(col in verorab.columns for col in required_columns):
+                # Melt the DataFrame to long format for easier plotting
+                melted_verorab = verorab.melt(id_vars=['id_ctar'], value_vars=['JANV', 'FEV', 'MARS', 'AVRIL', 'MAI', 'JUIN', 'JUILL', 'AOUT', 'SEPT', 'OCT', 'NOV', 'DEC'],
+                                              var_name='Month', value_name='Quality_Metric')
+                
+                # Replace NaN with 0 for the quality metrics
+                melted_verorab['Quality_Metric'].fillna(0, inplace=True)
+                
+                # Map id_ctar to town names and coordinates
+                melted_verorab['town_name'] = melted_verorab['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[0])
+                melted_verorab['gps_coordinates'] = melted_verorab['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[1])
+                
+                # Select CTAR to analyze
+                selected_ctar = st.selectbox("Select CTAR", options=melted_verorab['town_name'].unique())
+                
+                # Filter data for the selected CTAR
+                filtered_data = melted_verorab[melted_verorab['town_name'] == selected_ctar]
+                
+                # Extract data for map
+                latitudes = [coord[0] for coord in filtered_data['gps_coordinates']]
+                longitudes = [coord[1] for coord in filtered_data['gps_coordinates']]
+                quality_metrics = filtered_data['Quality_Metric']
+                
+                # Create a scatter mapbox plot
+                fig_map = go.Figure(go.Scattermapbox(
+                    lat=latitudes,
+                    lon=longitudes,
+                    mode='markers',
+                    marker=go.scattermapbox.Marker(
+                        size=10,
+                        color='darkorange',
+                        opacity=0.8
+                    ),
+                    text=[f"CTAR {selected_ctar}: {value:.2f}" for value in quality_metrics],
+                    hoverinfo='text'
+                ))
+                
+                fig_map.update_layout(
+                    width=1200,
+                    height=900,
+                    mapbox=dict(
+                        style="open-street-map",
+                        center=dict(lat=np.mean(latitudes), lon=np.mean(longitudes)),
+                        zoom=5
+                    ),
+                    title=f"CTAR {selected_ctar} Locations",
+                    showlegend=False
+                )
+                
+                st.plotly_chart(fig_map)
+                
+                # Histogram of quality metrics per month
+                fig_hist = go.Figure()
+                
+                for month in filtered_data['Month'].unique():
+                    month_data = filtered_data[filtered_data['Month'] == month]
+                    fig_hist.add_trace(go.Histogram(
+                        x=month_data['Quality_Metric'],
+                        name=month,
+                        opacity=0.75
+                    ))
+                
+                fig_hist.update_layout(
+                    barmode='overlay',
+                    title=f"Histogram of Quality Metrics for CTAR {selected_ctar}",
+                    xaxis_title="Quality Metric",
+                    yaxis_title="Frequency",
+                    xaxis=dict(type='category')
+                )
+                
+                st.plotly_chart(fig_hist)
+                
+            else:
+                st.error(f"Uploaded file must contain the following columns: {', '.join(required_columns)}.")
     else:
-        st.error(f"Uploaded file must contain the following columns: {', '.join(required_columns)}.")
+        st.error("No data files uploaded. Please upload a file on the home page.")
+
+# Main function to handle page navigation
+def main():
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Go to", ["Home", "Analysis"])
+    
+    if page == "Home":
+        home_page()
+    elif page == "Analysis":
+        analysis_page()
+
+if __name__ == "__main__":
+    main()
