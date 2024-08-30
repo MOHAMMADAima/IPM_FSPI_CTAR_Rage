@@ -73,7 +73,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             x=df_year['month'],
             y=df_year['count'],
             mode='lines+markers',
-            name=str(year),  # Ensure year is displayed as integer
+            name=int(year),  # Ensure year is displayed as integer
             marker=dict(size=8, color=color_map[i % len(color_map)]),  # Ensure unique color
             line=dict(width=2),
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
