@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import numpy as np
 
 # Define the updated dictionary for town names and GPS coordinates
 towns_info = {
@@ -83,9 +84,9 @@ if 'dataframes' in st.session_state:
             lon=longitudes,
             mode='markers+text',
             marker=go.scattermapbox.Marker(
-                size=[15 + (pop / 500) for pop in populations],  # Increase size of dots
+                size=[50 * np.log1p(pop) for pop in populations],  # Use logarithmic scale to emphasize size differences
                 color='darkorange',
-                opacity=0.8  # Optional: adjust opacity
+                opacity=0.8
             ),
             text=[f"CTAR {name}: {value} patients" for name, value in zip(town_names, populations)],
             textposition='top center',
