@@ -61,3 +61,7 @@ if 'dataframes' in st.session_state:
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
+
+# Sidebar container with fixed width
+with st.sidebar.container():
+    st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")

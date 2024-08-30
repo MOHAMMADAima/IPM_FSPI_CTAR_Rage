@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+# Sidebar container with fixed width
+with st.sidebar.container():
+    st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
 
 # Define the updated dictionary for town names and GPS coordinates
 towns_info = {
