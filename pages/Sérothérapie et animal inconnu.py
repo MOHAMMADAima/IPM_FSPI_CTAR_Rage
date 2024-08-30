@@ -19,7 +19,7 @@ if 'dataframes' in st.session_state:
         df = dataframes[selected_file]
 
         # Step 1: Filter the DataFrame for specific animal types
-        filtered_df = df[df['typanim'].isin(['A', 'B', 'C'])]
+        filtered_df = df[df['typanim'].isin(['Sauvage', 'Errant Disparu', 'Errant vivant'])]
 
         # Step 2: Count the occurrences of 'OUI' and 'NON' in the 'vacc_ant' column, grouped by 'serother' column
         vacc_ant_serother_counts = filtered_df.groupby(['vacc_ant', 'serother']).size().reset_index(name='Count')
