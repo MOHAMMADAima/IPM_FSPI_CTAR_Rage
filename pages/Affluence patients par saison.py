@@ -36,7 +36,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Create new columns for month and year
     ipm['month'] = ipm['new_date_column'].dt.month
-    ipm['year'] = ipm['new_date_column'].dt.year
+    ipm['year'] = ipm['new_date_column'].dt.year.isint()
 
     # Group by month and year, and count the number of lines in each group
     monthly_counts = ipm.groupby(['month', 'year']).size().reset_index(name='count')
