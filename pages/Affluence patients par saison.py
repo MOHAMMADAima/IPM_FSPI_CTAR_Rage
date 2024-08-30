@@ -70,7 +70,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             x=df_year['month'],
             y=df_year['count'],
             mode='lines+markers',
-            name=str(year),
+            name=str(year),  # Ensure year is displayed as integer
             marker=dict(size=8, color=color_map[i % len(color_map)]),  # Ensure unique color
             line=dict(width=2),
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
@@ -87,16 +87,38 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     shapes = []
     annotations = []
     for season, (start_month, end_month, color, text, text_color) in season_backgrounds.items():
-        shapes.append(dict(
-            type='rect',
-            x0=start_month,
-            x1=end_month if end_month > start_month else end_month + 12,
-            y0=min_count - range_margin,
-            y1=max_count + range_margin,
-            fillcolor=color,
-            line=dict(width=0),
-            layer='below'
-        ))
+        if end_month <= start_month:
+            shapes.append(dict(
+                type='rect',
+                x0=start_month,
+                x1=12,
+                y0=min_count - range_margin,
+                y1=max_count + range_margin,
+                fillcolor=color,
+                line=dict(width=0),
+                layer='below'
+            ))
+            shapes.append(dict(
+                type='rect',
+                x0=1,
+                x1=end_month,
+                y0=min_count - range_margin,
+                y1=max_count + range_margin,
+                fillcolor=color,
+                line=dict(width=0),
+                layer='below'
+            ))
+        else:
+            shapes.append(dict(
+                type='rect',
+                x0=start_month,
+                x1=end_month,
+                y0=min_count - range_margin,
+                y1=max_count + range_margin,
+                fillcolor=color,
+                line=dict(width=0),
+                layer='below'
+            ))
         # Add background text for each season
         annotations.append(dict(
             x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 12) / 2,
