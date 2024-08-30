@@ -106,7 +106,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             shapes.append(dict(
                 type='rect',
                 x0=1 - 1,  # Start from January
-                x1=end_month-0.5 ,
+                x1=end_month - 0.5,
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
@@ -116,8 +116,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         else:
             shapes.append(dict(
                 type='rect',
-                x0=start_month -1,
-                x1=end_month-0.5 ,
+                x0=start_month - 1,
+                x1=end_month - 0.5,
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
@@ -125,14 +125,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 layer='below'
             ))
 
-        # Add background text for each season
+        # Add background text for each season within the background color
         annotations.append(dict(
             x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 12) / 2,
-            y=max_count + range_margin * 0.9,
+            y=(min_count + max_count) / 2,  # Position text in the center vertically within the rectangle
             text=season,
             showarrow=False,
             font=dict(size=16, color=text_color),
-            xanchor="center"
+            xanchor="center",
+            yanchor="middle"  # Center text vertically
         ))
 
     # Update layout to fit data, include background text, and zoom on lines
@@ -144,7 +145,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ticktext=month_names,
             title='Mois',
             type='category',
-            range=[-0.5, 11.5]  # Set x-axis range to fit all months
+            range=[-0.5, 12]  # Set x-axis range to fit all months
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
