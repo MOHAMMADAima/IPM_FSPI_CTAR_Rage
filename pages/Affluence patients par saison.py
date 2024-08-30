@@ -156,7 +156,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Add a separate text note below the plot with colored season text
     season_notes = '<br>'.join([
-        f"<span style='color:{color};'>{season}</span>"
+        f"<div style='padding:5px;'><span style='background-color:{color}; padding:5px; color:white;'>{season}</span></div>"
         for season, (_, _, _, color) in season_backgrounds.items()
     ])
 
