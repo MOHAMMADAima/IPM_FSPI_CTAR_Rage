@@ -41,7 +41,7 @@ st.markdown(
 )
 
 # Header
-st.title("Bienvenue sur CTAR Indicateurs 🌐")
+st.title("Bienvenue sur CTAR Indicateurs")
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("###### Une application d'analyse des indicateurs de performance des CTAR de Madagascar, à l'initiative de IPM.")
 
