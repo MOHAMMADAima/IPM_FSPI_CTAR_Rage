@@ -84,7 +84,7 @@ if 'dataframes' in st.session_state:
             lon=longitudes,
             mode='markers+text',
             marker=go.scattermapbox.Marker(
-                size=[50 * np.log1p(pop) for pop in populations],  # Use logarithmic scale to emphasize size differences
+                size=[5 * np.log1p(pop) for pop in populations],  # Use logarithmic scale to emphasize size differences
                 color='darkorange',
                 opacity=0.8
             ),
