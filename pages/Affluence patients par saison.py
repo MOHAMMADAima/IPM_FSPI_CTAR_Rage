@@ -81,15 +81,17 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Define background colors for each season and add background text
     season_backgrounds = {
-        'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)', 'Lohataona (été)', 'rgb(255, 223, 186)'),
-        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'Fahavratra (pluie)', 'rgb(186, 225, 255)'),
-        'Fararano (automne)': (3, 6, 'rgba(255, 186, 186, 0.3)', 'Fararano (automne)', 'rgb(255, 186, 186)'),
-        'Ritinina (hiver)': (6, 9, 'rgba(186, 255, 201, 0.3)', 'Ritinina (hiver)', 'rgb(186, 255, 201)')
+        'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
+        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
+        'Fararano (automne)': (3, 6, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
+        'Ritinina (hiver)': (6, 9, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
     }
 
     shapes = []
     annotations = []
-    for season, (start_month, end_month, color, text, text_color) in season_backgrounds.items():
+
+    # Add season backgrounds to match the x-axis labels
+    for season, (start_month, end_month, color, text_color) in season_backgrounds.items():
         if end_month <= start_month:
             shapes.append(dict(
                 type='rect',
@@ -122,11 +124,12 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 line=dict(width=0),
                 layer='below'
             ))
+
         # Add background text for each season
         annotations.append(dict(
             x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 12) / 2,
             y=max_count + range_margin * 0.9,
-            text=text,
+            text=season,
             showarrow=False,
             font=dict(size=18, color=text_color),
             xanchor="center"
@@ -141,7 +144,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ticktext=month_names,
             title='Mois',
             type='category',
-            range=[-0.5, 12]
+            range=[-0.5, 12]  # Set x-axis range to fit all months
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
