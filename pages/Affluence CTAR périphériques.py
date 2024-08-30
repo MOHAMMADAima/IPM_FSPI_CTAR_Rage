@@ -56,6 +56,9 @@ if 'dataframes' in st.session_state:
         ctar['date_de_consultation'] = pd.to_datetime(ctar['date_de_consultation'])
         ctar['year'] = ctar['date_de_consultation'].dt.year
         
+        # Exclude year 2032 from the dataset
+        ctar = ctar[ctar['year'] != 2032]
+        
         # Group by 'id_ctar' and 'year', then count the occurrences
         yearly_recurrence = ctar.groupby(['id_ctar', 'year']).size().reset_index(name='nombre de visite patients')
         
@@ -66,8 +69,15 @@ if 'dataframes' in st.session_state:
         yearly_recurrence['town_name'] = yearly_recurrence['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[0])
         yearly_recurrence['gps_coordinates'] = yearly_recurrence['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[1])
         
-        # Select the year to visualize
-        selected_year = st.selectbox("Select Year", options=yearly_recurrence['year'].astype(int).unique())
+        # Select the year to visualize, excluding 2032
+        available_years = yearly_recurrence['year'].astype(int).unique()
+        if 2032 in available_years:
+            available_years = available_years[available_years != 2032]
+        
+        # Sort years from most recent to oldest
+        available_years = sorted(available_years, reverse=True)
+        
+        selected_year = st.selectbox("Select Year", options=available_years)
         
         # Filter data for the selected year
         filtered_data = yearly_recurrence[yearly_recurrence['year'] == selected_year]
@@ -84,7 +94,7 @@ if 'dataframes' in st.session_state:
             lon=longitudes,
             mode='markers+text',
             marker=go.scattermapbox.Marker(
-                size=[5 * np.log1p(pop) for pop in populations],  # Use logarithmic scale to emphasize size differences
+                size=[50 * np.log1p(pop) for pop in populations],  # Use logarithmic scale to emphasize size differences
                 color='darkorange',
                 opacity=0.8
             ),
