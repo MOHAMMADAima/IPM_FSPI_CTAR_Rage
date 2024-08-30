@@ -54,6 +54,7 @@ if 'dataframes' in st.session_state:
         # Preprocess the data
         ctar['date_de_consultation'] = pd.to_datetime(ctar['date_de_consultation'])
         ctar['year'] = ctar['date_de_consultation'].dt.year
+        ctar['year']=ctar['year'].astype(int)
         
         # Group by 'id_ctar' and 'year', then count the occurrences
         yearly_recurrence = ctar.groupby(['id_ctar', 'year']).size().reset_index(name='nombre de visite patients')
@@ -98,7 +99,7 @@ if 'dataframes' in st.session_state:
                 center=dict(lat=-19, lon=47),
                 zoom=5
             ),
-            title=f"CTAR Patient Visits Map for Year {selected_year}",
+            title=f"Nombre de visite patients dans les CTARs en {selected_year}",
             showlegend=True
         )
         
