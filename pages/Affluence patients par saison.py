@@ -79,7 +79,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
         ))
 
-    # Define background colors for each season and add background text
+    # Define background colors for each season
     season_backgrounds = {
         'Lohataona (été)': (9.5, 11.5, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
         'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
@@ -88,10 +88,9 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     }
 
     shapes = []
-    annotations = []
 
     # Add season backgrounds to match the x-axis labels
-    for season, (start_month, end_month, color, text_color) in season_backgrounds.items():
+    for season, (start_month, end_month, color, _) in season_backgrounds.items():
         if end_month < start_month:
             shapes.append(dict(
                 type='rect',
@@ -125,21 +124,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 layer='below'
             ))
 
-        # Add background text for each season within the background color
-        annotations.append(dict(
-            x=(-start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 10) / 2,
-            y=(min_count + max_count) / 2,  # Position text in the center vertically within the rectangle
-            text=season,
-            showarrow=False,
-            font=dict(size=16, color=text_color),
-            xanchor="center",
-            yanchor="bottom"  # Center text vertically
-        ))
+    # Create a subtitle for the seasons with matching colors
+    subtitle = '<br>'.join([
+        f"<span style='color:{color};'>{season}</span>"
+        for season, (_, _, _, color) in season_backgrounds.items()
+    ])
 
-    # Update layout to fit data, include background text, and zoom on lines
+    # Update layout to fit data, add season backgrounds
     fig.update_layout(
         shapes=shapes,
-        annotations=annotations,
         xaxis=dict(
             tickvals=months,
             ticktext=month_names,
@@ -151,10 +144,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             title='Nombre de patients venus à IPM',
             range=[min_count - range_margin, max_count + range_margin]  # Set y-axis to include all data
         ),
-        title="Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
+        title={
+            'text': "Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
+            'x': 0.5,
+            'xanchor': 'center'
+        },
         height=700,  # Increase figure height
         width=1400,  # Increase figure width for better visibility
-        legend_title='Légende'
+        legend_title='Légende',
+        subtitle=subtitle  # Add the subtitle with season colors
     )
 
     # Remove the seasons from the legend
