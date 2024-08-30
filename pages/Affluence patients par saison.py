@@ -131,8 +131,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             y=min_count - range_margin - 0.5,  # Position text inside the rectangle
             text=season,
             showarrow=False,
-            font=dict(size=12, color=text_color),
-            xanchor="center",
+            font=dict(size=14, color=text_color),
+            xanchor="left",
             yanchor="bottom"
         ))
 
