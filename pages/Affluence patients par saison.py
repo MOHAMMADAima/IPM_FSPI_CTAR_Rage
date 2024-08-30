@@ -85,18 +85,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             layer='below'
         ))
 
-    # Add dummy traces for each season to include them in the legend
-    for season, (start_month, end_month, color) in season_backgrounds.items():
-        fig.add_trace(go.Scatter(
-            x=[None], y=[None],
-            mode='markers',
-            marker=dict(size=10, color=color),
-            name=season,
-            legendgroup='season',
-            showlegend=True
-        ))
+    # Construct season subtitles
+    season_subtitle = ', '.join(season for season in season_backgrounds.keys())
 
-    # Update layout to fit data and zoom on lines
+    # Update layout to fit data, center graph, and set autoscale
     fig.update_layout(
         shapes=shapes,
         xaxis=dict(
@@ -108,14 +100,21 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
-            range=[0, monthly_counts_all_years['count'].max() * 1.08]
+            autorange=True  # Autoscale Y-axis to fit data
         ),
-        title="Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
-        legend_title='Légende'
+        title={
+            'text': f"Affluence des patients venus au CTAR IPM sur période saisonnière d'une année<br><sup>{season_subtitle}</sup>",
+            'y': 0.95,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
+        legend_title='Année',
+        margin=dict(l=40, r=40, t=40, b=40)
     )
 
     # Show the plot in Streamlit
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)  # Adjust to container width to center graph
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
