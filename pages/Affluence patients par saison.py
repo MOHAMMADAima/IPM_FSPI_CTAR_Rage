@@ -124,13 +124,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 layer='below'
             ))
 
-    # Create a subtitle for the seasons with matching colors
-    subtitle = '<br>'.join([
-        f"<span style='color:{color};'>{season}</span>"
-        for season, (_, _, _, color) in season_backgrounds.items()
-    ])
-
-    # Update layout to fit data, add season backgrounds
+    # Update layout to fit data
     fig.update_layout(
         shapes=shapes,
         xaxis=dict(
@@ -151,8 +145,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         },
         height=700,  # Increase figure height
         width=1400,  # Increase figure width for better visibility
-        legend_title='Légende',
-        subtitle=subtitle  # Add the subtitle with season colors
+        legend_title='Légende'
     )
 
     # Remove the seasons from the legend
@@ -160,6 +153,14 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Show the plot in Streamlit
     st.plotly_chart(fig, use_container_width=True)
+
+    # Add a separate text note below the plot with colored season text
+    season_notes = '<br>'.join([
+        f"<span style='color:{color};'>{season}</span>"
+        for season, (_, _, _, color) in season_backgrounds.items()
+    ])
+
+    st.markdown(f"<div style='font-size:16px; padding-top:20px;'>{season_notes}</div>", unsafe_allow_html=True)
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
