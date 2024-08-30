@@ -3,4 +3,4 @@ pandas
 plotly
 base64
 io
-matplotlib.pyplot
+matplotlib
