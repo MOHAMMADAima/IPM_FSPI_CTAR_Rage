@@ -83,7 +83,6 @@ if 'dataframes' in st.session_state:
         filtered_data = yearly_recurrence[yearly_recurrence['year'] == selected_year]
         
         # Extract the data for the map
-        town_names = filtered_data['town_name'].tolist()
         latitudes = [coord[0] for coord in filtered_data['gps_coordinates']]
         longitudes = [coord[1] for coord in filtered_data['gps_coordinates']]
         populations = filtered_data['nombre de visite patients'].tolist()
@@ -92,17 +91,15 @@ if 'dataframes' in st.session_state:
         fig = go.Figure(go.Scattermapbox(
             lat=latitudes,
             lon=longitudes,
-            mode='markers+text',
+            mode='markers',
             marker=go.scattermapbox.Marker(
                 size=[6 * np.log1p(pop) for pop in populations],  # Use logarithmic scale to emphasize size differences
                 color='darkorange',
                 opacity=0.8
             ),
-            text=[f"{name}: {value} patients" for name, value in zip(town_names, populations)],
-            textfont=dict(
-                size=0  # Adjust the font size for annotations
-            ),
-            textposition='top right',  # Adjust text position for better visibility
+            # Remove text annotation
+            text=[],
+            textposition='top center',
         ))
         
         fig.update_layout(
