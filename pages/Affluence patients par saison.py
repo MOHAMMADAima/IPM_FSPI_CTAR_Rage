@@ -44,11 +44,11 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Aggregate counts across years for each month
     monthly_counts_all_years = ipm.groupby(['month']).size().reset_index(name='count')
 
-    # Define the month order for consistent x-axis labeling
-    months = list(range(9, 13)) + list(range(1, 10))  # September to December, then January to August
+    # Define the month order for consistent x-axis labeling (January to December)
+    months = list(range(1, 13))  # January to December
     month_names = [
-        'Sep', 'Oct', 'Nov', 'Dec', 
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 
+        'Sep', 'Oct', 'Nov', 'Dec'
     ]
 
     # Determine the min and max count values for setting the y-axis range
@@ -96,7 +96,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             shapes.append(dict(
                 type='rect',
                 x0=start_month - 0.5,
-                x1=12.5,
+                x1=12 + 0.5,  # Extend to December
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
@@ -105,7 +105,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ))
             shapes.append(dict(
                 type='rect',
-                x0=1 - 0.5,
+                x0=1 - 0.5,  # Start from January
                 x1=end_month + 0.5,
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
