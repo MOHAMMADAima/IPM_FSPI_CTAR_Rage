@@ -127,7 +127,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
         # Add season text inside the colored rectangles
         annotations.append(dict(
-            x=(start_month )/4  if end_month < start_month else (start_month + end_month )/4 ,
+            x=(start_month )/4  if end_month < start_month else (start_month + end_month+7 )/4 ,
             y=min_count - range_margin,  # Position text inside the rectangle
             text=season,
             showarrow=False,
