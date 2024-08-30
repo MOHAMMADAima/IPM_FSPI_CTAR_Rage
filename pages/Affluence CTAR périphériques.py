@@ -40,63 +40,67 @@ towns_info = {
 # Streamlit page
 st.title("CTAR Patient Visits Map")
 
-# Upload the file
-uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
-
-if uploaded_file:
-    # Load the data
-    ctar = pd.read_csv(uploaded_file)
-
-    # Preprocess the data
-    ctar['date_de_consultation'] = pd.to_datetime(ctar['date_de_consultation'])
-    ctar['year'] = ctar['date_de_consultation'].dt.year
+# Check if dataframes are available in session state
+if 'dataframes' in st.session_state:
+    dataframes = st.session_state['dataframes']
     
-    # Group by 'id_ctar' and 'year', then count the occurrences
-    yearly_recurrence = ctar.groupby(['id_ctar', 'year']).size().reset_index(name='nombre de visite patients')
-    
-    # Convert the column values to integers
-    yearly_recurrence['id_ctar'] = yearly_recurrence['id_ctar'].astype(int)
-    
-    # Replace integer values with corresponding dictionary values
-    yearly_recurrence['town_name'] = yearly_recurrence['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[0])
-    yearly_recurrence['gps_coordinates'] = yearly_recurrence['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[1])
-    
-    # Select the year to visualize
-    selected_year = st.selectbox("Select Year", options=yearly_recurrence['year'].unique())
+    # Select a file to analyze from the uploaded files
+    selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
-    # Filter data for the selected year
-    filtered_data = yearly_recurrence[yearly_recurrence['year'] == selected_year]
-
-    # Extract the data for the map
-    town_names = filtered_data['town_name'].tolist()
-    latitudes = [coord[0] for coord in filtered_data['gps_coordinates']]
-    longitudes = [coord[1] for coord in filtered_data['gps_coordinates']]
-    populations = filtered_data['nombre de visite patients'].tolist()
-
-    # Create a scatter mapbox plot
-    fig = go.Figure(go.Scattermapbox(
-        lat=latitudes,
-        lon=longitudes,
-        mode='markers+text',
-        marker=go.scattermapbox.Marker(
-            size=[10 + (pop / 500) for pop in populations],  # Adjust size based on town values
-            color='darkorange',
-        ),
-        text=[f"CTAR {name}: {value} patients" for name, value in zip(town_names, populations)],
-        textposition='top center',
-    ))
-
-    fig.update_layout(
-        width=1200,  # Set the desired width
-        height=900,  # Set the desired height
-        mapbox=dict(
-            style="open-street-map",
-            center=dict(lat=-19, lon=47),
-            zoom=5
-        ),
-        title=f"CTAR Patient Visits Map for Year {selected_year}",
-        showlegend=True
-    )
-
-    # Show the map
-    st.plotly_chart(fig)
+    # Load the selected dataframe
+    if selected_file:
+        ctar = dataframes[selected_file]
+        
+        # Preprocess the data
+        ctar['date_de_consultation'] = pd.to_datetime(ctar['date_de_consultation'])
+        ctar['year'] = ctar['date_de_consultation'].dt.year
+        
+        # Group by 'id_ctar' and 'year', then count the occurrences
+        yearly_recurrence = ctar.groupby(['id_ctar', 'year']).size().reset_index(name='nombre de visite patients')
+        
+        # Convert the column values to integers
+        yearly_recurrence['id_ctar'] = yearly_recurrence['id_ctar'].astype(int)
+        
+        # Replace integer values with corresponding dictionary values
+        yearly_recurrence['town_name'] = yearly_recurrence['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[0])
+        yearly_recurrence['gps_coordinates'] = yearly_recurrence['id_ctar'].map(lambda x: towns_info.get(x, ("Unknown", (0, 0)))[1])
+        
+        # Select the year to visualize
+        selected_year = st.selectbox("Select Year", options=yearly_recurrence['year'].unique())
+        
+        # Filter data for the selected year
+        filtered_data = yearly_recurrence[yearly_recurrence['year'] == selected_year]
+        
+        # Extract the data for the map
+        town_names = filtered_data['town_name'].tolist()
+        latitudes = [coord[0] for coord in filtered_data['gps_coordinates']]
+        longitudes = [coord[1] for coord in filtered_data['gps_coordinates']]
+        populations = filtered_data['nombre de visite patients'].tolist()
+        
+        # Create a scatter mapbox plot
+        fig = go.Figure(go.Scattermapbox(
+            lat=latitudes,
+            lon=longitudes,
+            mode='markers+text',
+            marker=go.scattermapbox.Marker(
+                size=[10 + (pop / 500) for pop in populations],  # Adjust size based on town values
+                color='darkorange',
+            ),
+            text=[f"CTAR {name}: {value} patients" for name, value in zip(town_names, populations)],
+            textposition='top center',
+        ))
+        
+        fig.update_layout(
+            width=1200,  # Set the desired width
+            height=900,  # Set the desired height
+            mapbox=dict(
+                style="open-street-map",
+                center=dict(lat=-19, lon=47),
+                zoom=5
+            ),
+            title=f"CTAR Patient Visits Map for Year {selected_year}",
+            showlegend=True
+        )
+        
+        # Show the map
+        st.plotly_chart(fig)
