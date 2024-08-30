@@ -83,8 +83,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     season_backgrounds = {
         'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
         'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
-        'Fararano (automne)': (2, 7, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
-        'Ritinina (hiver)': (6, 10, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
+        'Fararano (automne)': (3, 7, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
+        'Ritinina (hiver)': (7, 11, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
     }
 
     shapes = []
@@ -96,7 +96,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             shapes.append(dict(
                 type='rect',
                 x0=start_month - 1,
-                x1=12,  # Extend to December
+                x1=11,  # Extend to December
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
