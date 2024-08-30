@@ -45,7 +45,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     monthly_counts_all_years = ipm.groupby(['month']).size().reset_index(name='count')
 
     # Define the month order for consistent x-axis labeling (January to December)
-    months = list(range(0, 12))  # January to December
+    months = list(range(1, 13))  # January to December
     month_names = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 
         'Sep', 'Oct', 'Nov', 'Dec'
@@ -81,7 +81,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Define background colors for each season and add background text
     season_backgrounds = {
-        'Lohataona (été)': (9, 11, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
+        'Lohataona (été)': (9, 1, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)'),
         'Fahavratra (pluie)': (11, 4, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
         'Fararano (automne)': (4, 5, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
         'Ritinina (hiver)': (5, 8, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)')
@@ -95,7 +95,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         if end_month < start_month:
             shapes.append(dict(
                 type='rect',
-                x0=start_month - 0.5,
+                x0=start_month - 1,
                 x1=12,  # Extend to December
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
