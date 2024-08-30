@@ -103,17 +103,6 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             xanchor="center"
         ))
 
-    # Add dummy traces for each season to include them in the legend
-    for season, (start_month, end_month, color, text, text_color) in season_backgrounds.items():
-        fig.add_trace(go.Scatter(
-            x=[None], y=[None],
-            mode='markers',
-            marker=dict(size=10, color=color),
-            name=season,
-            legendgroup='season',
-            showlegend=True
-        ))
-
     # Update layout to fit data, include background text, and zoom on lines
     fig.update_layout(
         shapes=shapes,
@@ -130,9 +119,13 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             range=[min_count - range_margin, max_count + range_margin]  # Set y-axis to include all data
         ),
         title="Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
-        legend_title='Légende',
-        height=700  # Increase figure size
+        height=700,  # Increase figure height
+        width=1400,  # Increase figure width for better visibility
+        legend_title='Légende'
     )
+
+    # Remove the seasons from the legend
+    fig.for_each_trace(lambda trace: trace.update(showlegend=False) if trace.name in season_backgrounds else None)
 
     # Show the plot in Streamlit
     st.plotly_chart(fig, use_container_width=True)
