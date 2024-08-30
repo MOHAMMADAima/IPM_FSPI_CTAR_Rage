@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+
+st.set_page_config(page_title="Animal Bite Analysis", page_icon="🐾")
 # Streamlit page
 st.title("Espèce responsable de la morsure des patients IPM.")
-# Set page title
-st.set_page_config(page_title="Animal Bite Analysis", page_icon="🐾")
 
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:
