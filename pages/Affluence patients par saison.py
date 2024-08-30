@@ -124,9 +124,34 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 layer='below'
             ))
 
-    # Update layout to fit data
+    # Create the legend text for the bottom rectangle
+    season_legend = '<br>'.join([
+        f"<div style='display:inline-block; width:100px; padding:5px;'><span style='background-color:{color}; padding:5px; color:white;'>{season}</span></div>"
+        for season, (_, _, _, color) in season_backgrounds.items()
+    ])
+
+    # Update layout to fit data and include the legend rectangle
     fig.update_layout(
-        shapes=shapes,
+        shapes=shapes + [dict(
+            type='rect',
+            x0=-0.5,
+            x1=12.5,
+            y0=min_count - range_margin - 5,  # Place rectangle just below the plot
+            y1=min_count - range_margin - 2,  # Height of the rectangle
+            fillcolor='rgba(240, 240, 240, 0.8)',  # Light background color for the legend
+            line=dict(width=0),
+            layer='below'
+        )],
+        annotations=[dict(
+            x=0,
+            y=min_count - range_margin - 3.5,  # Vertical position inside the rectangle
+            text=season_legend,
+            showarrow=False,
+            xanchor='left',
+            yanchor='bottom',
+            font=dict(size=14, color='black'),
+            align='left'
+        )],
         xaxis=dict(
             tickvals=months,
             ticktext=month_names,
@@ -144,27 +169,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             'xanchor': 'center'
         },
         height=700,  # Increase figure height
-        width=4900,  # Increase figure width for better visibility
+        width=1400,  # Increase figure width for better visibility
         legend_title='Légende'
     )
 
     # Remove the seasons from the legend
     fig.for_each_trace(lambda trace: trace.update(showlegend=False) if trace.name in season_backgrounds else None)
 
-    # Create a two-column layout
-    col1, col2 = st.columns([1, 3])  # Adjust the ratios as needed
-
-    with col1:
-        # Add a separate text note with colored season text
-        season_notes = '<br>'.join([
-            f"<div style='padding:5px;'><span style='background-color:{color}; padding:5px; color:white;'>{season}</span></div>"
-            for season, (_, _, _, color) in season_backgrounds.items()
-        ])
-        st.markdown(f"<div style='font-size:16px;'>{season_notes}</div>", unsafe_allow_html=True)
-
-    with col2:
-        # Show the plot in Streamlit
-        st.plotly_chart(fig, use_container_width=True)
+    # Show the plot in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
