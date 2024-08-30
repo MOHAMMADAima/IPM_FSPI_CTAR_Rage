@@ -1,6 +1,9 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
+import base64
+import io
+import matplotlib.pyplot as plt
 
 # Define CTAR locations and data
 towns_info = {
@@ -37,6 +40,25 @@ towns_info = {
     103: ("Ambovombe", (-25.1744, 46.0876), [66, 76, 86, 96, 106])
 }
 
+# Function to create a histogram as base64 image
+def create_histogram(data):
+    fig, ax = plt.subplots(figsize=(4, 3))
+    ax.hist(data, bins=10, color='blue', edgecolor='black')
+    ax.set_xlabel('Value')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Histogram')
+
+    # Save histogram to a base64 string
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    img_str = base64.b64encode(buffer.read()).decode()
+    
+    # Close the figure to prevent memory leak
+    plt.close(fig)
+
+    return img_str
+
 # Streamlit app
 st.title("CTAR Map with Interactive Histograms")
 
@@ -44,7 +66,7 @@ st.title("CTAR Map with Interactive Histograms")
 fig = go.Figure()
 
 # Add CTAR markers to the map
-for i, (city, (lat, lon), population) in enumerate(towns_info.values()):
+for key, (city_name, (lat, lon), population) in towns_info.items():
     # Add CTAR location marker
     fig.add_trace(go.Scattermapbox(
         lat=[lat],
@@ -54,11 +76,11 @@ for i, (city, (lat, lon), population) in enumerate(towns_info.values()):
             size=10 + (sum(population) / 500),  # Adjust size based on population data
             color='darkorange',
         ),
-        text=[f"CTAR {city}"],
+        text=[f"CTAR {city_name}"],
         textposition='top center',
         customdata=[population],
-        hovertemplate=f"CTAR {city}<br>Population: {sum(population)}<br><extra></extra>",
-        name=city
+        hovertemplate=f"CTAR {city_name}<br>Population: {sum(population)}<br><extra></extra>",
+        name=city_name
     ))
 
 # Update layout for the map
@@ -79,14 +101,7 @@ selected_ctar = st.selectbox("Select a CTAR to see its histogram", options=list(
 # Display histogram for the selected CTAR
 if selected_ctar:
     city_name, (lat, lon), population = towns_info[selected_ctar]
-    histogram_fig = go.Figure(data=[go.Histogram(x=population)])
-    histogram_fig.update_layout(
-        xaxis_title='Population',
-        yaxis_title='Count',
-        title=f'Histogram for {city_name}',
-        height=400,
-        width=600
-    )
-    st.plotly_chart(histogram_fig)
+    histogram_img = create_histogram(population)
+    st.image(f"data:image/png;base64,{histogram_img}", caption=f'Histogram for {city_name}', use_column_width=True)
 
 st.plotly_chart(fig)
