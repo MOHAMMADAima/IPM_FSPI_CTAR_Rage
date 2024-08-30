@@ -144,7 +144,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ticktext=month_names,
             title='Mois',
             type='category',
-            range=[0, 12]  # Set x-axis range to fit all months
+            range=[-0.5, 11.5]  # Set x-axis range to fit all months
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
