@@ -47,17 +47,19 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     months = list(range(1, 13))
     month_names = [pd.to_datetime(f'2022-{i:02d}-01').strftime('%b') for i in months]
 
-    # Determine the min and max count values for centering the y-axis
+    # Determine the min and max count values for setting the y-axis range
     min_count = monthly_counts['count'].min()
     max_count = monthly_counts['count'].max()
-    center = (min_count + max_count) / 2
     range_margin = (max_count - min_count) * 0.2  # Add some margin around the lines
 
     # Create a scatter plot with lines for each year using Plotly
     fig = go.Figure()
 
+    # Sort years in descending order to show recent years first
+    years_sorted = sorted(monthly_counts['year'].unique(), reverse=True)
+
     # Add scatter plot points for each year
-    for year in sorted(monthly_counts['year'].unique()):
+    for year in years_sorted:
         df_year = monthly_counts[monthly_counts['year'] == year].set_index('month').reindex(months).reset_index()
         df_year['count'] = df_year['count'].fillna(0)
         fig.add_trace(go.Scatter(
@@ -66,33 +68,43 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             mode='lines+markers',
             name=str(round(year)),
             marker=dict(size=8),
-            line=dict(width=2)
+            line=dict(width=2),
+            visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
         ))
 
-    # Define background colors for each season
+    # Define background colors for each season and add background text
     season_backgrounds = {
-        'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)'),
-        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)'),
-        'Fararano (automne)': (3, 6, 'rgba(255, 186, 186, 0.3)'),
-        'Ritinina (hiver)': (6, 9, 'rgba(186, 255, 201, 0.3)')
+        'Lohataona (été)': (9, 12, 'rgba(255, 223, 186, 0.3)', 'Lohataona (été)', 'rgb(255, 223, 186)'),
+        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'Fahavratra (pluie)', 'rgb(186, 225, 255)'),
+        'Fararano (automne)': (3, 6, 'rgba(255, 186, 186, 0.3)', 'Fararano (automne)', 'rgb(255, 186, 186)'),
+        'Ritinina (hiver)': (6, 9, 'rgba(186, 255, 201, 0.3)', 'Ritinina (hiver)', 'rgb(186, 255, 201)')
     }
 
-    # Add background rectangles for each season
     shapes = []
-    for season, (start_month, end_month, color) in season_backgrounds.items():
+    annotations = []
+    for season, (start_month, end_month, color, text, text_color) in season_backgrounds.items():
         shapes.append(dict(
             type='rect',
             x0=start_month,
             x1=end_month if end_month > start_month else end_month + 12,
-            y0=0,
+            y0=min_count - range_margin,
             y1=max_count + range_margin,
             fillcolor=color,
             line=dict(width=0),
             layer='below'
         ))
+        # Add background text for each season
+        annotations.append(dict(
+            x=(start_month + end_month) / 2 if end_month > start_month else (start_month + end_month + 12) / 2,
+            y=max_count + range_margin * 0.9,
+            text=text,
+            showarrow=False,
+            font=dict(size=18, color=text_color),
+            xanchor="center"
+        ))
 
     # Add dummy traces for each season to include them in the legend
-    for season, (start_month, end_month, color) in season_backgrounds.items():
+    for season, (start_month, end_month, color, text, text_color) in season_backgrounds.items():
         fig.add_trace(go.Scatter(
             x=[None], y=[None],
             mode='markers',
@@ -102,9 +114,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             showlegend=True
         ))
 
-    # Update layout to fit data and zoom on lines
+    # Update layout to fit data, include background text, and zoom on lines
     fig.update_layout(
         shapes=shapes,
+        annotations=annotations,
         xaxis=dict(
             tickvals=months,
             ticktext=month_names,
@@ -114,14 +127,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
-            range=[center - range_margin, center + range_margin]  # Center y-axis around the lines
+            range=[min_count - range_margin, max_count + range_margin]  # Set y-axis to include all data
         ),
         title="Affluence des patients venus au CTAR IPM sur période saisonnière d'une année",
-        legend_title='Légende'
+        legend_title='Légende',
+        height=700  # Increase figure size
     )
 
     # Show the plot in Streamlit
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
