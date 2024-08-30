@@ -1,8 +1,8 @@
 import streamlit as st
 import plotly.graph_objects as go
-import plotly.express as px
+import pandas as pd
 
-# Define the CTAR locations and corresponding histogram data
+# Define CTAR locations and data
 towns_info = {
     7: ("Ambatondrazaka", (-17.8324, 48.4086), [10, 20, 30, 40, 50]),
     30: ("Ambositra", (-20.5300, 47.2441), [15, 25, 35, 45, 55]),
@@ -37,63 +37,56 @@ towns_info = {
     103: ("Ambovombe", (-25.1744, 46.0876), [66, 76, 86, 96, 106])
 }
 
-# Extracting data for the map
-city_names = [info[0] for info in towns_info.values()]
-latitudes = [info[1][0] for info in towns_info.values()]
-longitudes = [info[1][1] for info in towns_info.values()]
-histogram_data = [info[2] for info in towns_info.values()]
+# Streamlit app
+st.title("CTAR Map with Interactive Histograms")
 
-# Create a scatter mapbox plot with histograms as popups
+# Create a map figure
 fig = go.Figure()
 
-for i, city in enumerate(city_names):
-    # Add CTAR location as a marker
+# Add CTAR markers to the map
+for i, (city, (lat, lon), population) in enumerate(towns_info.values()):
+    # Add CTAR location marker
     fig.add_trace(go.Scattermapbox(
-        lat=[latitudes[i]],
-        lon=[longitudes[i]],
-        mode='markers',
+        lat=[lat],
+        lon=[lon],
+        mode='markers+text',
         marker=go.scattermapbox.Marker(
-            size=12,
+            size=10 + (sum(population) / 500),  # Adjust size based on population data
             color='darkorange',
         ),
-        name=city,
-        customdata=[histogram_data[i]],  # Pass the histogram data
-        hoverinfo='text',
-        hovertext=f"{city}",
-        showlegend=False
+        text=[f"CTAR {city}"],
+        textposition='top center',
+        customdata=[population],
+        hovertemplate=f"CTAR {city}<br>Population: {sum(population)}<br><extra></extra>",
+        name=city
     ))
 
-# Update layout with the map settings
+# Update layout for the map
 fig.update_layout(
-    width=1200,  # Set the desired width
-    height=900,  # Set the desired height
     mapbox=dict(
         style="open-street-map",
         center=dict(lat=-19, lon=47),
         zoom=5
     ),
     title="CTAR les plus fréquentés de Madagascar",
-    showlegend=False
+    showlegend=False,
+    height=800
 )
 
 # Display the map in Streamlit
-st.plotly_chart(fig)
+selected_ctar = st.selectbox("Select a CTAR to see its histogram", options=list(towns_info.keys()))
 
-# Logic to display the histogram when a marker is clicked
-if 'last_click' in st.session_state:
-    last_click = st.session_state['last_click']
-    city_index = city_names.index(last_click['hovertext'])
-    st.write(f"Histogram for {city_names[city_index]}")
-    hist_fig = px.histogram(histogram_data[city_index], nbins=5, title=f"Histogram for {city_names[city_index]}")
-    st.plotly_chart(hist_fig)
+# Display histogram for the selected CTAR
+if selected_ctar:
+    city_name, (lat, lon), population = towns_info[selected_ctar]
+    histogram_fig = go.Figure(data=[go.Histogram(x=population)])
+    histogram_fig.update_layout(
+        xaxis_title='Population',
+        yaxis_title='Count',
+        title=f'Histogram for {city_name}',
+        height=400,
+        width=600
+    )
+    st.plotly_chart(histogram_fig)
 
-# Set up a click callback to capture click events
-def click_callback(trace, points, state):
-    st.session_state['last_click'] = points[0]
-
-# Attach the callback to each marker
-for trace in fig.data:
-    trace.on_click(click_callback)
-
-# Display the map with clickable markers
 st.plotly_chart(fig)
