@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np
+from io import BytesIO
+import base64
+import matplotlib.pyplot as plt
 
 # Define the updated dictionary for town names and GPS coordinates
 towns_info = {
@@ -38,16 +41,39 @@ towns_info = {
     103: ("Ambovombe", (-25.1744, 46.0876))
 }
 
-# Streamlit page for uploading files
+# Function to create a pie chart as base64 image
+def create_pie_chart(val1, val2, val3):
+    labels = ['Value 1', 'Value 2', 'Value 3']
+    sizes = [val1, val2, val3]
+    colors = ['#ff9999', '#66b3ff', '#99ff99']
+    explode = (0.1, 0, 0)  # explode 1st slice
+
+    fig, ax = plt.subplots(figsize=(4, 3))
+    ax.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+    ax.axis('equal')
+    plt.tight_layout()
+
+    # Save pie chart to a base64 string
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    img_str = base64.b64encode(buffer.read()).decode()
+    
+    # Close the figure to prevent memory leak
+    plt.close(fig)
+
+    return img_str
+
+# Streamlit app with pages
 def home_page():
     st.title("Upload Data Files")
     
     # File uploader for the home page
-    uploaded_file = st.file_uploader("Upload a CSV file named 'verorab'", type="csv")
+    uploaded_file = st.file_uploader("Upload an Excel file named 'verorab'", type="xlsx")
     
     if uploaded_file is not None:
         # Load the dataframe into session state
-        df = pd.read_csv(uploaded_file)
+        df = pd.read_excel(uploaded_file)
         
         # Save to session state
         if 'dataframes' not in st.session_state:
@@ -57,22 +83,18 @@ def home_page():
         
         st.success("File uploaded successfully! Now go to the analysis page.")
 
-# Streamlit page for analysis
 def analysis_page():
     st.title("CTAR Analysis: Map and Quality Histogram")
-    
+
     # Check if dataframes are available in session state
     if 'dataframes' in st.session_state:
         dataframes = st.session_state['dataframes']
         
-        # Select a file to analyze from the uploaded files
-        selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
-        
         # Load the selected dataframe
-        if selected_file:
-            verorab = dataframes[selected_file]
-            
-            # Rename columns to avoid confusion
+        verorab = dataframes.get('verorab')
+        
+        if verorab is not None:
+            # Rename columns for consistency
             verorab.rename(columns={'ID_CTAR': 'id_ctar'}, inplace=True)
             
             # Check for necessary columns
@@ -100,19 +122,21 @@ def analysis_page():
                 longitudes = [coord[1] for coord in filtered_data['gps_coordinates']]
                 quality_metrics = filtered_data['Quality_Metric']
                 
-                # Create a scatter mapbox plot
-                fig_map = go.Figure(go.Scattermapbox(
-                    lat=latitudes,
-                    lon=longitudes,
-                    mode='markers',
-                    marker=go.scattermapbox.Marker(
-                        size=10,
-                        color='darkorange',
-                        opacity=0.8
-                    ),
-                    text=[f"CTAR {selected_ctar}: {value:.2f}" for value in quality_metrics],
-                    hoverinfo='text'
-                ))
+                # Create a scatter mapbox plot with pie chart popups
+                fig_map = go.Figure()
+                
+                for idx, (lat, lon, quality_metric) in enumerate(zip(latitudes, longitudes, quality_metrics)):
+                    pie_chart_img = create_pie_chart(quality_metric, 0, 0)  # Placeholder values for other metrics
+                    
+                    # Create the marker with the popup
+                    fig_map.add_trace(go.Scattermapbox(
+                        lat=[lat],
+                        lon=[lon],
+                        mode='markers',
+                        marker=dict(size=10, color='darkorange', opacity=0.8),
+                        text=[f"<b>{selected_ctar}</b><br>Quality Metric: {quality_metric:.2f}<br><img src='data:image/png;base64,{pie_chart_img}'>"],
+                        hoverinfo='text'
+                    ))
                 
                 fig_map.update_layout(
                     width=1200,
@@ -141,28 +165,21 @@ def analysis_page():
                 
                 fig_hist.update_layout(
                     barmode='overlay',
-                    title=f"Histogram of Quality Metrics for CTAR {selected_ctar}",
+                    title=f"Quality Metrics per Month for {selected_ctar}",
                     xaxis_title="Quality Metric",
-                    yaxis_title="Frequency",
-                    xaxis=dict(type='category')
+                    yaxis_title="Count"
                 )
                 
                 st.plotly_chart(fig_hist)
-                
             else:
-                st.error(f"Uploaded file must contain the following columns: {', '.join(required_columns)}.")
-    else:
-        st.error("No data files uploaded. Please upload a file on the home page.")
+                st.error("The uploaded file is missing required columns.")
+        else:
+            st.error("No file available for analysis.")
 
-# Main function to handle page navigation
-def main():
-    st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["Home", "Analysis"])
-    
-    if page == "Home":
-        home_page()
-    elif page == "Analysis":
-        analysis_page()
+# Main page selection
+page = st.sidebar.selectbox("Select Page", ["Home", "Analysis"])
 
-if __name__ == "__main__":
-    main()
+if page == "Home":
+    home_page()
+elif page == "Analysis":
+    analysis_page()
