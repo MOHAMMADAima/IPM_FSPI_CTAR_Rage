@@ -84,7 +84,7 @@ if uploaded_file:
     # Create markers for each town
     for key, (town_name, (lat, lon)) in towns_info.items():
         # Find the row corresponding to the town
-        town_row = df[df['ID_CTAR'] == key]
+        town_row = df[int(df['ID_CTAR']) == key]
         if not town_row.empty:
             # Extract monthly values
             town_data = town_row.iloc[0].drop(['CTAR', 'TOTAUX', 'ID_CTAR']).to_dict()
