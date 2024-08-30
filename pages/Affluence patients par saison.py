@@ -151,16 +151,20 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Remove the seasons from the legend
     fig.for_each_trace(lambda trace: trace.update(showlegend=False) if trace.name in season_backgrounds else None)
 
-    # Show the plot in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+    # Create a two-column layout
+    col1, col2 = st.columns([1, 3])  # Adjust the ratios as needed
 
-    # Add a separate text note below the plot with colored season text
-    season_notes = '<br>'.join([
-        f"<div style='padding:5px;'><span style='background-color:{color}; padding:5px; color:white;'>{season}</span></div>"
-        for season, (_, _, _, color) in season_backgrounds.items()
-    ])
+    with col1:
+        # Add a separate text note with colored season text
+        season_notes = '<br>'.join([
+            f"<div style='padding:5px;'><span style='background-color:{color}; padding:5px; color:white;'>{season}</span></div>"
+            for season, (_, _, _, color) in season_backgrounds.items()
+        ])
+        st.markdown(f"<div style='font-size:16px;'>{season_notes}</div>", unsafe_allow_html=True)
 
-    st.markdown(f"<div style='font-size:16px; padding-top:20px;'>{season_notes}</div>", unsafe_allow_html=True)
+    with col2:
+        # Show the plot in Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
