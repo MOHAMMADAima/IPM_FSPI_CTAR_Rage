@@ -125,29 +125,18 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 layer='below'
             ))
 
-   
-
-        # Add season text inside the colored rectangles with bold font
+        # Add season text inside the colored rectangles
         annotations.append(dict(
-    x=(start_month)/10  if end_month < start_month else (start_month + end_month-1 )/2 ,
-    y=min_count - range_margin - 0.5,  # Position text inside the rectangle
-    text=season,
-    showarrow=False,
-    font=dict(
-        size=15,
-        color=text_color,
-        family="Arial, sans-serif"  # You can choose the font family as needed
-    ),
-    xanchor="center",
-    yanchor="bottom",
-    textfont=dict(
-        size=12,
-        color=text_color,
-        family="Arial, sans-serif"  # Ensure the font is consistent
-    ),
-    texttemplate="<b>%{text}</b>"  # Make text bold using HTML tags
-))
+            x=(start_month)/10  if end_month < start_month else (start_month + end_month-1 )/2 ,
+            y=min_count - range_margin,  # Position text inside the rectangle
+            text=season,
+            showarrow=False,
+            font=dict(size=15, color=text_color),
+            xanchor="center",
+            yanchor="bottom"
+        ))
 
+        
 
     # Update layout to fit data and include the season text in rectangles
     fig.update_layout(
