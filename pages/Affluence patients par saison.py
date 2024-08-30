@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 
 # Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
@@ -55,19 +56,22 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Create a scatter plot with lines for each year using Plotly
     fig = go.Figure()
 
+    # Use a color map to ensure unique colors for each year
+    color_map = px.colors.qualitative.Plotly  # A set of distinct colors
+
     # Sort years in descending order to show recent years first
     years_sorted = sorted(monthly_counts['year'].unique(), reverse=True)
 
     # Add scatter plot points for each year
-    for year in years_sorted:
+    for i, year in enumerate(years_sorted):
         df_year = monthly_counts[monthly_counts['year'] == year].set_index('month').reindex(months).reset_index()
         df_year['count'] = df_year['count'].fillna(0)
         fig.add_trace(go.Scatter(
             x=df_year['month'],
             y=df_year['count'],
             mode='lines+markers',
-            name=str(round(year)),
-            marker=dict(size=8),
+            name=str(year),
+            marker=dict(size=8, color=color_map[i % len(color_map)]),  # Ensure unique color
             line=dict(width=2),
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
         ))
