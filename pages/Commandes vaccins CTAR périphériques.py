@@ -74,7 +74,10 @@ uploaded_file = st.file_uploader("Upload the Excel file", type=["xlsx"])
 if uploaded_file:
     # Load the Excel file
     df = pd.read_excel(uploaded_file)
-
+    
+    # Ensure 'ID_CTAR' column is of integer type
+    df['ID_CTAR'] = pd.to_numeric(df['ID_CTAR'], errors='coerce').fillna(0).astype(int)
+    
     # Initialize the map
     m = folium.Map(location=[-18.5, 47], zoom_start=5.5, tiles='OpenStreetMap')
 
