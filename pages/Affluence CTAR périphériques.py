@@ -100,7 +100,7 @@ if 'dataframes' in st.session_state:
             ),
             text=[f"{name}: {value} patients" for name, value in zip(town_names, populations)],
             textfont=dict(
-                size=14  # Adjust the font size for annotations
+                size=0  # Adjust the font size for annotations
             ),
             textposition='top right',  # Adjust text position for better visibility
         ))
