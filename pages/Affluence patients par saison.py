@@ -92,11 +92,11 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Add season backgrounds to match the x-axis labels
     for season, (start_month, end_month, color, text_color) in season_backgrounds.items():
-        if end_month <= start_month:
+        if end_month < start_month:
             shapes.append(dict(
                 type='rect',
-                x0=start_month,
-                x1=12,
+                x0=start_month - 0.5,
+                x1=12.5,
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
@@ -105,8 +105,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ))
             shapes.append(dict(
                 type='rect',
-                x0=1,
-                x1=end_month,
+                x0=1 - 0.5,
+                x1=end_month + 0.5,
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
@@ -116,8 +116,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         else:
             shapes.append(dict(
                 type='rect',
-                x0=start_month,
-                x1=end_month,
+                x0=start_month - 0.5,
+                x1=end_month + 0.5,
                 y0=min_count - range_margin,
                 y1=max_count + range_margin,
                 fillcolor=color,
@@ -144,7 +144,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             ticktext=month_names,
             title='Mois',
             type='category',
-            range=[-0.5, 12]  # Set x-axis range to fit all months
+            range=[-0.5, 12.5]  # Set x-axis range to fit all months
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
