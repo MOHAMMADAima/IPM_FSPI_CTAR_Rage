@@ -3,6 +3,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
+# Streamlit page
+st.title("Distribution du nombre de lésions des patients des CTAR périfériques.")
+
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']

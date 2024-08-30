@@ -2,8 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+
+
+
 # Set page title
-st.set_page_config(page_title="Analyse par Groupe d'Âge", page_icon="📊")
+st.set_page_config(page_title="Nombre moyen de lésions, avec variance et médiane par groupe d'âge sur les différentes parties du corps.", page_icon="📊")
 
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:

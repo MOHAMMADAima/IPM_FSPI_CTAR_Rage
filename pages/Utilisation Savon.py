@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+
+# Streamlit page
+st.title("Proportion des patients qui a utilisé l’eau savonneuse avant la consultation.")
+
 # Set page title
 st.set_page_config(page_title="Soap Usage Analysis", page_icon="🧼")
 

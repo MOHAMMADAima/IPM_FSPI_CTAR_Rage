@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+# Streamlit page
+st.title(" Age et sexe des victimes.")
 # Set page title
 st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
 

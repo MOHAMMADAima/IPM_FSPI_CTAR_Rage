@@ -5,6 +5,9 @@ import plotly.graph_objects as go
 # Set page title
 st.set_page_config(page_title="Animal Lifestyle Analysis", page_icon="🐾")
 
+# Streamlit page
+st.title("Mode de vie de l'espèce responsable de la morsure des patients IPM.")
+
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']

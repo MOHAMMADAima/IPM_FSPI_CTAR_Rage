@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+# Streamlit page
+st.title("Espèce responsable de la morsure des patients IPM.")
 # Set page title
 st.set_page_config(page_title="Animal Bite Analysis", page_icon="🐾")
 

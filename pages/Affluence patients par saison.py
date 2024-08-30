@@ -4,7 +4,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
-# Check if any dataframes have been uploaded in the session state
+# Streamlit page
+st.title("Affluence des patients venus au CTAR IPM sur période saisonnière d'une année.")
+# k if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Get the first dataframe uploaded
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))

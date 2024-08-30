@@ -42,7 +42,7 @@ towns_info = {
 }
 
 # Streamlit page
-st.title("CTAR Patient Visits Map")
+st.title("Cartographie de l'affluence des patients aux CTARs périphériques.")
 
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:

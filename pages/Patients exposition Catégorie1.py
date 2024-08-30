@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # Set Streamlit page configuration
-st.set_page_config(page_title="Analyse LPS par Groupe d'Âge", page_icon="📊")
+st.set_page_config(page_title="Analyse Léchange Peau Saine (Catégorie 1) par Groupe d'Âge", page_icon="📊")
 
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:
