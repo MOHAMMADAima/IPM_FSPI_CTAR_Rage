@@ -6,6 +6,8 @@ from io import BytesIO
 import base64
 import matplotlib.pyplot as plt
 
+
+
 # Define the updated dictionary for town names and GPS coordinates
 towns_info = {
     7: ("Ambatondrazaka", (-17.8324, 48.4086)),
