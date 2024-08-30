@@ -97,9 +97,10 @@ if 'dataframes' in st.session_state:
                 color='darkorange',
                 opacity=0.8
             ),
-            # Remove text annotation
-            text=[],
+            # Remove text annotation from the map
+            text=[f"CTAR {name}: {value} patients" for name, value in zip(filtered_data['town_name'], filtered_data['nombre de visite patients'])],
             textposition='top center',
+            hoverinfo='text'  # Show hover text only
         ))
         
         fig.update_layout(
