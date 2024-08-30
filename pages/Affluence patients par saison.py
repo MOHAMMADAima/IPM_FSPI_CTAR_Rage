@@ -157,7 +157,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             'xanchor': 'center'
         },
         height=700,  # Increase figure height
-        width=2400,  # Increase figure width for better visibility
+        width=7400,  # Increase figure width for better visibility
         legend_title='Légende'
     )
 
