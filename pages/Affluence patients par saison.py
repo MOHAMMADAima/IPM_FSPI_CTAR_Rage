@@ -1,4 +1,3 @@
-# Graph.py
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -6,23 +5,18 @@ import plotly.express as px
 
 # Streamlit page
 st.title("Affluence des patients venus au CTAR IPM sur période saisonnière d'une année.")
-# k if any dataframes have been uploaded in the session state
+# Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Get the first dataframe uploaded
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))
 
     # Convert date columns
-   
     ipm['dat_consu'] = pd.to_datetime(ipm['dat_consu'], format='%d/%m/%Y', errors='coerce')
     ipm['vacc_vero_date'] = pd.to_datetime(ipm['vacc_vero_date'], format='%d/%m/%Y', errors='coerce')
     ipm['vacc_sour_date'] = pd.to_datetime(ipm['vacc_sour_date'], format='%d/%m/%Y', errors='coerce')
 
-
     # Create the new date column with the required logic
     ipm['new_date_column'] = ipm['dat_consu'].fillna(ipm['vacc_vero_date']).fillna(ipm['vacc_sour_date'])
-  #  ipm['new_date_column'] = ipm['new_date_column'].dt.strftime('%Y-%m-%d')
-  #  ipm['new_date_column'] = pd.to_datetime(ipm['new_date_column'], format='%d-%m-%Y', errors='coerce')
-
 
     # Define a function to map dates to seasons
     def get_season(date):
@@ -50,12 +44,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Aggregate counts across years for each month
     monthly_counts_all_years = ipm.groupby(['month']).size().reset_index(name='count')
 
-    # Define the month order for consistent x-axis labeling (January to December)
-    months = list(range(1, 13))  # January to December
+    # Define month names
     month_names = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 
         'Sep', 'Oct', 'Nov', 'Dec'
     ]
+
+    # Define the month order based on the actual data
+    months_present = monthly_counts['month'].unique()  # Only the months present in the data
+    month_names_present = [month_names[m-1] for m in months_present]  # Map to month names
 
     # Determine the min and max count values for setting the y-axis range
     min_count = monthly_counts['count'].min()
@@ -73,7 +70,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Add scatter plot points for each year
     for i, year in enumerate(years_sorted):
-        df_year = monthly_counts[monthly_counts['year'] == year].set_index('month').reindex(months).reset_index()
+        df_year = monthly_counts[monthly_counts['year'] == year].set_index('month').reindex(months_present).reset_index()
         df_year['count'] = df_year['count'].fillna(0)
         fig.add_trace(go.Scatter(
             x=df_year['month'],
@@ -85,75 +82,13 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
         ))
 
-    # Define background colors for each season and corresponding text
-    season_backgrounds = {
-        'Fahavratra (pluie)': (12, 3, 'rgba(186, 225, 255, 0.3)', 'rgb(186, 225, 255)'),
-        'Fararano (automne)': (3.5, 6, 'rgba(255, 186, 186, 0.3)', 'rgb(255, 186, 186)'),
-        'Ritinina (hiver)': (6.5, 9, 'rgba(186, 255, 201, 0.3)', 'rgb(186, 255, 201)'),
-        'Lohataona (été)': (9.5, 11.5, 'rgba(255, 223, 186, 0.3)', 'rgb(255, 223, 186)')
-    }
-
-    shapes = []
-    annotations = []
-
-    # Add season backgrounds to match the x-axis labels
-    for season, (start_month, end_month, color, text_color) in season_backgrounds.items():
-        if end_month < start_month:
-            shapes.append(dict(
-                type='rect',
-                x0=start_month - 1,
-                x1=11,  # Extend to December
-                y0=min_count - range_margin,
-                y1=max_count + range_margin,
-                fillcolor=color,
-                line=dict(width=0),
-                layer='below'
-            ))
-            shapes.append(dict(
-                type='rect',
-                x0=1 - 1,  # Start from January
-                x1=end_month - 0.5,
-                y0=min_count - range_margin,
-                y1=max_count + range_margin,
-                fillcolor=color,
-                line=dict(width=0),
-                layer='below'
-            ))
-        else:
-            shapes.append(dict(
-                type='rect',
-                x0=start_month - 1,
-                x1=end_month - 0.5,
-                y0=min_count - range_margin,
-                y1=max_count + range_margin,
-                fillcolor=color,
-                line=dict(width=0),
-                layer='below'
-            ))
-
-        # Add season text inside the colored rectangles
-        annotations.append(dict(
-            x=(start_month)/10  if end_month < start_month else (start_month + end_month-1 )/2 ,
-            y=min_count - range_margin,  # Position text inside the rectangle
-            text=season,
-            showarrow=False,
-            font=dict(size=15, color=text_color),
-            xanchor="center",
-            yanchor="bottom"
-        ))
-
-        
-
-    # Update layout to fit data and include the season text in rectangles
+    # Update layout to fit data
     fig.update_layout(
-        shapes=shapes,
-        annotations=annotations,
         xaxis=dict(
-            tickvals=months,
-            ticktext=month_names,
+            tickvals=months_present,
+            ticktext=month_names_present,
             title='Mois',
             type='category',
-            range=[-0.5, 12]  # Set x-axis range to fit all months
         ),
         yaxis=dict(
             title='Nombre de patients venus à IPM',
@@ -168,9 +103,6 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         width=7400,  # Increase figure width for better visibility
         legend_title='Légende'
     )
-
-    # Remove the seasons from the legend
-    fig.for_each_trace(lambda trace: trace.update(showlegend=False) if trace.name in season_backgrounds else None)
 
     # Show the plot in Streamlit
     st.plotly_chart(fig, use_container_width=True)
