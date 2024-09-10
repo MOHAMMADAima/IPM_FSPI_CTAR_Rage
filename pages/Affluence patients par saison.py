@@ -16,9 +16,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     ipm['vacc_vero_date'] = pd.to_datetime(ipm['vacc_vero_date'], errors='coerce')
 
     # Create the new date column with the required logic
-  #  ipm['new_date_column'] = ipm['vacc_sour_date'].combine_first(ipm['vacc_vero_date'])
     ipm['new_date_column'] = ipm['dat_consu'].fillna(ipm['vacc_vero_date']).fillna(ipm['vacc_sour_date'])
-    ipm['new_date_column'] = ipm['new_date_column'].dt.strftime('%Y-%m-%d')
+  #  ipm['new_date_column'] = ipm['new_date_column'].dt.strftime('%Y-%m-%d')
     ipm['new_date_column'] = pd.to_datetime(ipm['new_date_column'], format='%Y-%m-%d', errors='coerce')
 
     # Define a function to map dates to seasons
