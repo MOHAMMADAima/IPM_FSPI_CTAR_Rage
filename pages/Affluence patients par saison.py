@@ -12,14 +12,17 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))
 
     # Convert date columns
-    ipm['vacc_sour_date'] = pd.to_datetime(ipm['vacc_sour_date'], errors='coerce')
-    ipm['vacc_vero_date'] = pd.to_datetime(ipm['vacc_vero_date'], errors='coerce')
+   
+    ipm['dat_consu'] = pd.to_datetime(ipm['dat_consu'], format='%d/%m/%Y', errors='coerce')
+    ipm['vacc_vero_date'] = pd.to_datetime(ipm['vacc_vero_date'], format='%d/%m/%Y', errors='coerce')
+    ipm['vacc_sour_date'] = pd.to_datetime(ipm['vacc_sour_date'], format='%d/%m/%Y', errors='coerce')
+
 
     # Create the new date column with the required logic
     ipm['new_date_column'] = ipm['dat_consu'].fillna(ipm['vacc_vero_date']).fillna(ipm['vacc_sour_date'])
   #  ipm['new_date_column'] = ipm['new_date_column'].dt.strftime('%Y-%m-%d')
-    ipm['new_date_column'] = pd.to_datetime(ipm['new_date_column'], format='%d-%m-%Y', errors='coerce')
-    
+  #  ipm['new_date_column'] = pd.to_datetime(ipm['new_date_column'], format='%d-%m-%Y', errors='coerce')
+
 
     # Define a function to map dates to seasons
     def get_season(date):
