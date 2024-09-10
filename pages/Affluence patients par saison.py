@@ -55,8 +55,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     month_names_present = [month_names[m-1] for m in months_present]  # Map to month names
 
     # Determine the min and max count values for setting the y-axis range
-    min_count = monthly_counts['count'].min()
-    max_count = monthly_counts['count'].max()
+    min_count = monthly_counts['count'].min()  # Get the minimum count value
+    max_count = monthly_counts['count'].max()  # Get the maximum count value
     range_margin = (max_count - min_count) * 0.2  # Add some margin around the lines
 
     # Create a scatter plot with lines for each year using Plotly
