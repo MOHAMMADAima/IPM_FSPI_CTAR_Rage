@@ -78,7 +78,7 @@ def create_histogram(monthly_data):
 
 
 # Initialize the map centered on Madagascar
-m = folium.Map(location=[-18.8792, 47.5079], zoom_start=6)
+m = folium.Map(location=[-18.8792, 47.5079], zoom_start=4)
 
 # Add town markers with histogram popups
 for idx, row in df.iterrows():
