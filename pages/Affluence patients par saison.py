@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
+import numpy as np
 
 # Streamlit page
 st.title("Affluence des patients venus au CTAR IPM sur période saisonnière d'une année.")
@@ -60,27 +61,39 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Create a scatter plot with lines for each year and gender using Plotly
     fig = go.Figure()
 
-    # Use a color map to ensure unique colors for each year and sexe
-    color_map = px.colors.qualitative.Plotly  # A set of distinct colors
+    # Define gradient colors for each gender
+    color_gradients = {
+        'M': px.colors.sequential.Plasma,  # Gradient colors for males
+        'F': px.colors.sequential.Plasma[::-1]  # Gradient colors for females (inverted for differentiation)
+    }
 
     # Sort years in descending order to show recent years first
     years_sorted = sorted(monthly_sex_counts['year'].unique(), reverse=True)
 
     # Add scatter plot points for each year and sex (Male and Female)
     sexes = ['M', 'F']
-    for i, year in enumerate(years_sorted):
-        for j, sex in enumerate(sexes):
-            df_year_sex = monthly_sex_counts[(monthly_sex_counts['year'] == year) & (monthly_sex_counts['sexe'] == sex)]
+    for j, sex in enumerate(sexes):
+        df_sex = monthly_sex_counts[monthly_sex_counts['sexe'] == sex]
+        # Normalize year index for color gradient
+        year_indices = df_sex['year'].astype('category').cat.codes
+        
+        for i, year in enumerate(years_sorted):
+            df_year_sex = df_sex[df_sex['year'] == year]
             df_year_sex = df_year_sex.set_index('month').reindex(months).reset_index()
             df_year_sex['count'] = df_year_sex['count'].fillna(0)
+
+            # Define color based on the year
+            color = color_gradients[sex][int(np.interp(i, [0, len(years_sorted) - 1], [0, len(color_gradients[sex]) - 1]))]
+
+            # Add line trace with gradient color
             fig.add_trace(go.Scatter(
                 x=df_year_sex['month'],
                 y=df_year_sex['count'],
                 mode='lines+markers',
-                name=f"{(int(year))} - {'Homme' if sex == 'M' else 'Femme'}",  # Ensure year and sex are displayed
-                marker=dict(size=8, color=color_map[j % len(color_map)]),  # Ensure unique color
-                line=dict(width=2),
-                visible="legendonly" if year < 2021 else True  # Show only the first 4 years initially
+                name=f"{year} - {'Homme' if sex == 'M' else 'Femme'}",
+                marker=dict(size=8, color=color),
+                line=dict(width=2, color=color),
+                visible="legendonly" if year < 2021 else True
             ))
 
     # Define background colors for each season and corresponding text
