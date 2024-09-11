@@ -54,3 +54,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
+
+# Sidebar container with fixed width
+with st.sidebar.container():
+    st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")

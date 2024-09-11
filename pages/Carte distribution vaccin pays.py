@@ -99,3 +99,7 @@ for idx, row in df.iterrows():
 # Display the map in Streamlit
 st.title("Distribution mensuelle des vaccins VERORAB dans les CTARs de Madagascar.")
 folium_static(m)
+
+# Sidebar container with fixed width
+with st.sidebar.container():
+    st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
