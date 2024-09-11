@@ -82,7 +82,7 @@ m = folium.Map(location=[-18.8792, 47.5079], zoom_start=4)
 
 # Add town markers with histogram popups
 for idx, row in df.iterrows():
-    hist_img = create_histogram(row['Nombre de vaccins '])
+    hist_img = create_histogram(row['Nombre de vaccins'])
     html = f'<img src="data:image/png;base64,{hist_img}" style="width: 350px; height: 250px;">'
     iframe = folium.IFrame(html=html, width=500, height=300)
     popup = folium.Popup(iframe, max_width=400)
