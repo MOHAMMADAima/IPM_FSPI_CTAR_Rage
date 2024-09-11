@@ -50,20 +50,27 @@ df = pd.DataFrame.from_dict(towns_info_test, orient='index', columns=['Town', 'C
 df[['Latitude', 'Longitude']] = pd.DataFrame(df['Coordinates'].tolist(), index=df.index)
 
 def create_histogram(monthly_data, town_name):
-    fig, ax = plt.subplots(figsize=(27, 17))
+
+
+    # Update the figure size and font sizes for better readability
+    fig, ax = plt.subplots(figsize=(27, 17))  # Keeping this as is for a large, readable plot
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
 
-    # Adding title and labels
-    ax.set_title('Distribution vaccins mensuelle dans le CTAR', fontsize=16, weight='bold')
-    ax.set_xlabel('Months', fontsize=16)
-    ax.set_ylabel('Data Value', fontsize=16)
+    # Increase the title and label font sizes
+    ax.set_title('Distribution vaccins mensuelle dans le CTAR', fontsize=24, weight='bold')  # Increased from 16 to 24
+    ax.set_xlabel('Months', fontsize=20)  # Increased from 16 to 20
+    ax.set_ylabel('Data Value', fontsize=20)  # Increased from 16 to 20
 
-    # Adding a legend
-    ax.legend(loc='upper right', fontsize=14)
+    # Increase the legend font size
+    ax.legend(loc='upper right', fontsize=18)  # Increased from 14 to 18
+
+    # Increase tick label font sizes
+    ax.tick_params(axis='both', which='major', labelsize=18)  # Ensure that x and y tick labels are large enough
 
     # Adding grid lines for better readability
     ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+  
 
     # Save histogram to a base64 string
     buffer = BytesIO()
