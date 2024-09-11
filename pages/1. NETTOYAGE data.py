@@ -41,7 +41,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Button to clean 'age'
     if st.button('Nettoyer la colonne annee'):
-        ipm['annee'] = ipm['dat_consu'].dt.year.astype(int)
+        ipm['annee'] = ipm['dat_consu'].dt.year.format('%Y')
         st.success("Colonne 'annee' nettoyée avec succès.")
 
 
