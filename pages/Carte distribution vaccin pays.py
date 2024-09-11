@@ -51,19 +51,31 @@ df[['Latitude', 'Longitude']] = pd.DataFrame(df['Coordinates'].tolist(), index=d
 
 # Function to create a histogram and return it as a base64 encoded image
 def create_histogram(monthly_data):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 6))
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    ax.bar(months, monthly_data, color='#66b3ff')
+    ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
+
+    # Adding title and labels
+    ax.set_title('Monthly Data Distribution', fontsize=16, weight='bold')
+    ax.set_xlabel('Months', fontsize=12)
+    ax.set_ylabel('Data Value', fontsize=12)
+
+    # Adding a legend
+    ax.legend(loc='upper right', fontsize=10)
+
+    # Adding grid lines for better readability
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5)
 
     # Save histogram to a base64 string
     buffer = BytesIO()
-    plt.savefig(buffer, format='png')
+    plt.savefig(buffer, format='png', bbox_inches='tight')
     buffer.seek(0)
     img_str = base64.b64encode(buffer.read()).decode()
 
     plt.close(fig)
 
     return img_str
+
 
 # Initialize the map centered on Madagascar
 m = folium.Map(location=[-18.8792, 47.5079], zoom_start=6)
