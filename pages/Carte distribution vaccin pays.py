@@ -58,12 +58,12 @@ def create_histogram(monthly_data, town_name):
     ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
 
     # Increase the title and label font sizes
-    ax.set_title('Distribution vaccins mensuelle dans le CTAR', fontsize=24, weight='bold')  # Increased from 16 to 24
-    ax.set_xlabel('Months', fontsize=20)  # Increased from 16 to 20
-    ax.set_ylabel('Data Value', fontsize=20)  # Increased from 16 to 20
+    ax.set_title('Distribution mensuelle de vaccins dans le CTAR', fontsize=24, weight='bold')  # Increased from 16 to 24
+    ax.set_xlabel('Months', fontsize=30)  # Increased from 16 to 20
+    ax.set_ylabel('Data Value', fontsize=30)  # Increased from 16 to 20
 
     # Increase the legend font size
-    ax.legend(loc='upper right', fontsize=18)  # Increased from 14 to 18
+    ax.legend(loc='upper right', fontsize=38)  # Increased from 14 to 18
 
     # Increase tick label font sizes
     ax.tick_params(axis='both', which='major', labelsize=18)  # Ensure that x and y tick labels are large enough
