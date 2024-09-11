@@ -56,9 +56,9 @@ def create_histogram(monthly_data):
     ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
 
     # Adding title and labels
-    ax.set_title('Monthly Data Distribution', fontsize=16, weight='bold')
-    ax.set_xlabel('Months', fontsize=12)
-    ax.set_ylabel('Data Value', fontsize=12)
+    ax.set_title('Distribution mentuelle de vaccins dans le CTAR', fontsize=16, weight='bold')
+    ax.set_xlabel('Mois', fontsize=12)
+    ax.set_ylabel('Nombre de vaccins', fontsize=12)
 
     # Adding a legend
     ax.legend(loc='upper right', fontsize=10)
@@ -82,7 +82,7 @@ m = folium.Map(location=[-18.8792, 47.5079], zoom_start=6)
 
 # Add town markers with histogram popups
 for idx, row in df.iterrows():
-    hist_img = create_histogram(row['Monthly Data'])
+    hist_img = create_histogram(row['Nombre de vaccins '])
     html = f'<img src="data:image/png;base64,{hist_img}" style="width: 350px; height: 250px;">'
     iframe = folium.IFrame(html=html, width=500, height=300)
     popup = folium.Popup(iframe, max_width=400)
@@ -91,5 +91,5 @@ for idx, row in df.iterrows():
                   popup=popup, tooltip=row['Town']).add_to(m)
 
 # Display the map in Streamlit
-st.title("Madagascar Towns Map with Monthly Data Histograms")
+st.title("Distribution mensuelles des vaccins dans les CTARs de Madagascar.")
 folium_static(m)
