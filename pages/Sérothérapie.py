@@ -9,12 +9,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Get the first dataframe uploaded
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))
 
-    # Convert the 'new_date_column' to datetime if not already done
-    if not pd.api.types.is_datetime64_any_dtype(ipm['new_date_column']):
-        ipm['new_date_column'] = pd.to_datetime(ipm['new_date_column'], errors='coerce')
+
 
     # Create new columns for year and age groups
-    ipm['year'] = ipm['new_date_column'].dt.year
+    ipm['year'] = ipm['date_consu'].dt.year
     ipm['age_group'] = (ipm['age'] // 5) * 5  # Grouping ages by 5-year intervals
 
     # Group the data by 'year', 'age_group', and 'serother' and count occurrences
