@@ -12,7 +12,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
 
     # Create new columns for year and age groups
-    ipm['year'] = ipm['date_consu'].dt.year
+    ipm['year'] = ipm['dat_consu'].dt.year
     ipm['age_group'] = (ipm['age'] // 5) * 5  # Grouping ages by 5-year intervals
 
     # Group the data by 'year', 'age_group', and 'serother' and count occurrences
