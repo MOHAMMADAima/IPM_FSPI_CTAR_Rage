@@ -87,17 +87,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
             ))
 
-            # Add annotation for the year in the middle of the line
-            mid_point_index = len(df_year_sex) // 2
-            mid_point = df_year_sex.iloc[mid_point_index]
+            # Add annotation close to the last point of the line
+            last_point = df_year_sex.iloc[-1]
             annotations.append(dict(
-                x=mid_point['month'],
-                y=mid_point['count'],
+                x=last_point['month'],
+                y=last_point['count'],
                 text=str(year),
-                showarrow=True,
-                arrowhead=2,
+                showarrow=False,
                 font=dict(size=12, color=color_map[j % len(color_map)]),
-                xanchor='center',
+                xanchor='left',
                 yanchor='bottom'
             ))
 
