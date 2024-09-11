@@ -1,41 +1,42 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 
 # Streamlit page
-st.title("Comptage des valeurs de 'serother' par année et groupe d'âge")
+st.title("Counts of 'OUI' and 'NON' in Serotherapy by Year and Age Group")
 
 # Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Get the first dataframe uploaded
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))
 
+    # Filter the data for ages between 0 and 100
+    ipm = ipm[(ipm['age'] >= 0) & (ipm['age'] <= 100)]
 
+    # Group age into intervals of 5 years
+    age_bins = list(range(0, 105, 5))
+    age_labels = [f"{i}-{i+4}" for i in age_bins[:-1]]
+    ipm['age_group'] = pd.cut(ipm['age'], bins=age_bins, labels=age_labels, right=False)
 
-    # Create new columns for year and age groups
-    ipm['year'] = ipm['dat_consu'].dt.year
-    ipm['age_group'] = (ipm['age'] // 5) * 5  # Grouping ages by 5-year intervals
+    # Group by year, age group, and serother to count 'OUI' and 'NON'
+    counts = ipm.groupby(['year', 'age_group', 'serother']).size().reset_index(name='count')
 
-    # Group the data by 'year', 'age_group', and 'serother' and count occurrences
-    count_df = ipm.groupby(['year', 'age_group', 'serother']).size().reset_index(name='count')
+    # Pivot the data for better visualization
+    counts_pivot = counts.pivot_table(index=['year', 'age_group'], columns='serother', values='count', fill_value=0).reset_index()
 
-    # Pivot the dataframe for easier plotting
-    pivot_df = count_df.pivot_table(index=['year', 'age_group'], columns='serother', values='count', fill_value=0).reset_index()
+    # Plot the data using Plotly
+    fig = px.bar(
+        counts_pivot,
+        x='year',
+        y=['OUI', 'NON'],
+        color='age_group',
+        barmode='group',
+        title="Counts of 'OUI' and 'NON' in Serotherapy by Year and Age Group",
+        labels={'value': 'Count', 'year': 'Year', 'variable': 'Serotherapy'},
+    )
 
-    # Display the dataframe
-    st.dataframe(pivot_df)
-
-    # Plotting the counts
-    st.subheader("Graphique du comptage des valeurs 'OUI' et 'NON' par année et groupe d'âge")
-
-    for age_group in sorted(pivot_df['age_group'].unique()):
-        df_group = pivot_df[pivot_df['age_group'] == age_group]
-        st.write(f"Groupe d'âge: {age_group}-{age_group + 4} ans")
-
-        st.bar_chart(df_group.set_index('year')[['OUI', 'NON']])
+    # Show the plot in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
 else:
     st.warning("Veuillez d'abord télécharger les fichiers CSV sur la page d'accueil.")
-
-# Sidebar container with fixed width
-with st.sidebar.container():
-    st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
