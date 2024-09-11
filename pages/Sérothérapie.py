@@ -19,6 +19,9 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
+        # gardzr que serotherapie décision a été faite
+        df=df.dropna(['serother'])
+
         # Define age bins and labels with specific bins for 90-99 and 100+
         age_bins = [0, 18, 30, 40, 50, 60, 70, 80, 90, 100, float('inf')]
         age_labels = ['0-17', '18-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-89', '90-99', '100+']
