@@ -82,7 +82,7 @@ m = folium.Map(location=[-18.8792, 47.5079], zoom_start=5)
 for idx, row in df.iterrows():
     hist_img = create_histogram(row['Monthly Data'], row['Town'])
     html = f'<h4 style="text-align: center;">{row["Town"]}</h4><img src="data:image/png;base64,{hist_img}" style="width: 350px; height: 250px;">'
-    iframe = folium.IFrame(html=html, width=500, height=350)
+    iframe = folium.IFrame(html=html, width=700, height=550)
     popup = folium.Popup(iframe, max_width=400)
 
     folium.Marker(location=[row['Latitude'], row['Longitude']],
