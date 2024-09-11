@@ -50,7 +50,7 @@ df = pd.DataFrame.from_dict(towns_info_test, orient='index', columns=['Town', 'C
 df[['Latitude', 'Longitude']] = pd.DataFrame(df['Coordinates'].tolist(), index=df.index)
 
 def create_histogram(monthly_data, town_name):
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(20, 17))
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
 
@@ -76,7 +76,7 @@ def create_histogram(monthly_data, town_name):
     return img_str
 
 # Initialize the map centered on Madagascar
-m = folium.Map(location=[-18.8792, 47.5079], zoom_start=6)
+m = folium.Map(location=[-18.8792, 47.5079], zoom_start=4)
 
 # Add town markers with histogram popups and town names
 for idx, row in df.iterrows():
