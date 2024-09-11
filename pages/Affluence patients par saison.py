@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.colors as pc
 
 # Streamlit page
-st.title("Affluence des patients venus au CTAR IPM sur période saisonnière d'une année.")
+st.title("Affluence des patients (H/F) venus au CTAR IPM sur période saisonnière d'une année.")
 
 # Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
