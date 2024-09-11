@@ -20,7 +20,7 @@ if 'dataframes' in st.session_state:
         df = dataframes[selected_file]
 
         # gardzr que serotherapie décision a été faite
-        df=df.dropna(['serother'])
+        df=df[df['serother'].notna()]
 
         # Define age bins and labels with specific bins for 90-99 and 100+
         age_bins = [0, 18, 30, 40, 50, 60, 70, 80, 90, 100, float('inf')]
