@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # Streamlit page
-st.title("Counts of 'OUI' in Serotherapy by Year and Age Group")
+st.title("Nombre de sérothérapie prescrite par tranche d'âge et année.")
 
 # Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
@@ -45,7 +45,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         color='age_group',
         color_discrete_map=color_map,
         barmode='group',
-        title="Counts of 'OUI' in Serotherapy by Year and Age Group",
+        title="Nombre de sérothérapie prescrite par tranche d'âge et année.",
         labels={'count': 'Count', 'year': 'Year', 'age_group': 'Age Group'},
     )
 

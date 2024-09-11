@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # Streamlit page
-st.title("Nombre de cas selon la valeur de 'serother' par année")
+st.title("Sérothérapie prescrite par le CTAR.")
 
 # Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
@@ -25,8 +25,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         x='year',
         y='count',
         color='serother',
-        labels={'year': 'Année', 'count': 'Nombre de cas', 'serother': 'Valeur de serother'},
-        title="Nombre de cas avec 'OUI' et 'NON' dans la colonne 'serother' par année",
+        labels={'year': 'Année', 'count': 'Nombre de patients', 'serother': 'Serotherapie prescrite'},
+        title="Nombre de cas avec sérothérapie prescrite par année au CTAR IPM",
         barmode='group'
     )
 
