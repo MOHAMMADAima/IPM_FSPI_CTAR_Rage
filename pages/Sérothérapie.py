@@ -32,12 +32,18 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Pivot the data for better visualization
     counts_pivot = counts.pivot_table(index=['year', 'age_group'], values='count', fill_value=0).reset_index()
 
+    # Generate a list of unique colors for each age group
+    unique_age_groups = counts_pivot['age_group'].unique()
+    colors = px.colors.qualitative.Plotly  # You can use other color scales if you prefer
+    color_map = dict(zip(unique_age_groups, colors))
+
     # Plot the data using Plotly
     fig = px.bar(
         counts_pivot,
         x='year',
         y='count',
         color='age_group',
+        color_discrete_map=color_map,
         barmode='group',
         title="Counts of 'OUI' in Serotherapy by Year and Age Group",
         labels={'count': 'Count', 'year': 'Year', 'age_group': 'Age Group'},
