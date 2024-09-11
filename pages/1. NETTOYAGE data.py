@@ -43,7 +43,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     if st.button('Nettoyer la colonne annee'):
         ipm['annee'] = ipm['dat_consu'].dt.year
         # Fill NaN values with a default value (e.g., 0) or you can choose a different approach
-        ipm['annee'] = ipm['annee'].fillna(0).astype(int)
+        ipm['annee'] = ipm['annee'].fillna(0).astype(str)
         st.success("Colonne 'annee' nettoyée avec succès.")
 
     # Display cleaned data
