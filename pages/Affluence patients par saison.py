@@ -62,8 +62,8 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     fig = go.Figure()
 
     # Define color scales for male and female
-    male_colors = pc.sequential.Blues  # Shades of blue
-    female_colors = pc.sequential.Purples  # Shades of pink
+    male_colors = pc.sequential.Blues[::-1]  # Shades of blue
+    female_colors = pc.sequential.Purples[::-1]  # Shades of pink
 
     # Sort years in descending order to show recent years first
     years_sorted = sorted(monthly_sex_counts['year'].unique(), reverse=True)
