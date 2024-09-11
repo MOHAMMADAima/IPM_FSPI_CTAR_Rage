@@ -12,6 +12,11 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
     # Filter the data for ages between 0 and 100
     ipm = ipm[(ipm['age'] >= 0) & (ipm['age'] <= 100)]
+    # Convert the date column if not already converted
+    ipm['dat_consu'] = pd.to_datetime(ipm['dat_consu'], format='%d/%m/%Y', errors='coerce')
+
+    # Extract the year from the date column
+    ipm['year'] = ipm['dat_consu'].dt.year
 
     # Group age into intervals of 5 years
     age_bins = list(range(0, 105, 5))
