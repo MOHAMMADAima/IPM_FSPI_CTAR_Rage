@@ -49,16 +49,15 @@ towns_info_test = {
 df = pd.DataFrame.from_dict(towns_info_test, orient='index', columns=['Town', 'Coordinates', 'Monthly Data'])
 df[['Latitude', 'Longitude']] = pd.DataFrame(df['Coordinates'].tolist(), index=df.index)
 
-# Function to create a histogram and return it as a base64 encoded image
-def create_histogram(monthly_data):
-    fig, ax = plt.subplots(figsize=(15, 13))
+def create_histogram(monthly_data, town_name):
+    fig, ax = plt.subplots(figsize=(8, 6))
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
 
     # Adding title and labels
-    ax.set_title('Distribution mentuelle de vaccins dans le CTAR', fontsize=16, weight='bold')
-    ax.set_xlabel('Mois', fontsize=12)
-    ax.set_ylabel('Nombre de vaccins', fontsize=12)
+    ax.set_title('Distribution vaccins mensuelle dans le CTAR', fontsize=16, weight='bold')
+    ax.set_xlabel('Months', fontsize=12)
+    ax.set_ylabel('Data Value', fontsize=12)
 
     # Adding a legend
     ax.legend(loc='upper right', fontsize=10)
@@ -76,19 +75,19 @@ def create_histogram(monthly_data):
 
     return img_str
 
-
 # Initialize the map centered on Madagascar
-m = folium.Map(location=[-18.8792, 47.5079], zoom_start=4)
+m = folium.Map(location=[-18.8792, 47.5079], zoom_start=6)
 
-# Add town markers with histogram popups
+# Add town markers with histogram popups and town names
 for idx, row in df.iterrows():
-    hist_img = create_histogram(row['Nombre de vaccins'])
-    html = f'<img src="data:image/png;base64,{hist_img}" style="width: 350px; height: 250px;">'
-    iframe = folium.IFrame(html=html, width=500, height=300)
+    hist_img = create_histogram(row['Monthly Data'], row['Town'])
+    html = f'<h4 style="text-align: center;">{row["Town"]}</h4><img src="data:image/png;base64,{hist_img}" style="width: 350px; height: 250px;">'
+    iframe = folium.IFrame(html=html, width=500, height=350)
     popup = folium.Popup(iframe, max_width=400)
 
     folium.Marker(location=[row['Latitude'], row['Longitude']],
                   popup=popup, tooltip=row['Town']).add_to(m)
+
 
 # Display the map in Streamlit
 st.title("Distribution mensuelles des vaccins dans les CTARs de Madagascar.")
