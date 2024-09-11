@@ -66,10 +66,6 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Sort years in descending order to show recent years first
     years_sorted = sorted(monthly_sex_counts['year'].unique(), reverse=True)
 
-    # Initialize lists for annotations and traces
-    annotations = []
-    traces = []
-
     # Add scatter plot points for each year and sex (Male and Female)
     sexes = ['M', 'F']
     for i, year in enumerate(years_sorted):
@@ -77,32 +73,15 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             df_year_sex = monthly_sex_counts[(monthly_sex_counts['year'] == year) & (monthly_sex_counts['sexe'] == sex)]
             df_year_sex = df_year_sex.set_index('month').reindex(months).reset_index()
             df_year_sex['count'] = df_year_sex['count'].fillna(0)
-            trace_name = f"{int(year)} - {'Homme' if sex == 'M' else 'Femme'}"
-            trace = go.Scatter(
+            fig.add_trace(go.Scatter(
                 x=df_year_sex['month'],
                 y=df_year_sex['count'],
                 mode='lines+markers',
-                name=trace_name,  # Ensure year and sex are displayed
+                name=f"{(year)} - {'Homme' if sex == 'M' else 'Femme'}",  # Ensure year and sex are displayed
                 marker=dict(size=8, color=color_map[j % len(color_map)]),  # Ensure unique color
                 line=dict(width=2),
                 visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
-            )
-            traces.append(trace)
-            fig.add_trace(trace)
-
-            # Add annotations only if trace is visible
-            if trace.visible == True:
-                last_point = df_year_sex.iloc[-1]
-                annotations.append(dict(
-                    x=last_point['month'],
-                    y=last_point['count'],
-                    text=f"{trace_name}",
-                    showarrow=True,
-                    arrowhead=2,
-                    ax=0,
-                    ay=-40,
-                    font=dict(size=12, color=color_map[j % len(color_map)])
-                ))
+            ))
 
     # Define background colors for each season and corresponding text
     season_backgrounds = {
@@ -113,6 +92,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     }
 
     shapes = []
+    annotations = []
 
     # Add season backgrounds to match the x-axis labels
     for season, (start_month, end_month, color, text_color) in season_backgrounds.items():
@@ -148,6 +128,17 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 line=dict(width=0),
                 layer='below'
             ))
+
+        # Add season text inside the colored rectangles
+        annotations.append(dict(
+            x=(start_month) / 10 if end_month < start_month else (start_month + end_month - 1) / 2,
+            y=min_count - range_margin,  # Position text inside the rectangle
+            text=season,
+            showarrow=False,
+            font=dict(size=15, color=text_color),
+            xanchor="center",
+            yanchor="bottom"
+        ))
 
     # Update layout to fit data and include the season text in rectangles
     fig.update_layout(
