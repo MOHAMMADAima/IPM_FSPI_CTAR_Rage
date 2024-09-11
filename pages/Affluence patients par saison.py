@@ -1,4 +1,3 @@
-# Graph.py
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -6,22 +5,22 @@ import plotly.express as px
 
 # Streamlit page
 st.title("Affluence des patients venus au CTAR IPM sur période saisonnière d'une année.")
-# k if any dataframes have been uploaded in the session state
+
+# Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Get the first dataframe uploaded
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))
 
     # Convert date columns
-   
     ipm['dat_consu'] = pd.to_datetime(ipm['dat_consu'], format='%d/%m/%Y', errors='coerce')
     ipm['vacc_vero_date'] = pd.to_datetime(ipm['vacc_vero_date'], format='%d/%m/%Y', errors='coerce')
     ipm['vacc_sour_date'] = pd.to_datetime(ipm['vacc_sour_date'], format='%d/%m/%Y', errors='coerce')
 
-
     # Create the new date column with the required logic
     ipm['new_date_column'] = ipm['dat_consu'].fillna(ipm['vacc_vero_date']).fillna(ipm['vacc_sour_date'])
 
-
+    # Fill missing values in 'sexe' column
+    ipm['sexe'] = ipm.groupby('ref_mordu')['sexe'].transform(lambda x: x.ffill().bfill())
 
     # Define a function to map dates to seasons
     def get_season(date):
@@ -43,46 +42,46 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     ipm['month'] = ipm['new_date_column'].dt.month
     ipm['year'] = ipm['new_date_column'].dt.year
 
-    # Group by month and year, and count the number of lines in each group
-    monthly_counts = ipm.groupby(['month', 'year']).size().reset_index(name='count')
-
-    # Aggregate counts across years for each month
-    monthly_counts_all_years = ipm.groupby(['month']).size().reset_index(name='count')
+    # Group by month, year, and sexe to count the number of patients for each sex
+    monthly_sex_counts = ipm.groupby(['month', 'year', 'sexe']).size().reset_index(name='count')
 
     # Define the month order for consistent x-axis labeling (January to December)
     months = list(range(1, 13))  # January to December
     month_names = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
         'Sep', 'Oct', 'Nov', 'Dec'
     ]
 
     # Determine the min and max count values for setting the y-axis range
-    min_count = monthly_counts['count'].min()
-    max_count = monthly_counts['count'].max()
+    min_count = monthly_sex_counts['count'].min()
+    max_count = monthly_sex_counts['count'].max()
     range_margin = (max_count - min_count) * 0.2  # Add some margin around the lines
 
-    # Create a scatter plot with lines for each year using Plotly
+    # Create a scatter plot with lines for each year and gender using Plotly
     fig = go.Figure()
 
-    # Use a color map to ensure unique colors for each year
+    # Use a color map to ensure unique colors for each year and sexe
     color_map = px.colors.qualitative.Plotly  # A set of distinct colors
 
     # Sort years in descending order to show recent years first
-    years_sorted = sorted(monthly_counts['year'].unique(), reverse=True)
+    years_sorted = sorted(monthly_sex_counts['year'].unique(), reverse=True)
 
-    # Add scatter plot points for each year
+    # Add scatter plot points for each year and sex (Male and Female)
+    sexes = ['M', 'F']
     for i, year in enumerate(years_sorted):
-        df_year = monthly_counts[monthly_counts['year'] == year].set_index('month').reindex(months).reset_index()
-        df_year['count'] = df_year['count'].fillna(0)
-        fig.add_trace(go.Scatter(
-            x=df_year['month'],
-            y=df_year['count'],
-            mode='lines+markers',
-            name=int(year),  # Ensure year is displayed as integer
-            marker=dict(size=8, color=color_map[i % len(color_map)]),  # Ensure unique color
-            line=dict(width=2),
-            visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
-        ))
+        for j, sex in enumerate(sexes):
+            df_year_sex = monthly_sex_counts[(monthly_sex_counts['year'] == year) & (monthly_sex_counts['sexe'] == sex)]
+            df_year_sex = df_year_sex.set_index('month').reindex(months).reset_index()
+            df_year_sex['count'] = df_year_sex['count'].fillna(0)
+            fig.add_trace(go.Scatter(
+                x=df_year_sex['month'],
+                y=df_year_sex['count'],
+                mode='lines+markers',
+                name=f"{year} - {'Homme' if sex == 'M' else 'Femme'}",  # Ensure year and sex are displayed
+                marker=dict(size=8, color=color_map[j % len(color_map)]),  # Ensure unique color
+                line=dict(width=2),
+                visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
+            ))
 
     # Define background colors for each season and corresponding text
     season_backgrounds = {
@@ -132,7 +131,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
 
         # Add season text inside the colored rectangles
         annotations.append(dict(
-            x=(start_month)/10  if end_month < start_month else (start_month + end_month-1 )/2 ,
+            x=(start_month) / 10 if end_month < start_month else (start_month + end_month - 1) / 2,
             y=min_count - range_margin,  # Position text inside the rectangle
             text=season,
             showarrow=False,
@@ -140,8 +139,6 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             xanchor="center",
             yanchor="bottom"
         ))
-
-        
 
     # Update layout to fit data and include the season text in rectangles
     fig.update_layout(
