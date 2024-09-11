@@ -29,7 +29,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         ipm['sexe'] = ipm.groupby('ref_mordu')['sexe'].transform(lambda x: x.ffill().bfill())
         st.success("Colonne 'sexe' nettoyée avec succès.")
 
-     # Button to clean 'nom'
+    # Button to clean 'nom'
     if st.button('Nettoyer la colonne nom'):
         ipm['nom'] = ipm.groupby('ref_mordu')['nom'].transform(lambda x: x.ffill().bfill())
         st.success("Colonne 'nom' nettoyée avec succès.")
@@ -39,11 +39,12 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
         ipm['age'] = ipm.groupby('ref_mordu')['age'].transform(lambda x: x.ffill().bfill())
         st.success("Colonne 'age' nettoyée avec succès.")
 
-    # Button to clean 'age'
+    # Button to clean 'annee'
     if st.button('Nettoyer la colonne annee'):
-        ipm['annee'] = ipm['dat_consu'].dt.year.format('%Y')
+        ipm['annee'] = ipm['dat_consu'].dt.year
+        # Ensure that the 'annee' column is in integer format
+        ipm['annee'] = ipm['annee'].astype(int)
         st.success("Colonne 'annee' nettoyée avec succès.")
-
 
     # Display cleaned data
     st.header(f"Contenu du fichier après nettoyage: {list(ipm.keys())[0]}")
