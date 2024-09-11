@@ -51,7 +51,7 @@ df[['Latitude', 'Longitude']] = pd.DataFrame(df['Coordinates'].tolist(), index=d
 
 # Function to create a histogram and return it as a base64 encoded image
 def create_histogram(monthly_data):
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(15, 13))
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
 
