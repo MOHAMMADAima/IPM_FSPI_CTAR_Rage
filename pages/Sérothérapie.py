@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # Streamlit page
-st.title("Counts of 'OUI' and 'NON' in Serotherapy by Year and Age Group")
+st.title("Counts of 'OUI' in Serotherapy by Year and Age Group")
 
 # Check if any dataframes have been uploaded in the session state
 if 'dataframes' in st.session_state and st.session_state['dataframes']:
@@ -23,21 +23,24 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     age_labels = [f"{i}-{i+4}" for i in age_bins[:-1]]
     ipm['age_group'] = pd.cut(ipm['age'], bins=age_bins, labels=age_labels, right=False)
 
-    # Group by year, age group, and serother to count 'OUI' and 'NON'
-    counts = ipm.groupby(['year', 'age_group', 'serother']).size().reset_index(name='count')
+    # Filter for 'OUI' values in the serother column
+    ipm_oui = ipm[ipm['serother'] == 'OUI']
+
+    # Group by year and age group to count 'OUI'
+    counts = ipm_oui.groupby(['year', 'age_group']).size().reset_index(name='count')
 
     # Pivot the data for better visualization
-    counts_pivot = counts.pivot_table(index=['year', 'age_group'], columns='serother', values='count', fill_value=0).reset_index()
+    counts_pivot = counts.pivot_table(index=['year', 'age_group'], values='count', fill_value=0).reset_index()
 
     # Plot the data using Plotly
     fig = px.bar(
         counts_pivot,
         x='year',
-        y=['OUI', 'NON'],
+        y='count',
         color='age_group',
         barmode='group',
-        title="Counts of 'OUI' and 'NON' in Serotherapy by Year and Age Group",
-        labels={'value': 'Count', 'year': 'Year', 'variable': 'Serotherapy'},
+        title="Counts of 'OUI' in Serotherapy by Year and Age Group",
+        labels={'count': 'Count', 'year': 'Year', 'age_group': 'Age Group'},
     )
 
     # Show the plot in Streamlit
