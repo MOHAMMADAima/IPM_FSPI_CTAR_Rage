@@ -56,11 +56,11 @@ def create_histogram(monthly_data, town_name):
 
     # Adding title and labels
     ax.set_title('Distribution vaccins mensuelle dans le CTAR', fontsize=16, weight='bold')
-    ax.set_xlabel('Months', fontsize=12)
-    ax.set_ylabel('Data Value', fontsize=12)
+    ax.set_xlabel('Months', fontsize=16)
+    ax.set_ylabel('Data Value', fontsize=16)
 
     # Adding a legend
-    ax.legend(loc='upper right', fontsize=10)
+    ax.legend(loc='upper right', fontsize=14)
 
     # Adding grid lines for better readability
     ax.grid(True, which='both', linestyle='--', linewidth=0.5)
