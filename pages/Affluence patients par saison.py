@@ -77,10 +77,10 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 x=df_year_sex['month'],
                 y=df_year_sex['count'],
                 mode='lines+markers',
-                name=f"{(year)} - {'Homme' if sex == 'M' else 'Femme'}",  # Ensure year and sex are displayed
+                name=f"{(int(year))} - {'Homme' if sex == 'M' else 'Femme'}",  # Ensure year and sex are displayed
                 marker=dict(size=8, color=color_map[j % len(color_map)]),  # Ensure unique color
                 line=dict(width=2),
-                visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
+                visible="legendonly" if year < 2021 else True  # Show only the first 4 years initially
             ))
 
     # Define background colors for each season and corresponding text
