@@ -90,5 +90,5 @@ for idx, row in df.iterrows():
 
 
 # Display the map in Streamlit
-st.title("Distribution mensuelles des vaccins dans les CTARs de Madagascar.")
+st.title("Distribution mensuelle des vaccins VERORAB dans les CTARs de Madagascar.")
 folium_static(m)
