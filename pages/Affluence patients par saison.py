@@ -87,17 +87,24 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
             ))
 
-            # Add annotation close to the last point of the line
-            last_point = df_year_sex.iloc[-1]
-            annotations.append(dict(
-                x=last_point['month'],
-                y=last_point['count'],
-                text=str(year),
-                showarrow=False,
-                font=dict(size=12, color=color_map[j % len(color_map)]),
-                xanchor='left',
-                yanchor='bottom'
-            ))
+            # Add annotation for the year in the middle of the line if the line is visible
+            if "legendonly" not in fig.data[-1].visible:
+                mid_point_index = len(df_year_sex) // 2
+                mid_point = df_year_sex.iloc[mid_point_index]
+                # Ensure annotations don't overlap
+                y_offset = 0
+                while any(abs(mid_point['count'] - ann['y']) < 5 for ann in annotations):
+                    y_offset += 5
+                annotations.append(dict(
+                    x=mid_point['month'],
+                    y=mid_point['count'] + y_offset,
+                    text=str(year),
+                    showarrow=True,
+                    arrowhead=2,
+                    font=dict(size=12, color=color_map[j % len(color_map)]),
+                    xanchor='center',
+                    yanchor='bottom'
+                ))
 
     # Define background colors for each season and corresponding text
     season_backgrounds = {
