@@ -50,7 +50,7 @@ df = pd.DataFrame.from_dict(towns_info_test, orient='index', columns=['Town', 'C
 df[['Latitude', 'Longitude']] = pd.DataFrame(df['Coordinates'].tolist(), index=df.index)
 
 def create_histogram(monthly_data, town_name):
-    fig, ax = plt.subplots(figsize=(20, 17))
+    fig, ax = plt.subplots(figsize=(27, 17))
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     ax.bar(months, monthly_data, color='#66b3ff', label='Monthly Data')
 
