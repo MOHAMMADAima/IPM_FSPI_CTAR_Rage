@@ -66,8 +66,9 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
     # Sort years in descending order to show recent years first
     years_sorted = sorted(monthly_sex_counts['year'].unique(), reverse=True)
 
-    # Initialize list for annotations
+    # Initialize lists for annotations and traces
     annotations = []
+    traces = []
 
     # Add scatter plot points for each year and sex (Male and Female)
     sexes = ['M', 'F']
@@ -77,7 +78,7 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
             df_year_sex = df_year_sex.set_index('month').reindex(months).reset_index()
             df_year_sex['count'] = df_year_sex['count'].fillna(0)
             trace_name = f"{int(year)} - {'Homme' if sex == 'M' else 'Femme'}"
-            fig.add_trace(go.Scatter(
+            trace = go.Scatter(
                 x=df_year_sex['month'],
                 y=df_year_sex['count'],
                 mode='lines+markers',
@@ -85,20 +86,23 @@ if 'dataframes' in st.session_state and st.session_state['dataframes']:
                 marker=dict(size=8, color=color_map[j % len(color_map)]),  # Ensure unique color
                 line=dict(width=2),
                 visible="legendonly" if year < 2020 else True  # Show only the first 5 years initially
-            ))
+            )
+            traces.append(trace)
+            fig.add_trace(trace)
 
-            # Add annotations at the end of each line
-            last_point = df_year_sex.iloc[-1]
-            annotations.append(dict(
-                x=last_point['month'],
-                y=last_point['count'],
-                text=f"{trace_name}",
-                showarrow=True,
-                arrowhead=2,
-                ax=0,
-                ay=-40,
-                font=dict(size=12, color=color_map[j % len(color_map)])
-            ))
+            # Add annotations only if trace is visible
+            if trace.visible == True:
+                last_point = df_year_sex.iloc[-1]
+                annotations.append(dict(
+                    x=last_point['month'],
+                    y=last_point['count'],
+                    text=f"{trace_name}",
+                    showarrow=True,
+                    arrowhead=2,
+                    ax=0,
+                    ay=-40,
+                    font=dict(size=12, color=color_map[j % len(color_map)])
+                ))
 
     # Define background colors for each season and corresponding text
     season_backgrounds = {
