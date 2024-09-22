@@ -89,7 +89,7 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            fig = create_double_pie_chart(filtered_df, 'espece', 'count', 'caracteristique', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
+            fig = create_double_pie_chart(filtered_df, 'espece', 'count', 'dev_carac', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
             st.plotly_chart(fig)
 
             # Get unique animals excluding NaN
@@ -103,12 +103,12 @@ if 'dataframes' in st.session_state:
                 df_animal = filtered_df[filtered_df['espece'] == selected_animal]
                 
                 # Count occurrences of each typeanimal for the selected animal
-                typeanimal_counts = df_animal['caracteristique'].value_counts().reset_index()
-                typeanimal_counts.columns = ['caracteristique', 'count']
+                typeanimal_counts = df_animal['dev_carac'].value_counts().reset_index()
+                typeanimal_counts.columns = ['dev_carac', 'count']
 
                 # Create the pie chart for the selected animal's typeanimal
                 fig_animal = go.Figure(go.Pie(
-                    labels=typeanimal_counts['caracteristique'],
+                    labels=typeanimal_counts['dev_carac'],
                     values=typeanimal_counts['count'],
                     name=selected_animal,
                     textinfo='label+percent',
