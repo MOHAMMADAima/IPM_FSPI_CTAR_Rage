@@ -38,10 +38,6 @@ if 'dataframes' in st.session_state:
 
             # Identify top 4 categories
             top_counts = counts.nlargest(4, 'percentage')
-            top_labels = top_counts[label_col].tolist()
-
-            # Create a list for the legend visibility
-            showlegend = [label in top_labels for label in counts[label_col]]
 
             # Create the donut chart
             fig = go.Figure(go.Pie(
@@ -51,8 +47,7 @@ if 'dataframes' in st.session_state:
                 textinfo='label+percent',  # Show label and percentage
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
-                pull=[0] * len(counts),  # No pull for separation
-                showlegend=showlegend  # Control legend visibility
+                pull=[0] * len(counts)  # No pull for separation
             ))
 
             # Add custom annotations for the top 4 categories
@@ -72,11 +67,10 @@ if 'dataframes' in st.session_state:
                 margin=dict(t=210, l=90, r=50, b=40),  # Adjust margins
                 height=700,  # Adjust height for visibility
                 width=900,
-                showlegend=True,  # Show the legend
+                showlegend=True,
             )
 
             return fig
-
 
         # Function to create a pie chart
         def create_pie_chart(df, label_col, count_col, title):
