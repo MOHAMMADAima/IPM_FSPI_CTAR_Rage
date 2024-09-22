@@ -28,50 +28,6 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
-        # Function to create a donut chart
-        def create_donut_chart(df, label_col, count_col, title):
-            counts = df[label_col].value_counts().reset_index()
-            counts.columns = [label_col, count_col]
-
-            # Calculate percentages
-            counts['percentage'] = counts[count_col] / counts[count_col].sum() * 100
-
-            # Identify top 4 categories
-            top_counts = counts.nlargest(4, 'percentage')
-
-            # Create the donut chart
-            fig = go.Figure(go.Pie(
-                labels=counts[label_col],
-                values=counts[count_col],
-                hole=0.6,
-                textinfo='label+percent',  # Show label and percentage
-                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
-                direction='clockwise',
-                pull=[0] * len(counts)  # No pull for separation
-            ))
-
-            # Add custom annotations for the top 4 categories
-            for index, row in top_counts.iterrows():
-                fig.add_annotation(
-                    text=f"{row[label_col]}: {row['percentage']:.2f}%",
-                    x=0.5,  # Centered horizontally
-                    y=1.5 + (index * 0.1 - 0.15),  # Adjust vertical position for visibility
-                    showarrow=False,
-                    font=dict(size=15)
-                )
-
-            # Update layout for better visualization
-            fig.update_layout(
-                title_text=title,
-                annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.3, font_size=20, showarrow=False)],
-                margin=dict(t=210, l=90, r=50, b=40),  # Adjust margins
-                height=700,  # Adjust height for visibility
-                width=900,
-                showlegend=True,
-            )
-
-            return fig, counts, top_counts
-
         # Function to create a pie chart
         def create_pie_chart(df, label_col, count_col, title):
             counts = df[label_col].value_counts().reset_index()
@@ -94,15 +50,11 @@ if 'dataframes' in st.session_state:
                 showlegend=True,
             )
 
-            return fig
+            return fig, counts
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             df_clean = df.drop_duplicates(subset=['ref_mordu'])
-
-            # Plot for animals (donut chart)
-            fig_animals, counts, top_counts = create_donut_chart(df_clean, 'animal', 'count', "Répartition des espèces responsables de morsures (IPM)")
-            st.plotly_chart(fig_animals, use_container_width=True)
 
             # Selection box for animals
             selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
@@ -117,17 +69,17 @@ if 'dataframes' in st.session_state:
             filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
 
             # Plot for typanim (pie chart)
-            fig_typanim = create_pie_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
+            fig_typanim = create_pie_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")[0]
             st.plotly_chart(fig_typanim, use_container_width=True)
 
             # Allow user to select additional animals
-            additional_animals = counts['animal'].tolist()
-            selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=top_counts['animal'].tolist())
+            additional_animals = df_clean['animal'].value_counts().index.tolist()
+            selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
 
             # Filter for selected additional animals
             if selected_additional:
                 filtered_additional = df_clean[df_clean['animal'].isin(selected_additional)]
-                fig_additional_animals = create_donut_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")[0]
+                fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")[0]
                 st.plotly_chart(fig_additional_animals, use_container_width=True)
 
         # If the selected file is the CTAR peripheral dataset
@@ -144,24 +96,14 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            # Plot for animals (donut chart)
-            fig_animals_ctar, counts_ctar, top_counts_ctar = create_donut_chart(filtered_df, 'espece', 'count', "Répartition des espèces responsables de morsures (CTAR)")
-            st.plotly_chart(fig_animals_ctar, use_container_width=True)
-
-            # Selection box for animals
+            # Plot for typanim (pie chart)
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
-
-            # Add space between select box and plot
-            st.markdown("<br><br><br>", unsafe_allow_html=True)
-
-            # Filter DataFrame for the selected animal
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
 
             # Replace typanim labels with mapped values
             filtered_df_ctar['dev_carac'] = filtered_df_ctar['dev_carac'].map(label_mapping)
 
-            # Plot for typanim (pie chart)
-            fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
+            fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")[0]
             st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
 else:
