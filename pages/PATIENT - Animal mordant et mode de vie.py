@@ -55,9 +55,9 @@ if 'dataframes' in st.session_state:
                 fig.add_annotation(
                     text=f"{row[label_col]}: {row['percentage']:.1f}%",
                     x=0.5,  # Centered horizontally
-                    y=0.5 + (index * 0.1 - 0.15),  # Adjust vertical position for visibility
+                    y=0.5 + (index * -0.1 - 0.15),  # Adjust vertical position for visibility
                     showarrow=False,
-                    font=dict(size=16)
+                    font=dict(size=15)
                 )
 
             # Update layout for better visualization
