@@ -53,7 +53,7 @@ if 'dataframes' in st.session_state:
                 pull=[0] * len(counts)  # No pull for separation
             ))
 
-            # Add annotations only for the top 4 categories
+            # Add annotations for the top categories
             for i in range(len(counts)):
                 if counts.iloc[i][label_col] in labels_to_display:
                     fig.add_annotation(
