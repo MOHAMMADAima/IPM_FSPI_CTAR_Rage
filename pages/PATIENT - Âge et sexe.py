@@ -93,7 +93,7 @@ if 'dataframes' in st.session_state:
         # Iterate over each sex (M and F)
         for sex in age_sex_counts['sexe'].unique():
             data = age_sex_counts[age_sex_counts['sexe'] == sex]
-        fig.add_trace(go.Bar(
+            fig.add_trace(go.Bar(
                 x=data['age'],
                 y=data['count'],
                 name=f'{sex}',  # Add 'F' or 'M' to legend name
