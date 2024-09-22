@@ -24,7 +24,7 @@ if 'dataframes' in st.session_state:
     # Select a file to analyze from the uploaded files
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
-    # Load the selected dataframe and check if it's IPM or CTAR data
+    # Load the selected dataframe
     if selected_file:
         df = dataframes[selected_file]
 
@@ -122,15 +122,17 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            # Plot for dev_carac (pie chart) second
+            # Selection box for animals
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
 
             # Replace typanim labels with mapped values
             filtered_df_ctar['dev_carac'] = filtered_df_ctar['dev_carac'].map(label_mapping)
 
-            fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
-            st.plotly_chart(fig_typanim_ctar, use_container_width=True)
+            # Plot for dev_carac (pie chart)
+            if not filtered_df_ctar.empty:
+                fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
+                st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
