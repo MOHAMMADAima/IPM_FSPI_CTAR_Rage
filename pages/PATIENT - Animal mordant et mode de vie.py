@@ -40,29 +40,17 @@ if 'dataframes' in st.session_state:
             top_counts = counts.nlargest(4, 'percentage')
             labels_to_display = top_counts[label_col].tolist()
             values_to_display = top_counts[count_col].tolist()
-            annotations = [f"{label}: {percent:.1f}%" for label, percent in zip(labels_to_display, top_counts['percentage'])]
 
-            # Create the donut chart without separation
+            # Create the donut chart
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
                 hole=0.6,
-                textinfo='none',  # Hide all text by default
+                textinfo='label+percent',  # Show label and percentage
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
                 pull=[0] * len(counts)  # No pull for separation
             ))
-
-            # Add annotations for the top categories
-            for i in range(len(counts)):
-                if counts.iloc[i][label_col] in labels_to_display:
-                    fig.add_annotation(
-                        text=annotations.pop(0),
-                        x=0.5,  # Centered horizontally
-                        y=0.5 + (i * 0.1),  # Adjust vertical position for visibility
-                        showarrow=False,
-                        font=dict(size=16)
-                    )
 
             # Update layout for better visualization
             fig.update_layout(
