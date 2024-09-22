@@ -28,6 +28,32 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
+        # Function to create a donut chart
+        def create_donut_chart(df, label_col, count_col, title):
+            counts = df[label_col].value_counts().reset_index()
+            counts.columns = [label_col, count_col]
+
+            # Create the donut chart
+            fig = go.Figure(go.Pie(
+                labels=counts[label_col],
+                values=counts[count_col],
+                hole=0.6,
+                textinfo='label+percent',
+                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
+                direction='clockwise'
+            ))
+
+            # Update layout for better visualization
+            fig.update_layout(
+                title_text=title,
+                margin=dict(t=100, l=60, r=70, b=40),  # Adjust margins
+                height=700,
+                width=800,
+                showlegend=True,
+            )
+
+            return fig, counts
+
         # Function to create a pie chart
         def create_pie_chart(df, label_col, count_col, title):
             counts = df[label_col].value_counts().reset_index()
@@ -50,7 +76,7 @@ if 'dataframes' in st.session_state:
                 showlegend=True,
             )
 
-            return fig, counts
+            return fig
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
@@ -68,8 +94,8 @@ if 'dataframes' in st.session_state:
             # Replace typanim labels with mapped values
             filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
 
-            # Plot for typanim (pie chart) first
-            fig_typanim = create_pie_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")[0]
+            # Plot for typanim (donut chart) first
+            fig_typanim = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")[0]
             st.plotly_chart(fig_typanim, use_container_width=True)
 
             # Allow user to select additional animals
@@ -96,7 +122,7 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            # Plot for dev_carac (pie chart) first
+            # Plot for dev_carac (pie chart) second
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
 
