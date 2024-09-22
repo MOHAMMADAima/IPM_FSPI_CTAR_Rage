@@ -68,7 +68,7 @@ if 'dataframes' in st.session_state:
             # Replace typanim labels with mapped values
             filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
 
-            # Plot for typanim (pie chart)
+            # Plot for typanim (pie chart) first
             fig_typanim = create_pie_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")[0]
             st.plotly_chart(fig_typanim, use_container_width=True)
 
@@ -96,7 +96,7 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            # Plot for typanim (pie chart)
+            # Plot for dev_carac (pie chart) first
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
 
