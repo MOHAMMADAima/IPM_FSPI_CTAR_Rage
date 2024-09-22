@@ -44,7 +44,7 @@ if 'dataframes' in st.session_state:
             ))
 
             # Update layout for better visualization, reduce top margin if CSV is peripherique
-            top_margin = 10 if is_peripherique else 100  # Adjust top margin here
+            top_margin = 50 if is_peripherique else 100  # Adjust top margin here
             fig.update_layout(
                 title_text=title,
                 margin=dict(t=top_margin, l=60, r=70, b=40),  # Adjust margins
@@ -88,7 +88,7 @@ if 'dataframes' in st.session_state:
             selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
 
             # Add space between select box and plot
-            st.markdown("<br>", unsafe_allow_html=True)
+          #  st.markdown("<br>", unsafe_allow_html=True)
 
             # Filter DataFrame for the selected animal
             filtered_df = df_clean[df_clean['animal'] == selected_animal]
