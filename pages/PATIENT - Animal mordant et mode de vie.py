@@ -17,54 +17,25 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
-        # Function to create a double-layer pie chart
-        def create_double_pie_chart(df, animal_col, count_col, type_col, title, source):
+        # Function to create a pie chart
+        def create_pie_chart(df, label_col, count_col, title):
             # Count occurrences
-            animal_counts = df[animal_col].value_counts().reset_index()
-            animal_counts.columns = [animal_col, count_col]
+            counts = df[label_col].value_counts().reset_index()
+            counts.columns = [label_col, count_col]
 
-            type_counts = df[type_col].value_counts().reset_index()
-            type_counts.columns = [type_col, f'{type_col}_count']
-
-            # Calculate the number of non-null rows
-            non_null_count = df[animal_col].notnull().sum()
-
-            # Create the double-layer pie chart
-            fig = go.Figure()
-
-            # Outer layer
-            fig.add_trace(go.Pie(
-                labels=animal_counts[animal_col],
-                values=animal_counts[count_col],
-                hole=0.4,
+            # Create the pie chart
+            fig = go.Figure(go.Pie(
+                labels=counts[label_col],
+                values=counts[count_col],
                 textinfo='label+percent',
-                textposition='inside',
-                name='Animaux'
-            ))
-
-            # Inner layer
-            fig.add_trace(go.Pie(
-                labels=type_counts[type_col],
-                values=type_counts[f'{type_col}_count'],
-                hole=0.7,
-                textinfo='label+percent',
-                textposition='inside',
-                name='Type d\'animal'
+                marker=dict(colors=['rgb(48, 63, 159)', 'rgb(233, 30, 99)', 'rgb(76, 175, 80)'][:len(counts)]),
             ))
 
             # Update layout for better visualization
             fig.update_layout(
-                title_text=f"{title} (parmi {non_null_count} animaux).",
-                annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False)],
-                margin=dict(t=30, l=30, r=30, b=30),
-            )
-
-            # Add custom annotation
-            fig.add_annotation(
-                text=f"Source des données : {source}",
-                x=0.5, y=-0.2,
-                showarrow=False,
-                font=dict(size=12),
+                title_text=title,
+                margin=dict(t=40, l=40, r=40, b=40),
+                showlegend=True,
             )
 
             return fig
@@ -72,8 +43,17 @@ if 'dataframes' in st.session_state:
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             df_clean = df.drop_duplicates(subset=['ref_mordu'])
-            fig = create_double_pie_chart(df_clean, 'animal', 'count', 'typanim', "Espèce responsable de la morsure des patients IPM", "IPM")
-            st.plotly_chart(fig)
+            # Plot for animals
+            fig_animals = create_pie_chart(df_clean, 'animal', 'count', "Répartition des espèces responsables de morsures (IPM)")
+            st.plotly_chart(fig_animals)
+
+            # Selection box for animals
+            selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['typanim'].dropna().unique())
+
+            # Filter DataFrame for the selected animal
+            filtered_df = df_clean[df_clean['typanim'] == selected_animal]
+            fig_typanim = create_pie_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
+            st.plotly_chart(fig_typanim)
 
         # If the selected file is the CTAR peripheral dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
@@ -89,38 +69,34 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            fig = create_double_pie_chart(filtered_df, 'espece', 'count', 'dev_carac', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
-            st.plotly_chart(fig)
+            # Plot for animals
+            fig_animals_ctar = create_pie_chart(filtered_df, 'espece', 'count', "Répartition des espèces responsables de morsures (CTAR)")
+            st.plotly_chart(fig_animals_ctar)
+
+            # Selection box for animals
+            selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
+
+            # Filter DataFrame for the selected animal
+            filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
+            fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
+            st.plotly_chart(fig_typanim_ctar)
 
             # Get unique animals excluding NaN
             unique_animals = filtered_df['espece'].dropna().unique()
 
-            # Dropdown for selecting an animal
-            selected_animal = st.selectbox("Sélectionnez un animal à analyser", options=unique_animals)
+            # Dropdown for selecting an animal for detailed view
+            selected_animal_detail = st.selectbox("Sélectionnez un animal à analyser", options=unique_animals)
 
-            if selected_animal:
+            if selected_animal_detail:
                 # Filter DataFrame for the selected animal
-                df_animal = filtered_df[filtered_df['espece'] == selected_animal]
+                df_animal = filtered_df[filtered_df['espece'] == selected_animal_detail]
                 
                 # Count occurrences of each typeanimal for the selected animal
                 typeanimal_counts = df_animal['dev_carac'].value_counts().reset_index()
                 typeanimal_counts.columns = ['dev_carac', 'count']
 
                 # Create the pie chart for the selected animal's typeanimal
-                fig_animal = go.Figure(go.Pie(
-                    labels=typeanimal_counts['dev_carac'],
-                    values=typeanimal_counts['count'],
-                    name=selected_animal,
-                    textinfo='label+percent',
-                    marker=dict(colors=['rgb(48, 63, 159)', 'rgb(233, 30, 99)', 'rgb(76, 175, 80)'][:len(typeanimal_counts)]),
-                ))
-
-                # Update layout for better visualization
-                fig_animal.update_layout(
-                    title_text=f"Mode de vie de l'animal mordant : {selected_animal}",
-                    margin=dict(t=40, l=40, r=40, b=40),
-                    showlegend=True,
-                )
+                fig_animal = create_pie_chart(df_animal, 'dev_carac', 'count', f"Mode de vie de l'animal mordant : {selected_animal_detail}")
 
                 # Display the figure
                 st.plotly_chart(fig_animal)
