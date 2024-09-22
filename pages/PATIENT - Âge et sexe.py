@@ -17,7 +17,7 @@ if 'dataframes' in st.session_state:
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
     # Load the selected dataframe
-    if selected_file=="CTAR_ipmdata20022024.csv":
+    if selected_file=="CTAR_ipmdata20022024_cleaned.csv":
         ipm = dataframes[selected_file]
 
         # Convert 'age' column to numeric, coerce errors to NaN
@@ -69,7 +69,7 @@ if 'dataframes' in st.session_state:
         # Show the plot
         st.plotly_chart(fig)
 
-    elif selected_file=="CTAR_peripherique_data20022024.csv":
+    elif selected_file=="CTAR_peripherique_data20022024_cleaned.csv":
         ctar= dataframes[selected_file]
 
 
