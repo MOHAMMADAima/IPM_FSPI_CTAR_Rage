@@ -53,7 +53,7 @@ if 'dataframes' in st.session_state:
             # Add custom annotations for the top 4 categories
             for index, row in top_counts.iterrows():
                 fig.add_annotation(
-                    text=f"{row[label_col]}: {row['percentage']:.1f}%",
+                    text=f"{row[label_col]}: {row['percentage']:.2f}%",
                     x=0.5,  # Centered horizontally
                     y=1.5 + (index * 0.1 - 0.15),  # Adjust vertical position for visibility
                     showarrow=False,
