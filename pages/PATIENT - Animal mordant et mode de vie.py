@@ -19,12 +19,15 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
+            # Drop duplicates based on the 'ref_mordu' column to get unique entries
+            df_clean = df.drop_duplicates(subset=['ref_mordu'])
+
             # Step 1: Count occurrences of each 'animal'
-            animal_counts = df['animal'].value_counts().reset_index()
+            animal_counts = df_clean['animal'].value_counts().reset_index()
             animal_counts.columns = ['animal', 'count']
 
             # Calculate the number of non-null rows in the 'animal' column
-            non_null_count = df['animal'].notnull().sum()
+            non_null_count = df_clean['animal'].notnull().sum()
 
             # Step 2: Create the donut pie chart for IPM data
             fig = go.Figure(go.Pie(
