@@ -17,8 +17,8 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
-        # Function to create pie chart
-        def create_pie_chart(df, animal_col, count_col, type_col, title, source):
+        # Function to create a double-layer pie chart
+        def create_double_pie_chart(df, animal_col, count_col, type_col, title, source):
             # Count occurrences
             animal_counts = df[animal_col].value_counts().reset_index()
             animal_counts.columns = [animal_col, count_col]
@@ -71,14 +71,12 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
-            # Drop duplicates based on the 'ref_mordu' column to get unique entries
             df_clean = df.drop_duplicates(subset=['ref_mordu'])
-            fig = create_pie_chart(df_clean, 'animal', 'count', 'typanim', "Espèce responsable de la morsure des patients IPM", "IPM")
+            fig = create_double_pie_chart(df_clean, 'animal', 'count', 'tyanim', "Espèce responsable de la morsure des patients IPM", "IPM")
             st.plotly_chart(fig)
 
         # If the selected file is the CTAR peripheral dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            # Drop rows with NaN in the 'espece' column
             df_clean = df.dropna(subset=['espece'])
 
             # Multi-select for CTAR centers
@@ -91,7 +89,7 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            fig = create_pie_chart(filtered_df, 'espece', 'count', 'devenir', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
+            fig = create_double_pie_chart(filtered_df, 'espece', 'count', 'devenir', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
             st.plotly_chart(fig)
 
             # Get unique animals excluding NaN
