@@ -37,7 +37,7 @@ if 'dataframes' in st.session_state:
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
-                hole=0.4,
+                hole=0.7,
                 textinfo='label+percent',
                 marker=dict(colors=['rgba(48, 63, 159, 0.6)', 'rgba(233, 30, 99, 0.6)', 'rgba(76, 175, 80, 0.6)'][:len(counts)]),
             ))
