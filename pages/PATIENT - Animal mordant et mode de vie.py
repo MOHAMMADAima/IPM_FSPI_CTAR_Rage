@@ -46,11 +46,22 @@ if 'dataframes' in st.session_state:
                 labels=counts[label_col],
                 values=counts[count_col],
                 hole=0.6,
-                textinfo='label+percent',  # Show label and percentage
+                textinfo='label',  # Show label only, percentages will be added as annotations
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
                 pull=[0] * len(counts)  # No pull for separation
             ))
+
+            # Add annotations for the top 4 categories
+            for i in range(len(counts)):
+                if counts.iloc[i][label_col] in labels_to_display:
+                    fig.add_annotation(
+                        text=f"{counts.iloc[i][label_col]}: {counts.iloc[i]['percentage']:.1f}%",
+                        x=0.5,  # Centered horizontally
+                        y=0.5 + (i * 0.1 - 0.15),  # Adjust vertical position for visibility
+                        showarrow=False,
+                        font=dict(size=16)
+                    )
 
             # Update layout for better visualization
             fig.update_layout(
