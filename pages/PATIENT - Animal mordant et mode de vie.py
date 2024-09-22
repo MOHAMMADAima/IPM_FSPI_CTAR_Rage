@@ -72,7 +72,7 @@ if 'dataframes' in st.session_state:
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             df_clean = df.drop_duplicates(subset=['ref_mordu'])
-            fig = create_double_pie_chart(df_clean, 'animal', 'count', 'tyanim', "Espèce responsable de la morsure des patients IPM", "IPM")
+            fig = create_double_pie_chart(df_clean, 'animal', 'count', 'typanim', "Espèce responsable de la morsure des patients IPM", "IPM")
             st.plotly_chart(fig)
 
         # If the selected file is the CTAR peripheral dataset
