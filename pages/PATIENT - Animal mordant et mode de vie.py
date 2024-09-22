@@ -36,7 +36,7 @@ if 'dataframes' in st.session_state:
             # Calculate percentages
             counts['percentage'] = counts[count_col] / counts[count_col].sum() * 100
             
-            # Create the donut chart with rotation
+            # Create the donut chart without separation
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
@@ -44,15 +44,15 @@ if 'dataframes' in st.session_state:
                 textinfo='label+percent' if (counts['percentage'] > 5).any() else 'percent',
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
-                pull=[0.1] * len(counts)
+                pull=[0] * len(counts)  # No pull for separation
             ))
 
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
-                annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.3, font_size=20, showarrow=False)],
-                margin=dict(t=100, l=60, r=50, b=40),  # Increased top margin for more space
-                height=1000,
+                annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.2, font_size=20, showarrow=False)],
+                margin=dict(t=100, l=60, r=50, b=40),  # Adjust margins
+                height=700,  # Adjust height for visibility
                 width=900,
                 showlegend=True,
             )
@@ -75,8 +75,8 @@ if 'dataframes' in st.session_state:
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=100, l=40, r=40, b=40),  # Increased top margin for more space
-                height=1000,
+                margin=dict(t=100, l=40, r=40, b=40),  # Adjust margins
+                height=700,
                 width=800,
                 showlegend=True,
             )
@@ -95,7 +95,7 @@ if 'dataframes' in st.session_state:
             selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
 
             # Add space between select box and plot
-            st.markdown("<br>", unsafe_allow_html=True)  # Adds a line break for spacing
+            st.markdown("<br>", unsafe_allow_html=True)
 
             # Filter DataFrame for the selected animal
             filtered_df = df_clean[df_clean['animal'] == selected_animal]
@@ -129,7 +129,7 @@ if 'dataframes' in st.session_state:
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
 
             # Add space between select box and plot
-            st.markdown("<br><br><br>", unsafe_allow_html=True)  # Adds a line break for spacing
+            st.markdown("<br><br><br>", unsafe_allow_html=True)
 
             # Filter DataFrame for the selected animal
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
