@@ -89,7 +89,7 @@ if 'dataframes' in st.session_state:
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            fig = create_double_pie_chart(filtered_df, 'espece', 'count', 'devenir', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
+            fig = create_double_pie_chart(filtered_df, 'espece', 'count', 'caracteristique', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
             st.plotly_chart(fig)
 
             # Get unique animals excluding NaN
