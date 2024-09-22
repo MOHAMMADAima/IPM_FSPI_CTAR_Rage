@@ -17,43 +17,63 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
-        # If the selected file is the IPM dataset
-        if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
-            # Drop duplicates based on the 'ref_mordu' column to get unique entries
-            df_clean = df.drop_duplicates(subset=['ref_mordu'])
+        # Function to create pie chart
+        def create_pie_chart(df, animal_col, count_col, type_col, title, source):
+            # Count occurrences
+            animal_counts = df[animal_col].value_counts().reset_index()
+            animal_counts.columns = [animal_col, count_col]
 
-            # Step 1: Count occurrences of each 'animal'
-            animal_counts = df_clean['animal'].value_counts().reset_index()
-            animal_counts.columns = ['animal', 'count']
+            type_counts = df[type_col].value_counts().reset_index()
+            type_counts.columns = [type_col, f'{type_col}_count']
 
-            # Calculate the number of non-null rows in the 'animal' column
-            non_null_count = df_clean['animal'].notnull().sum()
+            # Calculate the number of non-null rows
+            non_null_count = df[animal_col].notnull().sum()
 
-            # Step 2: Create the donut pie chart for IPM data
-            fig = go.Figure(go.Pie(
-                labels=animal_counts['animal'],
-                values=animal_counts['count'],
-                hole=0.6,
+            # Create the double-layer pie chart
+            fig = go.Figure()
+
+            # Outer layer
+            fig.add_trace(go.Pie(
+                labels=animal_counts[animal_col],
+                values=animal_counts[count_col],
+                hole=0.4,
                 textinfo='label+percent',
                 textposition='inside',
+                name='Animaux'
+            ))
+
+            # Inner layer
+            fig.add_trace(go.Pie(
+                labels=type_counts[type_col],
+                values=type_counts[f'{type_col}_count'],
+                hole=0.7,
+                textinfo='label+percent',
+                textposition='inside',
+                name='Type d\'animal'
             ))
 
             # Update layout for better visualization
             fig.update_layout(
-                title_text=f"Espèce responsable de la morsure des patients IPM (parmi {non_null_count} animaux).",
+                title_text=f"{title} (parmi {non_null_count} animaux).",
                 annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False)],
                 margin=dict(t=30, l=30, r=30, b=30),
             )
 
             # Add custom annotation
             fig.add_annotation(
-                text="Source des données : IPM",
+                text=f"Source des données : {source}",
                 x=0.5, y=-0.2,
                 showarrow=False,
                 font=dict(size=12),
             )
 
-            # Show the plot
+            return fig
+
+        # If the selected file is the IPM dataset
+        if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
+            # Drop duplicates based on the 'ref_mordu' column to get unique entries
+            df_clean = df.drop_duplicates(subset=['ref_mordu'])
+            fig = create_pie_chart(df_clean, 'animal', 'count', 'tyanim', "Espèce responsable de la morsure des patients IPM", "IPM")
             st.plotly_chart(fig)
 
         # If the selected file is the CTAR peripheral dataset
@@ -61,52 +81,51 @@ if 'dataframes' in st.session_state:
             # Drop rows with NaN in the 'espece' column
             df_clean = df.dropna(subset=['espece'])
 
-            # Create a unique list of CTAR centers from the dataframe
-            unique_ctar_centers = df_clean['id_ctar'].unique().tolist()
-            unique_ctar_centers.insert(0, "Tous les CTAR")  # Add option for all CTARs
-
             # Multi-select for CTAR centers
+            unique_ctar_centers = df_clean['id_ctar'].unique().tolist()
+            unique_ctar_centers.insert(0, "Tous les CTAR")
             selected_ctars = st.multiselect("Sélectionnez les CTAR", options=unique_ctar_centers, default="Tous les CTAR")
 
-            # Filter the dataframe based on selected CTARs
             if "Tous les CTAR" in selected_ctars:
                 filtered_df = df_clean
             else:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
-            # Step 1: Count occurrences of each 'espece'
-            animal_counts = filtered_df['espece'].value_counts().reset_index()
-            animal_counts.columns = ['espece', 'count']
-
-            # Calculate the number of non-null rows in the 'espece' column
-            non_null_count = filtered_df['espece'].notnull().sum()
-
-            # Step 2: Create the donut pie chart for CTAR data
-            fig = go.Figure(go.Pie(
-                labels=animal_counts['espece'],
-                values=animal_counts['count'],
-                hole=0.6,
-                textinfo='label+percent',
-                textposition='inside',
-            ))
-
-            # Update layout for better visualization
-            fig.update_layout(
-                title_text=f"Espèce responsable de la morsure des patients CTAR périphériques (parmi {non_null_count} animaux).",
-                annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False)],
-                margin=dict(t=30, l=30, r=30, b=30),
-            )
-
-            # Add custom annotation below the pie chart
-            fig.add_annotation(
-                text="Source des données : CTAR périphériques",
-                x=0.5, y=-0.2,
-                showarrow=False,
-                font=dict(size=12),
-            )
-
-            # Show the pie chart
+            fig = create_pie_chart(filtered_df, 'espece', 'count', 'devenir', "Espèce responsable de la morsure des patients CTAR périphériques", "CTAR périphériques")
             st.plotly_chart(fig)
+
+            # Get unique animals excluding NaN
+            unique_animals = filtered_df['espece'].dropna().unique()
+
+            # Dropdown for selecting an animal
+            selected_animal = st.selectbox("Sélectionnez un animal à analyser", options=unique_animals)
+
+            if selected_animal:
+                # Filter DataFrame for the selected animal
+                df_animal = filtered_df[filtered_df['espece'] == selected_animal]
+                
+                # Count occurrences of each typeanimal for the selected animal
+                typeanimal_counts = df_animal['devenir'].value_counts().reset_index()
+                typeanimal_counts.columns = ['devenir', 'count']
+
+                # Create the pie chart for the selected animal's typeanimal
+                fig_animal = go.Figure(go.Pie(
+                    labels=typeanimal_counts['devenir'],
+                    values=typeanimal_counts['count'],
+                    name=selected_animal,
+                    textinfo='label+percent',
+                    marker=dict(colors=['rgb(48, 63, 159)', 'rgb(233, 30, 99)', 'rgb(76, 175, 80)'][:len(typeanimal_counts)]),
+                ))
+
+                # Update layout for better visualization
+                fig_animal.update_layout(
+                    title_text=f"Mode de vie de l'animal mordant : {selected_animal}",
+                    margin=dict(t=40, l=40, r=40, b=40),
+                    showlegend=True,
+                )
+
+                # Display the figure
+                st.plotly_chart(fig_animal)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
