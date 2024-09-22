@@ -23,9 +23,18 @@ if 'dataframes' in st.session_state:
         # Drop rows with NaN in 'age' column
         df_clean = df.dropna(subset=['age'])
 
+        # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv" and 'ref_mordu' in df_clean.columns:
-            # If 'ref_mordu' exists, drop duplicates based on 'ref_mordu'
+            # Drop duplicates based on 'ref_mordu'
             df_clean = df_clean.drop_duplicates(subset=['ref_mordu'])
+
+        # If the selected file is the peripheral CTAR dataset
+        elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv" and 'id_ctar' in df_clean.columns:
+            # Allow the user to select one or more CTARs from the id_ctar column
+            selected_ctars = st.multiselect("Sélectionnez un ou plusieurs CTARs", df_clean['id_ctar'].unique())
+            if selected_ctars:
+                # Filter the dataframe by the selected CTARs
+                df_clean = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
         # Count not null pairs (age, sexe)
         not_null_pairs = df_clean[['age', 'sexe']].notnull().all(axis=1).sum()
@@ -39,13 +48,16 @@ if 'dataframes' in st.session_state:
         # Create the grouped bar chart using Plotly
         fig = go.Figure()
 
-        # Iterate over each sex (M and F)
+        # Iterate over each sex ('M' for male, 'F' for female)
         for sex in age_sex_counts['sexe'].unique():
             data = age_sex_counts[age_sex_counts['sexe'] == sex]
+            # Use red color for women ('F'), default color for men ('M')
+            color = 'red' if sex == 'F' else None
             fig.add_trace(go.Bar(
                 x=data['age'],
                 y=data['count'],
                 name=f'{sex}',  # Add 'F' or 'M' to legend name
+                marker_color=color  # Apply red color for female bars
             ))
 
         # Update layout for better visualization
