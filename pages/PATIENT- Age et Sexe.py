@@ -26,9 +26,9 @@ if 'dataframes' in st.session_state:
         # Drop rows with NaN in 'age' column
         ipmm = ipm.dropna(subset=['age'])
 
-        if 'ref_mordu' in ipmm.columns:
+       # if 'ref_mordu' in ipmm.columns:
         # Group by age and sex, and count occurrences
-            ipmm=ipmm.drop_duplicates(['ref_mordu'])
+        ipmm=ipmm.drop_duplicates(['ref_mordu'])
 
         # Count not null pairs (age, sexe)
         not_null_pairs = ipmm[['age', 'sexe']].notnull().all(axis=1).sum()
