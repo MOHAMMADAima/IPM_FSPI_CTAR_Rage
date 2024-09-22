@@ -47,7 +47,7 @@ if 'dataframes' in st.session_state:
                 title_text=title,
                 annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.2, font_size=20, showarrow=False)],
                 margin=dict(t=40, l=40, r=40, b=40),
-                height=500,  # Set height for larger size
+                height=700,  # Set height for larger size
                 width=700,   # Set width for larger size
                 showlegend=True,
             )
