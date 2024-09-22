@@ -47,7 +47,8 @@ if 'dataframes' in st.session_state:
                 textinfo='label+percent',  # Show label and percentage
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
-                pull=[0] * len(counts)  # No pull for separation
+                pull=[0] * len(counts),  # No pull for separation
+                startangle=90  # Rotate the chart 90 degrees
             ))
 
             # Add custom annotations for the top 4 categories
@@ -71,6 +72,7 @@ if 'dataframes' in st.session_state:
             )
 
             return fig
+
 
         # Function to create a pie chart
         def create_pie_chart(df, label_col, count_col, title):
