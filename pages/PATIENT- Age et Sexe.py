@@ -29,8 +29,12 @@ if 'dataframes' in st.session_state:
         # Count not null pairs (age, sexe)
         not_null_pairs = ipmm[['age', 'sexe']].notnull().all(axis=1).sum()
 
+        if 'ref_mordu' in ipmm.columns:
         # Group by age and sex, and count occurrences
-        age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
+            age_sex_counts = ipmm.groupby(['age', 'sexe','ref_mordu']).size().reset_index(name='count')
+        else:
+        # Group by age and sex, and count occurrences
+            age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
 
         # Sort by age
         age_sex_counts = age_sex_counts.sort_values(by='age')
@@ -53,7 +57,7 @@ if 'dataframes' in st.session_state:
         # Update layout for better visualization
         fig.update_layout(
             barmode='group',  # Use 'group' mode for grouped bars
-            title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patients IPM)',
+            title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patients)',
             xaxis_title='Âge',
             yaxis_title='Nombre de patients',
             legend_title='Genre',
