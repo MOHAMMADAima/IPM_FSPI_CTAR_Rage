@@ -73,7 +73,7 @@ if 'dataframes' in st.session_state:
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             # Drop duplicates based on the 'ref_mordu' column to get unique entries
             df_clean = df.drop_duplicates(subset=['ref_mordu'])
-            fig = create_pie_chart(df_clean, 'animal', 'count', 'tyanim', "Espèce responsable de la morsure des patients IPM", "IPM")
+            fig = create_pie_chart(df_clean, 'animal', 'count', 'typanim', "Espèce responsable de la morsure des patients IPM", "IPM")
             st.plotly_chart(fig)
 
         # If the selected file is the CTAR peripheral dataset
