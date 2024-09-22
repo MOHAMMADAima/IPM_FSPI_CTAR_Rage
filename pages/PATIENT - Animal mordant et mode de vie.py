@@ -103,12 +103,12 @@ if 'dataframes' in st.session_state:
                 df_animal = filtered_df[filtered_df['espece'] == selected_animal]
                 
                 # Count occurrences of each typeanimal for the selected animal
-                typeanimal_counts = df_animal['catacteristique'].value_counts().reset_index()
-                typeanimal_counts.columns = ['catacteristique', 'count']
+                typeanimal_counts = df_animal['caracteristique'].value_counts().reset_index()
+                typeanimal_counts.columns = ['caracteristique', 'count']
 
                 # Create the pie chart for the selected animal's typeanimal
                 fig_animal = go.Figure(go.Pie(
-                    labels=typeanimal_counts['catacteristique'],
+                    labels=typeanimal_counts['caracteristique'],
                     values=typeanimal_counts['count'],
                     name=selected_animal,
                     textinfo='label+percent',
