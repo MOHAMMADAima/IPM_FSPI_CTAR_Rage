@@ -111,6 +111,9 @@ if 'dataframes' in st.session_state:
         # If the selected file is the CTAR peripheral dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
             df_clean = df.dropna(subset=['espece'])
+            # Filter out rows where 'dev_carac' is either 'nan-nan' or NaN
+            df_clean = df_clean[~df_clean['dev_carac'].isin(['nan-nan'])]
+
 
             # Multi-select for CTAR centers
             unique_ctar_centers = df_clean['id_ctar'].unique().tolist()
