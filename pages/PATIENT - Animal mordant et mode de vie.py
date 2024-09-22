@@ -27,8 +27,8 @@ if 'dataframes' in st.session_state:
             animal_counts.columns = ['animal', 'count']
 
             # Step 2: Count occurrences of 'tyanim'
-            typanim_counts = df_clean['tyanim'].value_counts().reset_index()
-            typanim_counts.columns = ['tyanim', 'tyanim_count']
+            typanim_counts = df_clean['typanim'].value_counts().reset_index()
+            typanim_counts.columns = ['typanim', 'tyanim_count']
 
             # Calculate the number of non-null rows in the 'animal' column
             non_null_count = df_clean['animal'].notnull().sum()
@@ -48,7 +48,7 @@ if 'dataframes' in st.session_state:
 
             # Inner layer (tyanim counts)
             fig.add_trace(go.Pie(
-                labels=typanim_counts['tyanim'],
+                labels=typanim_counts['typanim'],
                 values=typanim_counts['tyanim_count'],
                 hole=0.7,
                 textinfo='label+percent',
