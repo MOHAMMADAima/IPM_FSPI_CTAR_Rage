@@ -76,7 +76,7 @@ if 'dataframes' in st.session_state:
             fig.update_layout(
                 title_text=title,
                 margin=dict(t=100, l=40, r=40, b=40),  # Increased top margin for more space
-                height=700,
+                height=1000,
                 width=700,
                 showlegend=True,
             )
