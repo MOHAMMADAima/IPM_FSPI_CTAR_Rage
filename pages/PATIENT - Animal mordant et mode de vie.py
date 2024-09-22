@@ -28,8 +28,8 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
-        # Function to create a donut chart
-        def create_donut_chart(df, label_col, count_col, title):
+        # Function to create a donut chart with conditional margin
+        def create_donut_chart(df, label_col, count_col, title, is_peripherique=False):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
 
@@ -43,10 +43,11 @@ if 'dataframes' in st.session_state:
                 direction='clockwise'
             ))
 
-            # Update layout for better visualization
+            # Update layout for better visualization, reduce top margin if CSV is peripherique
+            top_margin = 50 if is_peripherique else 100  # Adjust top margin here
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=100, l=60, r=70, b=40),  # Adjust margins
+                margin=dict(t=top_margin, l=60, r=70, b=40),  # Adjust margins
                 height=700,
                 width=800,
                 showlegend=True,
@@ -54,8 +55,8 @@ if 'dataframes' in st.session_state:
 
             return fig
 
-        # Function to create a pie chart
-        def create_pie_chart(df, label_col, count_col, title):
+        # Function to create a pie chart with conditional margin
+        def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
 
@@ -67,10 +68,11 @@ if 'dataframes' in st.session_state:
                 marker=dict(colors=['#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'][:len(counts)]),
             ))
 
-            # Update layout for better visualization
+            # Update layout for better visualization, reduce top margin if CSV is peripherique
+            top_margin = 50 if is_peripherique else 100  # Adjust top margin here
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=100, l=60, r=70, b=40),  # Adjust margins
+                margin=dict(t=top_margin, l=60, r=70, b=40),  # Adjust margins
                 height=700,
                 width=800,
                 showlegend=True,
@@ -111,9 +113,6 @@ if 'dataframes' in st.session_state:
         # If the selected file is the CTAR peripheral dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
             df_clean = df.dropna(subset=['espece'])
-            # Filter out rows where 'dev_carac' is either 'nan-nan' or NaN
-            df_clean = df_clean[~df_clean['dev_carac'].isin(['nan-nan'])]
-
 
             # Multi-select for CTAR centers
             unique_ctar_centers = df_clean['id_ctar'].unique().tolist()
@@ -129,23 +128,20 @@ if 'dataframes' in st.session_state:
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
 
-            # Add smaller space between select box and plot for peripherique
-            st.markdown("<style>div.stSelectbox + div { margin-top: -15px; }</style>", unsafe_allow_html=True)
-
-            # Plot for dev_carac (pie chart)
+            # Plot for dev_carac (donut chart)
             if not filtered_df_ctar.empty:
-                fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
+                fig_typanim_ctar = create_donut_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)", is_peripherique=True)
                 st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
-                # Allow user to select additional animals
-                additional_animals = df_clean['espece'].value_counts().index.tolist()
-                selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
+            # Allow user to select additional animals
+            additional_animals = df_clean['espece'].value_counts().index.tolist()
+            selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
 
-                # Filter for selected additional animals
-                if selected_additional:
-                    filtered_additional = df_clean[df_clean['espece'].isin(selected_additional)]
-                    fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")
-                    st.plotly_chart(fig_additional_animals, use_container_width=True)
+            # Filter for selected additional animals
+            if selected_additional:
+                filtered_additional = df_clean[df_clean['espece'].isin(selected_additional)]
+                fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)", is_peripherique=True)
+                st.plotly_chart(fig_additional_animals, use_container_width=True)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
