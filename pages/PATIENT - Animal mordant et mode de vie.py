@@ -58,8 +58,8 @@ if 'dataframes' in st.session_state:
                 if counts.iloc[i][label_col] in labels_to_display:
                     fig.add_annotation(
                         text=annotations.pop(0),
-                        x=0.5,
-                        y=0.5,  # Adjust as necessary for placement
+                        x=0.5,  # Centered horizontally
+                        y=0.5 + (i * 0.1),  # Adjust vertical position for visibility
                         showarrow=False,
                         font=dict(size=16)
                     )
@@ -67,7 +67,7 @@ if 'dataframes' in st.session_state:
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
-                annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.2, font_size=20, showarrow=False)],
+                annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.3, font_size=20, showarrow=False)],
                 margin=dict(t=210, l=90, r=50, b=40),  # Adjust margins
                 height=700,  # Adjust height for visibility
                 width=900,
