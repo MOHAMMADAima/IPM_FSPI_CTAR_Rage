@@ -2,46 +2,39 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-
-
 # Set page title
 st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
 st.title("Age et sexe des victimes.")
 
-
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
-    
+
     # Select a file to analyze from the uploaded files
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
     # Load the selected dataframe
     if selected_file:
-        ipm = dataframes[selected_file]
+        df = dataframes[selected_file]
 
         # Convert 'age' column to numeric, coerce errors to NaN
-        ipm['age'] = pd.to_numeric(ipm['age'], errors='coerce')
+        df['age'] = pd.to_numeric(df['age'], errors='coerce')
 
         # Drop rows with NaN in 'age' column
-        ipmm = ipm.dropna(subset=['age'])
+        df_clean = df.dropna(subset=['age'])
 
-        if 'ref_mordu' in ipmm.columns:
-        # Group by age and sex, and count occurrences
-            ipmm=ipmm.drop_duplicates(['ref_mordu'])
+        if selected_file == "CTAR_ipmdata20022024_cleaned.csv" and 'ref_mordu' in df_clean.columns:
+            # If 'ref_mordu' exists, drop duplicates based on 'ref_mordu'
+            df_clean = df_clean.drop_duplicates(subset=['ref_mordu'])
 
         # Count not null pairs (age, sexe)
-        not_null_pairs = ipmm[['age', 'sexe']].notnull().all(axis=1).sum()
+        not_null_pairs = df_clean[['age', 'sexe']].notnull().all(axis=1).sum()
 
-   
         # Group by age and sex, and count occurrences
-        age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
+        age_sex_counts = df_clean.groupby(['age', 'sexe']).size().reset_index(name='count')
 
         # Sort by age
         age_sex_counts = age_sex_counts.sort_values(by='age')
-
-        # Filter to include only not null pairs (age, sex)
-        age_sex_counts = age_sex_counts.dropna()
 
         # Create the grouped bar chart using Plotly
         fig = go.Figure()
@@ -73,6 +66,7 @@ if 'dataframes' in st.session_state:
 
         # Show the plot
         st.plotly_chart(fig)
+
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
 
