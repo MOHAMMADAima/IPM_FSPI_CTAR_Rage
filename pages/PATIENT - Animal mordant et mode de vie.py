@@ -32,10 +32,10 @@ if 'dataframes' in st.session_state:
         def create_donut_chart(df, label_col, count_col, title):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
-            
+
             # Calculate percentages
             counts['percentage'] = counts[count_col] / counts[count_col].sum() * 100
-            
+
             # Identify top 4 categories
             top_counts = counts.nlargest(4, 'percentage')
 
@@ -44,13 +44,13 @@ if 'dataframes' in st.session_state:
                 labels=counts[label_col],
                 values=counts[count_col],
                 hole=0.6,
-                textinfo='none',  # Hide all text by default
+                textinfo='label+percent',  # Show label and percentage
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
                 pull=[0] * len(counts)  # No pull for separation
             ))
 
-            # Add annotations for the top 4 categories
+            # Add custom annotations for the top 4 categories
             for index, row in top_counts.iterrows():
                 fig.add_annotation(
                     text=f"{row[label_col]}: {row['percentage']:.1f}%",
