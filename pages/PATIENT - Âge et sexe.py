@@ -72,14 +72,16 @@ if 'dataframes' in st.session_state:
     elif selected_file=="CTAR_peripheriquedata20022024_cleaned.csv":
         ctar= dataframes[selected_file]
 
-
-        ctar = ctar.dropna(subset=['age'])
+        # Convert 'age' column to numeric, coerce errors to NaN
+        ctar['age'] = pd.to_numeric(ctar['age'], errors='coerce')
+        # Drop rows with NaN in 'age' column
+        ctarr = ctar.dropna(subset=['age'])
 
         # Count not null pairs (age, sexe)
-        not_null_pairs = ctar[['age', 'sexe']].notnull().all(axis=1).sum()
+        not_null_pairs = ctarr[['age', 'sexe']].notnull().all(axis=1).sum()
 
         # Group by age and sex, and count occurrences
-        age_sex_counts = ctar.groupby(['age', 'sexe']).size().reset_index(name='count')
+        age_sex_counts = ctarr.groupby(['age', 'sexe']).size().reset_index(name='count')
 
         # Sort by age
         age_sex_counts = age_sex_counts.sort_values(by='age')
