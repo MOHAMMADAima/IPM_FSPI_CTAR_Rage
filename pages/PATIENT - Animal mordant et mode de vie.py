@@ -36,20 +36,33 @@ if 'dataframes' in st.session_state:
             # Calculate percentages
             counts['percentage'] = counts[count_col] / counts[count_col].sum() * 100
             
-            # Set textinfo based on percentage
-            textinfo = 'label+percent' if (counts['percentage'] > 5).any() else 'percent'
-            counts_to_display = counts[counts['percentage'] > 5]
+            # Identify top 4 categories
+            top_counts = counts.nlargest(4, 'percentage')
+            labels_to_display = top_counts[label_col].tolist()
+            values_to_display = top_counts[count_col].tolist()
+            annotations = [f"{label}: {percent:.1f}%" for label, percent in zip(labels_to_display, top_counts['percentage'])]
 
             # Create the donut chart without separation
             fig = go.Figure(go.Pie(
-                labels=counts_to_display[label_col],
-                values=counts_to_display[count_col],
+                labels=counts[label_col],
+                values=counts[count_col],
                 hole=0.6,
-                textinfo=textinfo,
-                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts_to_display)]),
+                textinfo='none',  # Hide all text by default
+                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
-                pull=[0] * len(counts_to_display)  # No pull for separation
+                pull=[0] * len(counts)  # No pull for separation
             ))
+
+            # Add annotations only for the top 4 categories
+            for i in range(len(counts)):
+                if counts.iloc[i][label_col] in labels_to_display:
+                    fig.add_annotation(
+                        text=annotations.pop(0),
+                        x=0.5,
+                        y=0.5,  # Adjust as necessary for placement
+                        showarrow=False,
+                        font=dict(size=16)
+                    )
 
             # Update layout for better visualization
             fig.update_layout(
