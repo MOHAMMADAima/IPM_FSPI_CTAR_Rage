@@ -33,24 +33,22 @@ if 'dataframes' in st.session_state:
             fig = go.Figure(go.Pie(
                 labels=animal_counts['animal'],
                 values=animal_counts['count'],
-                hole=0.6,  # Adjust the size of the hole to make the donut bigger
-                textinfo='label+percent',  # Show label and percentage
-                textposition='inside',  # Position text inside the slices
+                hole=0.6,
+                textinfo='label+percent',
+                textposition='inside',
             ))
 
             # Update layout for better visualization
             fig.update_layout(
                 title_text=f"Espèce responsable de la morsure des patients IPM (parmi {non_null_count} animaux).",
-                annotations=[
-                    dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False),
-                ],
-                margin=dict(t=30, l=30, r=30, b=30),  # Adjust margins to make the chart bigger
+                annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False)],
+                margin=dict(t=30, l=30, r=30, b=30),
             )
 
             # Add custom annotation
             fig.add_annotation(
                 text="Source des données : IPM",
-                x=0.5, y=-0.2,  # Adjust y to position the text below the chart
+                x=0.5, y=-0.2,
                 showarrow=False,
                 font=dict(size=12),
             )
@@ -63,35 +61,46 @@ if 'dataframes' in st.session_state:
             # Drop rows with NaN in the 'espece' column
             df_clean = df.dropna(subset=['espece'])
 
+            # Create a unique list of CTAR centers from the dataframe
+            unique_ctar_centers = df_clean['id_ctar'].unique().tolist()
+            unique_ctar_centers.insert(0, "Tous les CTAR")  # Add option for all CTARs
+
+            # Multi-select for CTAR centers
+            selected_ctars = st.multiselect("Sélectionnez les CTAR", options=unique_ctar_centers, default="Tous les CTAR")
+
+            # Filter the dataframe based on selected CTARs
+            if "Tous les CTAR" in selected_ctars:
+                filtered_df = df_clean
+            else:
+                filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
+
             # Step 1: Count occurrences of each 'espece'
-            animal_counts = df_clean['espece'].value_counts().reset_index()
+            animal_counts = filtered_df['espece'].value_counts().reset_index()
             animal_counts.columns = ['espece', 'count']
 
             # Calculate the number of non-null rows in the 'espece' column
-            non_null_count = df_clean['espece'].notnull().sum()
+            non_null_count = filtered_df['espece'].notnull().sum()
 
             # Step 2: Create the donut pie chart for CTAR data
             fig = go.Figure(go.Pie(
                 labels=animal_counts['espece'],
                 values=animal_counts['count'],
-                hole=0.6,  # Adjust the size of the hole to make the donut bigger
-                textinfo='label+percent',  # Show label and percentage
-                textposition='inside',  # Position text inside the slices
+                hole=0.6,
+                textinfo='label+percent',
+                textposition='inside',
             ))
 
             # Update layout for better visualization
             fig.update_layout(
                 title_text=f"Espèce responsable de la morsure des patients CTAR périphériques (parmi {non_null_count} animaux).",
-                annotations=[
-                    dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False),
-                ],
-                margin=dict(t=30, l=30, r=30, b=30),  # Adjust margins to make the chart bigger
+                annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False)],
+                margin=dict(t=30, l=30, r=30, b=30),
             )
 
             # Add custom annotation below the pie chart
             fig.add_annotation(
                 text="Source des données : CTAR périphériques",
-                x=0.5, y=-0.2,  # Adjust y to position the text below the chart
+                x=0.5, y=-0.2,
                 showarrow=False,
                 font=dict(size=12),
             )
