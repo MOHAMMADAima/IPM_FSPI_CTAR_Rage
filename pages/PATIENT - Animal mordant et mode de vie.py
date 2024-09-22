@@ -36,22 +36,26 @@ if 'dataframes' in st.session_state:
             # Calculate percentages
             counts['percentage'] = counts[count_col] / counts[count_col].sum() * 100
             
+            # Set textinfo based on percentage
+            textinfo = 'label+percent' if (counts['percentage'] > 5).any() else 'percent'
+            counts_to_display = counts[counts['percentage'] > 5]
+
             # Create the donut chart without separation
             fig = go.Figure(go.Pie(
-                labels=counts[label_col],
-                values=counts[count_col],
+                labels=counts_to_display[label_col],
+                values=counts_to_display[count_col],
                 hole=0.6,
-                textinfo='label+percent' if (counts['percentage'] > 5).any() else 'percent',
-                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
+                textinfo=textinfo,
+                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts_to_display)]),
                 direction='clockwise',
-                pull=[0] * len(counts)  # No pull for separation
+                pull=[0] * len(counts_to_display)  # No pull for separation
             ))
 
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
                 annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.2, font_size=20, showarrow=False)],
-                margin=dict(t=510, l=90, r=50, b=40),  # Adjust margins
+                margin=dict(t=210, l=90, r=50, b=40),  # Adjust margins
                 height=700,  # Adjust height for visibility
                 width=900,
                 showlegend=True,
@@ -75,7 +79,7 @@ if 'dataframes' in st.session_state:
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=100, l=60, r=40, b=40),  # Adjust margins
+                margin=dict(t=100, l=60, r=70, b=40),  # Adjust margins
                 height=700,
                 width=800,
                 showlegend=True,
