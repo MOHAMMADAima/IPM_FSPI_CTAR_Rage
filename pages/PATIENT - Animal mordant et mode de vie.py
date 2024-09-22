@@ -26,34 +26,16 @@ if 'dataframes' in st.session_state:
             animal_counts = df_clean['animal'].value_counts().reset_index()
             animal_counts.columns = ['animal', 'count']
 
-            # Step 2: Count occurrences of 'tyanim'
-            typanim_counts = df_clean['typanim'].value_counts().reset_index()
-            typanim_counts.columns = ['typanim', 'tyanim_count']
-
             # Calculate the number of non-null rows in the 'animal' column
             non_null_count = df_clean['animal'].notnull().sum()
 
-            # Step 3: Create the double-layer pie chart for IPM data
-            fig = go.Figure()
-
-            # Outer layer (animal counts)
-            fig.add_trace(go.Pie(
+            # Step 2: Create the donut pie chart for IPM data
+            fig = go.Figure(go.Pie(
                 labels=animal_counts['animal'],
                 values=animal_counts['count'],
-                hole=0.4,
+                hole=0.6,
                 textinfo='label+percent',
                 textposition='inside',
-                name='Animaux'
-            ))
-
-            # Inner layer (tyanim counts)
-            fig.add_trace(go.Pie(
-                labels=typanim_counts['typanim'],
-                values=typanim_counts['tyanim_count'],
-                hole=0.7,
-                textinfo='label+percent',
-                textposition='inside',
-                name='Type d\'animal'
             ))
 
             # Update layout for better visualization
@@ -96,34 +78,16 @@ if 'dataframes' in st.session_state:
             animal_counts = filtered_df['espece'].value_counts().reset_index()
             animal_counts.columns = ['espece', 'count']
 
-            # Step 2: Count occurrences of 'devenir'
-            devenir_counts = filtered_df['devenir'].value_counts().reset_index()
-            devenir_counts.columns = ['devenir', 'devenir_count']
-
             # Calculate the number of non-null rows in the 'espece' column
             non_null_count = filtered_df['espece'].notnull().sum()
 
-            # Step 3: Create the double-layer pie chart for CTAR data
-            fig = go.Figure()
-
-            # Outer layer (animal counts)
-            fig.add_trace(go.Pie(
+            # Step 2: Create the donut pie chart for CTAR data
+            fig = go.Figure(go.Pie(
                 labels=animal_counts['espece'],
                 values=animal_counts['count'],
-                hole=0.4,
+                hole=0.6,
                 textinfo='label+percent',
                 textposition='inside',
-                name='Espèces'
-            ))
-
-            # Inner layer (devenir counts)
-            fig.add_trace(go.Pie(
-                labels=devenir_counts['devenir'],
-                values=devenir_counts['devenir_count'],
-                hole=0.7,
-                textinfo='label+percent',
-                textposition='inside',
-                name='Devenir'
             ))
 
             # Update layout for better visualization
