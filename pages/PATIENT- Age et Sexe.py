@@ -35,7 +35,7 @@ if 'dataframes' in st.session_state:
 
    
         # Group by age and sex, and count occurrences
-        age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
+        age_sex_counts = ipmm.groupby(['age', 'sexe','ref_mordu']).size().reset_index(name='count')
 
         # Sort by age
         age_sex_counts = age_sex_counts.sort_values(by='age')
