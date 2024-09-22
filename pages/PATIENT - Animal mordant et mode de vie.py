@@ -39,7 +39,7 @@ if 'dataframes' in st.session_state:
                 values=counts[count_col],
                 hole=0.6,
                 textinfo='label+percent',
-                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
+                marker=dict(colors=['#ff9999', '#66b3ff', '#99ff99', '#ffcc99', '#c2c2f0'][:len(counts)]),
                 direction='clockwise'
             ))
 
@@ -52,7 +52,7 @@ if 'dataframes' in st.session_state:
                 showlegend=True,
             )
 
-            return fig, counts
+            return fig
 
         # Function to create a pie chart
         def create_pie_chart(df, label_col, count_col, title):
@@ -76,7 +76,7 @@ if 'dataframes' in st.session_state:
                 showlegend=True,
             )
 
-            return fig, counts  # Ensure we're returning the figure and counts
+            return fig
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
@@ -95,7 +95,7 @@ if 'dataframes' in st.session_state:
             filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
 
             # Plot for typanim (donut chart) first
-            fig_typanim, _ = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
+            fig_typanim = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
             st.plotly_chart(fig_typanim, use_container_width=True)
 
             # Allow user to select additional animals
@@ -105,7 +105,7 @@ if 'dataframes' in st.session_state:
             # Filter for selected additional animals
             if selected_additional:
                 filtered_additional = df_clean[df_clean['animal'].isin(selected_additional)]
-                fig_additional_animals, _ = create_pie_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")
+                fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")
                 st.plotly_chart(fig_additional_animals, use_container_width=True)
 
         # If the selected file is the CTAR peripheral dataset
@@ -129,7 +129,7 @@ if 'dataframes' in st.session_state:
             # Replace typanim labels with mapped values
             filtered_df_ctar['dev_carac'] = filtered_df_ctar['dev_carac'].map(label_mapping)
 
-            fig_typanim_ctar, _ = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
+            fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
             st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
 else:
