@@ -45,7 +45,7 @@ if 'dataframes' in st.session_state:
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
-                annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False)],
+                annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=20, showarrow=False)],
                 margin=dict(t=40, l=40, r=40, b=40),
                 showlegend=True,
             )
@@ -80,7 +80,7 @@ if 'dataframes' in st.session_state:
 
             # Plot for animals (donut chart)
             fig_animals = create_donut_chart(df_clean, 'animal', 'count', "Répartition des espèces responsables de morsures (IPM)")
-            st.plotly_chart(fig_animals)
+            st.plotly_chart(fig_animals, use_container_width=True)
 
             # Selection box for animals
             selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
@@ -93,7 +93,7 @@ if 'dataframes' in st.session_state:
 
             # Plot for typanim (pie chart)
             fig_typanim = create_pie_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
-            st.plotly_chart(fig_typanim)
+            st.plotly_chart(fig_typanim, use_container_width=True)
 
         # If the selected file is the CTAR peripheral dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
@@ -111,7 +111,7 @@ if 'dataframes' in st.session_state:
 
             # Plot for animals (donut chart)
             fig_animals_ctar = create_donut_chart(filtered_df, 'espece', 'count', "Répartition des espèces responsables de morsures (CTAR)")
-            st.plotly_chart(fig_animals_ctar)
+            st.plotly_chart(fig_animals_ctar, use_container_width=True)
 
             # Selection box for animals
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
@@ -124,7 +124,7 @@ if 'dataframes' in st.session_state:
 
             # Plot for typanim (pie chart)
             fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
-            st.plotly_chart(fig_typanim_ctar)
+            st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
