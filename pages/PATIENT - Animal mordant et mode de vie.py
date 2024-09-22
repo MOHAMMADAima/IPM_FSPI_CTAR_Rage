@@ -36,28 +36,29 @@ if 'dataframes' in st.session_state:
             # Calculate percentages
             counts['percentage'] = counts[count_col] / counts[count_col].sum() * 100
 
-            # Identify the top category
-            top_count = counts.nlargest(1, 'percentage')
+            # Identify top 4 categories
+            top_counts = counts.nlargest(4, 'percentage')
 
             # Create the donut chart
             fig = go.Figure(go.Pie(
-                labels=top_count[label_col],
-                values=top_count[count_col],
+                labels=counts[label_col],
+                values=counts[count_col],
                 hole=0.6,
                 textinfo='label+percent',  # Show label and percentage
-                marker=dict(colors=['#1f77b4']),  # Use a single color
-                direction='counterclockwise',  # Change direction
-                pull=[0],  # No pull for separation
+                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
+                direction='clockwise',
+                pull=[0] * len(counts)  # No pull for separation
             ))
 
-            # Add custom annotation for the top category
-            fig.add_annotation(
-                text=f"{top_count.iloc[0][label_col]}: {top_count.iloc[0]['percentage']:.1f}%",
-                x=0.5,  # Centered horizontally
-                y=0,  # Centered vertically
-                showarrow=False,
-                font=dict(size=16)
-            )
+            # Add custom annotations for the top 4 categories
+            for index, row in top_counts.iterrows():
+                fig.add_annotation(
+                    text=f"{row[label_col]}: {row['percentage']:.2f}%",
+                    x=0.5,  # Centered horizontally
+                    y=1.5 + (index * 0.1 - 0.15),  # Adjust vertical position for visibility
+                    showarrow=False,
+                    font=dict(size=15)
+                )
 
             # Update layout for better visualization
             fig.update_layout(
@@ -70,8 +71,6 @@ if 'dataframes' in st.session_state:
             )
 
             return fig
-
-
 
         # Function to create a pie chart
         def create_pie_chart(df, label_col, count_col, title):
