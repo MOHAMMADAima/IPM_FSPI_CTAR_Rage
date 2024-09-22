@@ -33,21 +33,23 @@ if 'dataframes' in st.session_state:
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
 
-            # Create the donut chart
+            # Create the donut chart with rotation
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
                 hole=0.7,
                 textinfo='label+percent',
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
+                direction='clockwise',  # Ensures the direction is clockwise
+                pull=[0.1] * len(counts)  # Slightly pulls out each slice for better visibility
             ))
 
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
-                annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.2, font_size=20, showarrow=False)],
+                annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.3, font_size=20, showarrow=False)],
                 margin=dict(t=40, l=40, r=40, b=40),
-                height=700,  # Set height for larger size
+                height=500,  # Set height for larger size
                 width=700,   # Set width for larger size
                 showlegend=True,
             )
