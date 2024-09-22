@@ -31,7 +31,7 @@ if 'dataframes' in st.session_state:
 
         if 'ref_mordu' in ipmm.columns:
         # Group by age and sex, and count occurrences
-            ipmm.drop_duplicates(['ref_mordu'])
+            ipmm=ipmm.drop_duplicates(['ref_mordu'])
         
             age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
         else:
