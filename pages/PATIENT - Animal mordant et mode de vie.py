@@ -46,9 +46,8 @@ if 'dataframes' in st.session_state:
                 hole=0.6,
                 textinfo='label+percent',  # Show label and percentage
                 marker=dict(colors=['#1f77b4']),  # Use a single color
-                direction='clockwise',
+                direction='counterclockwise',  # Change direction
                 pull=[0],  # No pull for separation
-                startangle=90  # Rotate the chart 90 degrees
             ))
 
             # Add custom annotation for the top category
@@ -71,6 +70,7 @@ if 'dataframes' in st.session_state:
             )
 
             return fig
+
 
 
         # Function to create a pie chart
