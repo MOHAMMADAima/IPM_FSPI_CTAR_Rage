@@ -26,17 +26,16 @@ if 'dataframes' in st.session_state:
         # Drop rows with NaN in 'age' column
         ipmm = ipm.dropna(subset=['age'])
 
-        # Count not null pairs (age, sexe)
-        not_null_pairs = ipmm[['age', 'sexe']].notnull().all(axis=1).sum()
-
         if 'ref_mordu' in ipmm.columns:
         # Group by age and sex, and count occurrences
             ipmm=ipmm.drop_duplicates(['ref_mordu'])
-        
-            age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
-        else:
+
+        # Count not null pairs (age, sexe)
+        not_null_pairs = ipmm[['age', 'sexe']].notnull().all(axis=1).sum()
+
+   
         # Group by age and sex, and count occurrences
-            age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
+        age_sex_counts = ipmm.groupby(['age', 'sexe']).size().reset_index(name='count')
 
         # Sort by age
         age_sex_counts = age_sex_counts.sort_values(by='age')
