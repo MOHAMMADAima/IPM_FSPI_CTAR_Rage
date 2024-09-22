@@ -40,7 +40,7 @@ if 'dataframes' in st.session_state:
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
-                hole=0.7,
+                hole=0.6,
                 textinfo='label+percent' if (counts['percentage'] > 5).any() else 'percent',
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
                 direction='clockwise',
@@ -51,8 +51,8 @@ if 'dataframes' in st.session_state:
             fig.update_layout(
                 title_text=title,
                 annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.3, font_size=20, showarrow=False)],
-                margin=dict(t=60, l=40, r=40, b=40),  # Increased top margin for more space
-                height=500,
+                margin=dict(t=100, l=40, r=40, b=40),  # Increased top margin for more space
+                height=800,
                 width=700,
                 showlegend=True,
             )
@@ -75,8 +75,8 @@ if 'dataframes' in st.session_state:
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=60, l=40, r=40, b=40),  # Increased top margin for more space
-                height=500,
+                margin=dict(t=100, l=40, r=40, b=40),  # Increased top margin for more space
+                height=700,
                 width=700,
                 showlegend=True,
             )
