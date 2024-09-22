@@ -97,19 +97,19 @@ if 'dataframes' in st.session_state:
             age_sex_counts = age_sex_counts.sort_values(by='age')
 
             # Create the grouped bar chart using Plotly
-            fig = go.Figure()
+            figu = go.Figure()
 
             # Iterate over each sex (M and F)
             for sex in age_sex_counts['sexe'].unique():
                 data = age_sex_counts[age_sex_counts['sexe'] == sex]
-                fig.add_trace(go.Bar(
+                figu.add_trace(go.Bar(
                     x=data['age'],
                     y=data['count'],
                     name=f'{sex}',  # Add 'F' or 'M' to legend name
                 ))
 
             # Update layout for better visualization
-            fig.update_layout(
+            figu.update_layout(
                 barmode='group',  # Use 'group' mode for grouped bars
                 title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patients des CTARs périphériques)',
                 xaxis_title='Âge',
@@ -125,7 +125,7 @@ if 'dataframes' in st.session_state:
             )
 
             # Show the plot
-            st.plotly_chart(fig)
+            st.plotly_chart(figu)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
