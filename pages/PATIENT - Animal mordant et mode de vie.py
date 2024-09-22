@@ -70,7 +70,7 @@ if 'dataframes' in st.session_state:
                 showlegend=True,
             )
 
-            return fig
+            return fig, counts, top_counts
 
         # Function to create a pie chart
         def create_pie_chart(df, label_col, count_col, title):
@@ -101,7 +101,7 @@ if 'dataframes' in st.session_state:
             df_clean = df.drop_duplicates(subset=['ref_mordu'])
 
             # Plot for animals (donut chart)
-            fig_animals = create_donut_chart(df_clean, 'animal', 'count', "Répartition des espèces responsables de morsures (IPM)")
+            fig_animals, counts, top_counts = create_donut_chart(df_clean, 'animal', 'count', "Répartition des espèces responsables de morsures (IPM)")
             st.plotly_chart(fig_animals, use_container_width=True)
 
             # Selection box for animals
@@ -120,6 +120,16 @@ if 'dataframes' in st.session_state:
             fig_typanim = create_pie_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
             st.plotly_chart(fig_typanim, use_container_width=True)
 
+            # Allow user to select additional animals
+            additional_animals = counts['animal'].tolist()
+            selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=top_counts['animal'].tolist())
+
+            # Filter for selected additional animals
+            if selected_additional:
+                filtered_additional = df_clean[df_clean['animal'].isin(selected_additional)]
+                fig_additional_animals = create_donut_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")[0]
+                st.plotly_chart(fig_additional_animals, use_container_width=True)
+
         # If the selected file is the CTAR peripheral dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
             df_clean = df.dropna(subset=['espece'])
@@ -135,7 +145,7 @@ if 'dataframes' in st.session_state:
                 filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
             # Plot for animals (donut chart)
-            fig_animals_ctar = create_donut_chart(filtered_df, 'espece', 'count', "Répartition des espèces responsables de morsures (CTAR)")
+            fig_animals_ctar, counts_ctar, top_counts_ctar = create_donut_chart(filtered_df, 'espece', 'count', "Répartition des espèces responsables de morsures (CTAR)")
             st.plotly_chart(fig_animals_ctar, use_container_width=True)
 
             # Selection box for animals
