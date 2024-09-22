@@ -135,7 +135,7 @@ if 'dataframes' in st.session_state:
                
 
             # Allow user to select additional animals
-                additional_animals = df_clean['animal'].value_counts().index.tolist()
+                additional_animals = df_clean['espece'].value_counts().index.tolist()
                 selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
 
             # Filter for selected additional animals
