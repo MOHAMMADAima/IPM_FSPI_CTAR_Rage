@@ -69,7 +69,7 @@ if 'dataframes' in st.session_state:
         # Show the plot
         st.plotly_chart(fig)
 
-    elif selected_file=="CTAR_peripherique_data20022024_cleaned.csv":
+    elif selected_file=="CTAR_peripheriquedata20022024_cleaned.csv":
         ctar= dataframes[selected_file]
 
 
