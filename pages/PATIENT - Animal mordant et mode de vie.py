@@ -129,7 +129,7 @@ if 'dataframes' in st.session_state:
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
 
             # Add space between select box and plot
-            st.markdown("<br>", unsafe_allow_html=True)  # Adds a line break for spacing
+            st.markdown("<br><br><br>", unsafe_allow_html=True)  # Adds a line break for spacing
 
             # Filter DataFrame for the selected animal
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
