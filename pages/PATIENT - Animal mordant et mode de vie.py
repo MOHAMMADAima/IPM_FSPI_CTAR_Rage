@@ -133,6 +133,8 @@ if 'dataframes' in st.session_state:
             if not filtered_df_ctar.empty:
                 fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
                 st.plotly_chart(fig_typanim_ctar, use_container_width=True)
+            fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
+            st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
