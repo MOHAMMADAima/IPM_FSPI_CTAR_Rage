@@ -51,7 +51,7 @@ if 'dataframes' in st.session_state:
             fig.update_layout(
                 title_text=title,
                 annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.3, font_size=20, showarrow=False)],
-                margin=dict(t=100, l=40, r=40, b=40),  # Increased top margin for more space
+                margin=dict(t=140, l=60, r=40, b=40),  # Increased top margin for more space
                 height=800,
                 width=700,
                 showlegend=True,
