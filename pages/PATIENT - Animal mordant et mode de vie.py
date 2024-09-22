@@ -32,16 +32,19 @@ if 'dataframes' in st.session_state:
         def create_donut_chart(df, label_col, count_col, title):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
-
+            
+            # Calculate percentages
+            counts['percentage'] = counts[count_col] / counts[count_col].sum() * 100
+            
             # Create the donut chart with rotation
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
                 hole=0.7,
-                textinfo='label+percent',
+                textinfo='label+percent' if (counts['percentage'] > 5).any() else 'percent',  # Show label and percent only for slices above 5%
                 marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
-                direction='clockwise',  # Ensures the direction is clockwise
-                pull=[0.1] * len(counts)  # Slightly pulls out each slice for better visibility
+                direction='clockwise',
+                pull=[0.1] * len(counts)
             ))
 
             # Update layout for better visualization
@@ -49,8 +52,8 @@ if 'dataframes' in st.session_state:
                 title_text=title,
                 annotations=[dict(text='Animaux mordeurs', x=0.5, y=-0.3, font_size=20, showarrow=False)],
                 margin=dict(t=40, l=40, r=40, b=40),
-                height=500,  # Set height for larger size
-                width=700,   # Set width for larger size
+                height=500,
+                width=700,
                 showlegend=True,
             )
 
@@ -73,8 +76,8 @@ if 'dataframes' in st.session_state:
             fig.update_layout(
                 title_text=title,
                 margin=dict(t=40, l=40, r=40, b=40),
-                height=500,  # Set height for larger size
-                width=700,   # Set width for larger size
+                height=500,
+                width=700,
                 showlegend=True,
             )
 
