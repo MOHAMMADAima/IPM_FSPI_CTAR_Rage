@@ -39,7 +39,7 @@ if 'dataframes' in st.session_state:
                 values=counts[count_col],
                 hole=0.7,
                 textinfo='label+percent',
-                marker=dict(colors=['rgba(48, 63, 159, 0.6)', 'rgba(233, 30, 99, 0.6)', 'rgba(76, 175, 80, 0.6)'][:len(counts)]),
+                marker=dict(colors=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'][:len(counts)]),
             ))
 
             # Update layout for better visualization
@@ -64,7 +64,7 @@ if 'dataframes' in st.session_state:
                 labels=counts[label_col],
                 values=counts[count_col],
                 textinfo='label+percent',
-                marker=dict(colors=['rgba(255, 152, 0, 0.6)', 'rgba(0, 150, 136, 0.6)', 'rgba(33, 150, 243, 0.6)'][:len(counts)]),
+                marker=dict(colors=['#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'][:len(counts)]),
             ))
 
             # Update layout for better visualization
@@ -88,6 +88,9 @@ if 'dataframes' in st.session_state:
 
             # Selection box for animals
             selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
+
+            # Add space between select box and plot
+            st.markdown("<br>", unsafe_allow_html=True)  # Adds a line break for spacing
 
             # Filter DataFrame for the selected animal
             filtered_df = df_clean[df_clean['animal'] == selected_animal]
@@ -119,6 +122,9 @@ if 'dataframes' in st.session_state:
 
             # Selection box for animals
             selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
+
+            # Add space between select box and plot
+            st.markdown("<br>", unsafe_allow_html=True)  # Adds a line break for spacing
 
             # Filter DataFrame for the selected animal
             filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
