@@ -39,12 +39,13 @@ if 'dataframes' in st.session_state:
                 values=counts[count_col],
                 hole=0.4,
                 textinfo='label+percent',
-                marker=dict(colors=['rgb(48, 63, 159)', 'rgb(233, 30, 99)', 'rgb(76, 175, 80)'][:len(counts)]),
+                marker=dict(colors=['rgba(48, 63, 159, 0.6)', 'rgba(233, 30, 99, 0.6)', 'rgba(76, 175, 80, 0.6)'][:len(counts)]),
             ))
 
             # Update layout for better visualization
             fig.update_layout(
                 title_text=title,
+                annotations=[dict(text='Animaux mordeurs', x=0.5, y=0.5, font_size=15, showarrow=False)],
                 margin=dict(t=40, l=40, r=40, b=40),
                 showlegend=True,
             )
@@ -61,7 +62,7 @@ if 'dataframes' in st.session_state:
                 labels=counts[label_col],
                 values=counts[count_col],
                 textinfo='label+percent',
-                marker=dict(colors=['rgb(48, 63, 159)', 'rgb(233, 30, 99)', 'rgb(76, 175, 80)'][:len(counts)]),
+                marker=dict(colors=['rgba(255, 152, 0, 0.6)', 'rgba(0, 150, 136, 0.6)', 'rgba(33, 150, 243, 0.6)'][:len(counts)]),
             ))
 
             # Update layout for better visualization
