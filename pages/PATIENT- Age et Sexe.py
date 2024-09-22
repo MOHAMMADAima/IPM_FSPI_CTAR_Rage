@@ -30,11 +30,25 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv" and 'id_ctar' in df_clean.columns:
-            # Allow the user to select one or more CTARs from the id_ctar column
-            selected_ctars = st.multiselect("Sélectionnez un ou plusieurs CTARs", df_clean['id_ctar'].unique())
-            if selected_ctars:
-                # Filter the dataframe by the selected CTARs
-                df_clean = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
+            # Drop rows with NaN in 'id_ctar' column
+            df_clean = df_clean.dropna(subset=['id_ctar'])
+
+            # Get the unique CTARs
+            unique_ctars = df_clean['id_ctar'].unique()
+
+            # Add a "Select All" option to the multiselect
+            selected_ctars = st.multiselect(
+                "Sélectionnez un ou plusieurs CTARs (ou sélectionnez 'Tous')",
+                options=['Tous'] + list(unique_ctars),  # Add "Tous" (All) option
+                default='Tous'  # Default to selecting "Tous"
+            )
+
+            # If "Tous" is selected, use all CTARs
+            if 'Tous' in selected_ctars:
+                selected_ctars = unique_ctars
+
+            # Filter the dataframe by the selected CTARs
+            df_clean = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
 
         # Count not null pairs (age, sexe)
         not_null_pairs = df_clean[['age', 'sexe']].notnull().all(axis=1).sum()
