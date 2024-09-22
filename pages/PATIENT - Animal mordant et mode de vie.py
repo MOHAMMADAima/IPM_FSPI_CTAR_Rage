@@ -76,7 +76,7 @@ if 'dataframes' in st.session_state:
                 showlegend=True,
             )
 
-            return fig
+            return fig, counts  # Ensure we're returning the figure and counts
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
@@ -95,7 +95,7 @@ if 'dataframes' in st.session_state:
             filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
 
             # Plot for typanim (donut chart) first
-            fig_typanim = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")[0]
+            fig_typanim, _ = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
             st.plotly_chart(fig_typanim, use_container_width=True)
 
             # Allow user to select additional animals
@@ -105,7 +105,7 @@ if 'dataframes' in st.session_state:
             # Filter for selected additional animals
             if selected_additional:
                 filtered_additional = df_clean[df_clean['animal'].isin(selected_additional)]
-                fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")[0]
+                fig_additional_animals, _ = create_pie_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")
                 st.plotly_chart(fig_additional_animals, use_container_width=True)
 
         # If the selected file is the CTAR peripheral dataset
@@ -129,7 +129,7 @@ if 'dataframes' in st.session_state:
             # Replace typanim labels with mapped values
             filtered_df_ctar['dev_carac'] = filtered_df_ctar['dev_carac'].map(label_mapping)
 
-            fig_typanim_ctar = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")[0]
+            fig_typanim_ctar, _ = create_pie_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} (CTAR)")
             st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
 else:
