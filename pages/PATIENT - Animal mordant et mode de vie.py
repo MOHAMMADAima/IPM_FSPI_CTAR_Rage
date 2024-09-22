@@ -44,7 +44,7 @@ if 'dataframes' in st.session_state:
             ))
 
             # Update layout for better visualization, reduce top margin if CSV is peripherique
-            top_margin = 50 if is_peripherique else 100  # Adjust top margin here
+            top_margin = 10 if is_peripherique else 100  # Adjust top margin here
             fig.update_layout(
                 title_text=title,
                 margin=dict(t=top_margin, l=60, r=70, b=40),  # Adjust margins
