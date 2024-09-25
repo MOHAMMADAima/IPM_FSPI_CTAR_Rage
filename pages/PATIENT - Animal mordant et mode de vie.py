@@ -132,7 +132,7 @@ if 'dataframes' in st.session_state:
 
             # Plot for dev_carac (donut chart)
             if not filtered_df_ctar.empty:
-                fig_typanim_ctar = create_donut_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {selected_animal_ctar} ( {selected_animal_ctar} {len(df_clean)}s )", is_peripherique=True)
+                fig_typanim_ctar = create_donut_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {len(df_clean)} ( {selected_animal_ctar}s )", is_peripherique=True)
                 st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
             # Allow user to select additional animals
