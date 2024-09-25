@@ -3,11 +3,10 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # Set page title
-st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
-st.title("Distribution des patients par Âge, Genre et Lavage au savon (IPM Dataset)")
+st.set_page_config(page_title="Utilisation Savon", page_icon="🧼")
+st.title("Lavage au savon sur plaie.")
 
 def plot_age_sex_savon_distribution(ipm):
-    """Plots the age, sex, and soap usage distribution in the IPM dataset."""
     
     # Convert 'age' column to numeric, coerce errors to NaN
     ipm['age'] = pd.to_numeric(ipm['age'], errors='coerce')
@@ -95,7 +94,6 @@ def plot_age_sex_savon_distribution(ipm):
     st.plotly_chart(fig)
 
 def plot_peripheral_data(df):
-    """Processes and plots data from the peripheral dataset."""
     
     # Select relevant columns
     peripheral_data = df[['sexe', 'age', 'lavage_savon']]
@@ -113,37 +111,46 @@ def plot_peripheral_data(df):
     num_patients = peripheral_data.shape[0]
     st.write(f"Nombre de patients: {num_patients}")
 
-    # Group by age and sex, and count occurrences
-    age_sex_counts = peripheral_data.groupby(['age', 'sexe']).size().reset_index(name='count')
+    # Group by age, sex, and soap, and count occurrences
+    age_sex_savon_counts = peripheral_data.groupby(['age', 'sexe', 'lavage_savon']).size().reset_index(name='count')
 
     # Sort by age (now integers)
-    age_sex_counts = age_sex_counts.sort_values(by='age')
+    age_sex_savon_counts = age_sex_savon_counts.sort_values(by='age')
+
+    # Define color palette for bars
+    color_palette = {
+        ('M', 'OUI'): 'rgba(50, 171, 96, 0.6)',   # Green for 'M - Savon: OUI'
+        ('M', 'NON'): 'rgba(50, 171, 96, 0.9)',   # Dark green for 'M - Savon: NON'
+        ('F', 'OUI'): 'rgba(171, 50, 96, 0.6)',   # Red for 'F - Savon: OUI'
+        ('F', 'NON'): 'rgba(171, 50, 96, 0.9)'    # Dark red for 'F - Savon: NON'
+    }
 
     # Create the grouped bar chart using Plotly
     fig = go.Figure()
 
     # Iterate over each sex (M and F)
-    for sex in age_sex_counts['sexe'].unique():
-        data = age_sex_counts[age_sex_counts['sexe'] == sex]
-        
-        # Create bar traces for each sex
-        if not data.empty:
-            fig.add_trace(go.Bar(
-                x=data['age'],
-                y=data['count'],
-                name=f'{sex}',
-                marker_color='rgba(0, 0, 255, 0.6)' if sex == 'M' else 'rgba(255, 0, 0, 0.6)',  # Blue for 'M', Red for 'F'
-                base=0,  # Start from y=0
-                offsetgroup=sex,
-            ))
+    for sex in age_sex_savon_counts['sexe'].unique():
+        for savon in age_sex_savon_counts['lavage_savon'].unique():
+            data = age_sex_savon_counts[(age_sex_savon_counts['sexe'] == sex) & (age_sex_savon_counts['lavage_savon'] == savon)]
+            
+            # Create bar traces for each sex and soap usage
+            if not data.empty:
+                fig.add_trace(go.Bar(
+                    x=data['age'],
+                    y=data['count'],
+                    name=f'{sex} - Savon: {savon}',
+                    marker_color=color_palette[(sex, savon)],
+                    base=0,  # Start from y=0
+                    offsetgroup=sex,
+                ))
 
     # Update layout for better visualization
     fig.update_layout(
         barmode='stack',
-        title_text=f'Distribution des patients par Âge et Genre (sur {num_patients} patients)',
+        title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {num_patients} patients)',
         xaxis_title='Âge',
         yaxis_title='Nombre de patients',
-        legend_title='Genre',
+        legend_title='Genre et Savon',
         width=1000,
         height=600,
         xaxis={'type': 'category'},
@@ -173,13 +180,7 @@ if 'dataframes' in st.session_state:
             plot_age_sex_savon_distribution(df)
 
         # If the selected file is the peripheral CTAR dataset
-        elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            st.warning("Données pour CTAR Périphérique. Analyse en cours...")
+        elif selected_file == "CTAR_data_peripheral.csv":
+            st.info("Chargement des données périphériques...")
+            # Call the peripheral plot function
             plot_peripheral_data(df)
-
-else:
-    st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
-
-# Sidebar container with fixed width
-with st.sidebar.container():
-    st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
