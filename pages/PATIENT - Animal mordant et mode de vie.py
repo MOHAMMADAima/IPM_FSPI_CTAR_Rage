@@ -47,9 +47,9 @@ if 'dataframes' in st.session_state:
             top_margin = 50 if is_peripherique else 100  # Adjust top margin here
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=top_margin, l=60, r=70, b=40),  # Adjust margins
+                margin=dict(t=top_margin, l=70, r=70, b=40),  # Adjust margins
                 height=700,
-                width=900,
+                width=1000,
                 showlegend=True,
             )
 
