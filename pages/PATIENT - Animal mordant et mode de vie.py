@@ -72,7 +72,7 @@ if 'dataframes' in st.session_state:
             top_margin = 50 if is_peripherique else 100  # Adjust top margin here
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=top_margin, l=60, r=70, b=40),  # Adjust margins
+                margin=dict(t=top_margin, l=80, r=70, b=40),  # Adjust margins
                 height=700,
                 width=800,
                 showlegend=True,
@@ -132,7 +132,7 @@ if 'dataframes' in st.session_state:
 
             # Plot for dev_carac (donut chart)
             if not filtered_df_ctar.empty:
-                fig_typanim_ctar = create_donut_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {len(df_clean)} ( {selected_animal_ctar}s )", is_peripherique=True)
+                fig_typanim_ctar = create_donut_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {len(df_clean)}  {selected_animal_ctar}s ", is_peripherique=True)
                 st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
             # Allow user to select additional animals
