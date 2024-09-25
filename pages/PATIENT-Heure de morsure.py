@@ -67,6 +67,69 @@ def plot_hourly_sex_counts(df, selected_ctars):
     st.plotly_chart(fig)
 
 
+def plot_hourly_species_counts(df, selected_ctars):
+    """Plots the hourly count of bites per animal species."""
+    
+    # If "Tous les CTAR" is selected, use all CTARs
+    if 'Tous les CTAR' in selected_ctars:
+        selected_ctars = df['id_ctar'].unique()
+    
+    # Filter the dataframe by the selected CTARs
+    df_filtered = df[df['id_ctar'].isin(selected_ctars)]
+
+    if df_filtered.empty:
+        st.warning("Aucune donnée disponible pour les CTARs sélectionnés.")
+        return
+
+    # Extract hours and minutes for plotting
+    df_filtered[['Hour', 'Minute']] = df_filtered['heure_du_contact_cleaned'].str.split(':', expand=True)
+    
+    # Handle NaN values before conversion
+    df_filtered = df_filtered.dropna(subset=['Hour'])
+    df_filtered['Minute'] = pd.to_numeric(df_filtered['Minute'], errors='coerce').fillna(0).astype(int)
+
+    # Group by time and species to count occurrences
+    hourly_species_counts = df_filtered.groupby(['Hour', 'espece']).size().reset_index(name='count')
+
+    # Create a scatter plot with lines for each species
+    fig = go.Figure()
+
+    # Define colors for each species
+    colors = {
+        'Chien': 'brown',
+        'Chat': 'pink',
+        'Autre': 'green'  # Add a color for 'Autre'
+    }
+
+    # Add traces for each species
+    for species, color in colors.items():
+        df_species = hourly_species_counts[hourly_species_counts['espece'] == species]
+
+        fig.add_trace(go.Scatter(
+            x=df_species['Hour'],
+            y=df_species['count'],
+            mode='lines+markers',
+            name=species,
+            marker=dict(size=8, color=color),
+            line=dict(width=2)
+        ))
+
+    # Update layout
+    fig.update_layout(
+        title='Heure de morsure par espèce pour les patients des CTARs périphériques',
+        xaxis=dict(
+            title='Heures',
+            tickvals=sorted(hourly_species_counts['Hour'].unique()),  # Ensure correct x-axis ticks
+            tickangle=0  # Optional: Adjust angle for better readability
+        ),
+        yaxis=dict(title='Nombre de morsures'),
+        legend_title='Espèce'
+    )
+
+    # Show the plot
+    st.plotly_chart(fig)
+
+
 # Main Streamlit logic
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
@@ -108,8 +171,11 @@ if 'dataframes' in st.session_state:
             if not selected_ctars and not all_ctars_selected:
                 st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
             else:
-                # Call the plotting function
+                # Call the first plot function (Gender-based plot)
                 plot_hourly_sex_counts(df, selected_ctars)
+
+                # Call the second plot function (Species-based plot)
+                plot_hourly_species_counts(df, selected_ctars)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
