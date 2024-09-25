@@ -42,6 +42,9 @@ if 'dataframes' in st.session_state:
             # If "Tous" is selected, use all CTARs
             if 'Tous les CTAR' in selected_ctars:
                 selected_ctars = unique_ctars
+             # If "Tous" is selected, use all CTARs
+            elif '' in selected_ctars:
+                st.warning('Selectionnez un ou plusieurs CTAR à analyser.')
 
             # Filter the dataframe by the selected CTARs
             df = df[df['id_ctar'].isin(selected_ctars)]
