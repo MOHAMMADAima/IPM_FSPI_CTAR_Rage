@@ -94,6 +94,68 @@ def plot_age_sex_savon_distribution(ipm):
     # Show the plot
     st.plotly_chart(fig)
 
+def plot_peripheral_data(df):
+    """Processes and plots data from the peripheral dataset."""
+    
+    # Select relevant columns
+    peripheral_data = df[['sexe', 'age', 'lavage_savon']]
+
+    # Drop rows where 'lavage_savon' is 'Non rempli'
+    peripheral_data = peripheral_data[peripheral_data['lavage_savon'] != 'Non rempli']
+
+    # Convert 'age' column to numeric, coerce errors to NaN
+    peripheral_data['age'] = pd.to_numeric(peripheral_data['age'], errors='coerce')
+
+    # Drop rows with NaN in 'age' column
+    peripheral_data = peripheral_data.dropna(subset=['age'])
+
+    # Count the number of patients
+    num_patients = peripheral_data.shape[0]
+    st.write(f"Nombre de patients: {num_patients}")
+
+    # Group by age and sex, and count occurrences
+    age_sex_counts = peripheral_data.groupby(['age', 'sexe']).size().reset_index(name='count')
+
+    # Sort by age (now integers)
+    age_sex_counts = age_sex_counts.sort_values(by='age')
+
+    # Create the grouped bar chart using Plotly
+    fig = go.Figure()
+
+    # Iterate over each sex (M and F)
+    for sex in age_sex_counts['sexe'].unique():
+        data = age_sex_counts[age_sex_counts['sexe'] == sex]
+        
+        # Create bar traces for each sex
+        if not data.empty:
+            fig.add_trace(go.Bar(
+                x=data['age'],
+                y=data['count'],
+                name=f'{sex}',
+                marker_color='rgba(0, 0, 255, 0.6)' if sex == 'M' else 'rgba(255, 0, 0, 0.6)',  # Blue for 'M', Red for 'F'
+                base=0,  # Start from y=0
+                offsetgroup=sex,
+            ))
+
+    # Update layout for better visualization
+    fig.update_layout(
+        barmode='stack',
+        title_text=f'Distribution des patients par Âge et Genre (sur {num_patients} patients)',
+        xaxis_title='Âge',
+        yaxis_title='Nombre de patients',
+        legend_title='Genre',
+        width=1000,
+        height=600,
+        xaxis={'type': 'category'},
+        legend=dict(
+            orientation='h',
+            x=0, y=1.1,
+        )
+    )
+
+    # Show the plot
+    st.plotly_chart(fig)
+
 # Main Streamlit logic
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
@@ -107,13 +169,13 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
-            st.info("Chargement des données IPM...")
             # Call the IPM plot function
             plot_age_sex_savon_distribution(df)
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            st.warning("Données pour CTAR Périphérique. Analyse IPM non disponible pour ce fichier.")
+            st.warning("Données pour CTAR Périphérique. Analyse en cours...")
+            plot_peripheral_data(df)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
