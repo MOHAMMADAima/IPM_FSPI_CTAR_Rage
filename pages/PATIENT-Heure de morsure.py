@@ -40,7 +40,7 @@ if 'dataframes' in st.session_state:
             )
 
             # If "Tous" is selected, use all CTARs
-            if 'Tous' in selected_ctars:
+            if 'Tous les CTAR' in selected_ctars:
                 selected_ctars = unique_ctars
 
             # Filter the dataframe by the selected CTARs
