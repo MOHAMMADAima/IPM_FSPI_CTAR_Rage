@@ -8,6 +8,7 @@ st.title("Lavage au savon sur plaie.")
 
 def plot_age_sex_savon_distribution(ipm):
     
+    ipm=ipm.drop_duplicates(subset=['ref_mordu'])
     # Convert 'age' column to numeric, coerce errors to NaN
     ipm['age'] = pd.to_numeric(ipm['age'], errors='coerce')
 
