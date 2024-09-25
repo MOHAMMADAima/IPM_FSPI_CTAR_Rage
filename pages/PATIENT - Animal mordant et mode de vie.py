@@ -49,7 +49,7 @@ if 'dataframes' in st.session_state:
                 title_text=title,
                 margin=dict(t=top_margin, l=60, r=70, b=40),  # Adjust margins
                 height=700,
-                width=800,
+                width=900,
                 showlegend=True,
             )
 
