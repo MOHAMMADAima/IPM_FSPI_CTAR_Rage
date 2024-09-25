@@ -19,7 +19,7 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv" and 'ref_mordu' in df.columns:
-            st.write("Donnée de l'heure de morsure non disponible pour CTAR IPM.")
+            st.warning("Donnée de l'heure de morsure non disponible pour CTAR IPM.")
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv" and 'id_ctar' in df.columns:
