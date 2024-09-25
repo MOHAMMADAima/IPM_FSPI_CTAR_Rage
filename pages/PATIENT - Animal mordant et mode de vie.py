@@ -114,6 +114,8 @@ if 'dataframes' in st.session_state:
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
             df_clean = df.dropna(subset=['espece'])
 
+            df_clean = df_clean[~df_clean['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-', regex=True)]
+
             # Multi-select for CTAR centers
             unique_ctar_centers = df_clean['id_ctar'].unique().tolist()
             unique_ctar_centers.insert(0, "Tous les CTAR")
