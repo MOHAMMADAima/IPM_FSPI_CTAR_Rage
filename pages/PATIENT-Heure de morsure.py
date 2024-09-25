@@ -25,7 +25,7 @@ def plot_hourly_sex_counts(df, selected_ctars):
     df_filtered[['Hour', 'Minute']] = df_filtered['heure_du_contact_cleaned'].str.split(':', expand=True)
     
     # Handle NaN values before conversion
-    df_filtered['Hour'] = pd.to_numeric(df_filtered['Hour'], errors='coerce').fillna(0).astype(int)
+    df_filtered['Hour'] = pd.to_numeric(df_filtered['Hour'], errors='coerce').astype(int)
     df_filtered['Minute'] = pd.to_numeric(df_filtered['Minute'], errors='coerce').fillna(0).astype(int)
 
     # Group by time and sex to count occurrences
