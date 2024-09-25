@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 
 # Set page title
 st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
-st.title("Here de morsure des patients.")
+st.title("Heure de morsure des patients.")
 
 # Check if dataframes are available in session state
 if 'dataframes' in st.session_state:
