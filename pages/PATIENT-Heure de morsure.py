@@ -17,8 +17,6 @@ if 'dataframes' in st.session_state:
     if selected_file:
         df = dataframes[selected_file]
 
-
-
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv" and 'ref_mordu' in df.columns:
             st.write("Donnée de l'heure de morsure non disponible pour CTAR IPM.")
@@ -26,10 +24,10 @@ if 'dataframes' in st.session_state:
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv" and 'id_ctar' in df.columns:
             # Drop rows with NaN in 'id_ctar' column
-            df_clean = df.dropna(subset=['id_ctar'])
+            df = df.dropna(subset=['id_ctar'])
 
             # Get the unique CTARs
-            unique_ctars = df_clean['id_ctar'].unique()
+            unique_ctars = df['id_ctar'].unique()
 
             # Add a "Select All" option to the multiselect
             selected_ctars = st.multiselect(
@@ -43,67 +41,67 @@ if 'dataframes' in st.session_state:
                 selected_ctars = unique_ctars
 
             # Filter the dataframe by the selected CTARs
-            df_clean = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
+            df = df[df['id_ctar'].isin(selected_ctars)]
 
         # Heure de morsure CTAR périphériques
 
-# Extract hours and minutes for plotting
-    df[['Hour', 'Minute']] = df['heure_du_contact_cleaned'].str.split(':', expand=True)
-# Handle NaN values before conversion
-    df['Hour'] = pd.to_numeric(df['Hour'], errors='coerce').fillna(0).astype(int)
-    df['Minute'] = pd.to_numeric(df['Minute'], errors='coerce').fillna(0).astype(int)
+        # Extract hours and minutes for plotting
+            df[['Hour', 'Minute']] = df['heure_du_contact_cleaned'].str.split(':', expand=True)
+        # Handle NaN values before conversion
+            df['Hour'] = pd.to_numeric(df['Hour'], errors='coerce').fillna(0).astype(int)
+            df['Minute'] = pd.to_numeric(df['Minute'], errors='coerce').fillna(0).astype(int)
 
-# Combine hours and minutes into a single time string for precise plotting
-    df['Time'] = df['heure_du_contact_cleaned'].fillna('00:00')
+        # Combine hours and minutes into a single time string for precise plotting
+            df['Time'] = df['heure_du_contact_cleaned'].fillna('00:00')
 
-# Group by time and sex to count occurrences
-    hourly_sex_counts = df.groupby(['Hour', 'sexe']).size().reset_index(name='count')
+        # Group by time and sex to count occurrences
+            hourly_sex_counts = df.groupby(['Hour', 'sexe']).size().reset_index(name='count')
 
-# Create a scatter plot with lines for each gender
-    fig = go.Figure()
+        # Create a scatter plot with lines for each gender
+            fig = go.Figure()
 
-# Define color scales for male and female
-    male_color = 'blue'
-    female_color = 'pink'
+        # Define color scales for male and female
+            male_color = 'blue'
+            female_color = 'pink'
 
-# Add traces for each gender
-    for sex, color in [('M', male_color), ('F', female_color)]:
-        df_sex = hourly_sex_counts[hourly_sex_counts['sexe'] == sex]
+        # Add traces for each gender
+            for sex, color in [('M', male_color), ('F', female_color)]:
+                df_sex = hourly_sex_counts[hourly_sex_counts['sexe'] == sex]
 
-        fig.add_trace(go.Scatter(
-            x=df_sex['Hour'],
-            y=df_sex['count'],
-            mode='lines+markers',
-            name='Homme' if sex == 'M' else 'Femme',
-            marker=dict(size=8, color=color),
-            line=dict(width=2)
-        ))
+                fig.add_trace(go.Scatter(
+                    x=df_sex['Hour'],
+                    y=df_sex['count'],
+                    mode='lines+markers',
+                    name='Homme' if sex == 'M' else 'Femme',
+                    marker=dict(size=8, color=color),
+                    line=dict(width=2)
+                ))
 
-    # Update layout
-    fig.update_layout(
-        title='Heure de morsure par sexe',
-        xaxis=dict(title='Heure', tickvals=df_sex['Hour']),
-        yaxis=dict(title='Nombre de morsures'),
-        legend_title='Sexe'
-)
-
-
-    # Update layout with proper labels
-    fig.update_layout(
-        title='Heure de morsure par sexe pour les patients des CTARs périphériques',
-        xaxis=dict(
-            title='Heures',
-            tickvals=df_sex['Hour'],  # Ensure correct x-axis ticks
-            tickangle=0  # Optional: Adjust angle for better readability
-        ),
-        yaxis=dict(title='Nombre de morsures'),
-        legend_title='Sexe'
-    )
+            # Update layout
+            fig.update_layout(
+                title='Heure de morsure par sexe',
+                xaxis=dict(title='Heure', tickvals=df_sex['Hour']),
+                yaxis=dict(title='Nombre de morsures'),
+                legend_title='Sexe'
+        )
 
 
+            # Update layout with proper labels
+            fig.update_layout(
+                title='Heure de morsure par sexe pour les patients des CTARs périphériques',
+                xaxis=dict(
+                    title='Heures',
+                    tickvals=df_sex['Hour'],  # Ensure correct x-axis ticks
+                    tickangle=0  # Optional: Adjust angle for better readability
+                ),
+                yaxis=dict(title='Nombre de morsures'),
+                legend_title='Sexe'
+            )
 
-        # Show the plot
-    st.plotly_chart(fig)
+
+
+                # Show the plot
+            st.plotly_chart(fig)
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
