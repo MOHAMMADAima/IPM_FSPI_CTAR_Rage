@@ -18,15 +18,14 @@ def plot_hourly_sex_counts(df, selected_ctars):
     df_filtered = df[df['id_ctar'].isin(selected_ctars)]
 
     if df_filtered.empty:
-        st.warning("Veuillez selectionnez au moins un CTAR.")
+        st.warning("Aucune donnée disponible pour les CTARs sélectionnés.")
         return
 
     # Extract hours and minutes for plotting
     df_filtered[['Hour', 'Minute']] = df_filtered['heure_du_contact_cleaned'].str.split(':', expand=True)
-
     
     # Handle NaN values before conversion
-    df_filtered=df_filtered.dropna(subset=['Hour'])
+    df_filtered = df_filtered.dropna(subset=['Hour'])
     df_filtered['Minute'] = pd.to_numeric(df_filtered['Minute'], errors='coerce').fillna(0).astype(int)
 
     # Group by time and sex to count occurrences
@@ -94,15 +93,19 @@ if 'dataframes' in st.session_state:
             # Get the unique CTARs
             unique_ctars = df['id_ctar'].unique()
 
-            # Add a "Select All" option to the multiselect
-            selected_ctars = st.multiselect(
-                "Sélectionnez un ou plusieurs CTARs (ou sélectionnez 'Tous les CTAR')",
-                options=['Tous les CTAR'] + list(unique_ctars),  # Add "Tous" (All) option
-                default='Tous les CTAR'  # Default to selecting "Tous"
-            )
+            # Separate the "Tous les CTAR" option from the multiselect
+            all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
 
-            # Show a warning if no CTAR is selected
-            if not selected_ctars:
+            if not all_ctars_selected:
+                selected_ctars = st.multiselect(
+                    "Sélectionnez un ou plusieurs CTARs",
+                    options=list(unique_ctars)  # Only specific CTARs
+                )
+            else:
+                selected_ctars = ['Tous les CTAR']
+
+            # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
+            if not selected_ctars and not all_ctars_selected:
                 st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
             else:
                 # Call the plotting function
