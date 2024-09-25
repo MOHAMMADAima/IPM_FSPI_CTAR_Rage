@@ -34,8 +34,8 @@ if 'dataframes' in st.session_state:
 
             # Add a "Select All" option to the multiselect
             selected_ctars = st.multiselect(
-                "Sélectionnez un ou plusieurs CTARs (ou sélectionnez 'Tous')",
-                options=['Tous'] + list(unique_ctars),  # Add "Tous" (All) option
+                "Sélectionnez un ou plusieurs CTARs (ou sélectionnez 'Tous les CTAR')",
+                options=['Tous les CTAR'] + list(unique_ctars),  # Add "Tous" (All) option
                 default='Tous les CTAR'  # Default to selecting "Tous"
             )
 
