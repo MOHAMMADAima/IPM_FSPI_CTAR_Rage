@@ -97,7 +97,7 @@ def plot_hourly_species_counts(df, selected_ctars):
     # Define colors for each species
     colors = {
         'Chien': 'brown',
-        'Chat': 'pink',
+        'Chat': 'orange',
         'Autre': 'green'  # Add a color for 'Autre'
     }
 
