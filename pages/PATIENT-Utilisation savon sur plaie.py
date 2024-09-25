@@ -4,11 +4,11 @@ import plotly.graph_objects as go
 
 # Set page title
 st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
-st.title("Lavage au savon sur plaie")
-
+st.title("Distribution des patients par Âge, Genre et Lavage au savon (IPM Dataset)")
 
 def plot_age_sex_savon_distribution(ipm):
-    ipm= ipm.drop_duplicates(subset=['ref_mordu'])
+    """Plots the age, sex, and soap usage distribution in the IPM dataset."""
+    
     # Convert 'age' column to numeric, coerce errors to NaN
     ipm['age'] = pd.to_numeric(ipm['age'], errors='coerce')
 
@@ -60,7 +60,7 @@ def plot_age_sex_savon_distribution(ipm):
                 y=data_oui['percentage'],
                 name=f'{sex} - Savon: OUI',
                 marker_color=color_palette[(sex, 'OUI')],
-                base=0,
+                base=0,  # Start from y=0
                 offsetgroup=sex,
             ))
         
@@ -71,14 +71,14 @@ def plot_age_sex_savon_distribution(ipm):
                 y=data_non['percentage'],
                 name=f'{sex} - Savon: NON',
                 marker_color=color_palette[(sex, 'NON')],
-                base=data_oui['percentage'] if not data_oui.empty else 0,
+                base=0,  # Start from y=0 for "NON"
                 offsetgroup=sex,
             ))
 
     # Update layout for better visualization
     fig.update_layout(
-        barmode='relative',
-        title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {not_null_pairs} patients)',
+        barmode='stack',  # Change to 'stack' to stack the bars
+        title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {not_null_pairs} patients IPM)',
         xaxis_title='Âge',
         yaxis_title='Pourcentage de patients',
         legend_title='Genre et Savon',
@@ -94,7 +94,6 @@ def plot_age_sex_savon_distribution(ipm):
     # Show the plot
     st.plotly_chart(fig)
 
-
 # Main Streamlit logic
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
@@ -108,12 +107,13 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
+            st.info("Chargement des données IPM...")
             # Call the IPM plot function
             plot_age_sex_savon_distribution(df)
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            st.warning("Données pour CTAR Périphérique.. a venir")
+            st.warning("Données pour CTAR Périphérique. Analyse IPM non disponible pour ce fichier.")
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
