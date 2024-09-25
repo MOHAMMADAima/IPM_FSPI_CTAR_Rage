@@ -4,11 +4,10 @@ import plotly.graph_objects as go
 
 # Set page title
 st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
-st.title("Distribution des patients par Âge, Genre et Lavage au savon (IPM Dataset)")
+st.title("Lavage au savon sur plaie")
 
 
 def plot_age_sex_savon_distribution(ipm):
-    """Plots the age, sex, and soap usage distribution in the IPM dataset."""
     
     # Convert 'age' column to numeric, coerce errors to NaN
     ipm['age'] = pd.to_numeric(ipm['age'], errors='coerce')
@@ -79,7 +78,7 @@ def plot_age_sex_savon_distribution(ipm):
     # Update layout for better visualization
     fig.update_layout(
         barmode='relative',
-        title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {not_null_pairs} patients IPM)',
+        title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {not_null_pairs} patients)',
         xaxis_title='Âge',
         yaxis_title='Pourcentage de patients',
         legend_title='Genre et Savon',
@@ -115,7 +114,7 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            st.warning("Données pour CTAR Périphérique. Analyse IPM non disponible pour ce fichier.")
+            st.warning("Données pour CTAR Périphérique.. a venir")
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
