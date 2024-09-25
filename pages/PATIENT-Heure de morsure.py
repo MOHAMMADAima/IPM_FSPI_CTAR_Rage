@@ -25,6 +25,9 @@ if 'dataframes' in st.session_state:
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv" and 'id_ctar' in df.columns:
             # Drop rows with NaN in 'id_ctar' column
             df = df.dropna(subset=['id_ctar'])
+            df = df[~df['heure_du_contact_cleaned'].astype(str).str.contains('00:00', regex=True)]
+
+            
 
             # Get the unique CTARs
             unique_ctars = df['id_ctar'].unique()
@@ -33,7 +36,7 @@ if 'dataframes' in st.session_state:
             selected_ctars = st.multiselect(
                 "Sélectionnez un ou plusieurs CTARs (ou sélectionnez 'Tous')",
                 options=['Tous'] + list(unique_ctars),  # Add "Tous" (All) option
-                default='Tous'  # Default to selecting "Tous"
+                default='Tous les CTAR'  # Default to selecting "Tous"
             )
 
             # If "Tous" is selected, use all CTARs
