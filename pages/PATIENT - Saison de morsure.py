@@ -174,6 +174,7 @@ def plot_saison_morsure_ipm(ipm):
     st.plotly_chart(fig, use_container_width=True)
 
 def plot_saison_peripheral(df):
+    df['date_de_consultation'] = pd.to_datetime(df['date_de_consultation'], format='%d/%m/%Y', errors='coerce')
 
     # Apply the function to create the 'season' column
     df['season'] = df['date_de_consultation'].apply(get_season)
