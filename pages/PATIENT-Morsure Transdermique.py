@@ -139,7 +139,7 @@ def plot_MT_ipm(ipm):
             xaxis=dict(title="Groupe d'âge", tickfont=dict(size=10)),
             yaxis=dict(title="Nombre de MT", tickfont=dict(size=10)),
             legend=dict(title="Partie du corps :", orientation="h", yanchor="bottom", y=1.01, xanchor="auto", x=0.5),
-            height=1600,  # Adjust the height as needed
+            height=1900,  # Adjust the height as needed
             width=1000,
             margin=dict(b=250)  # Add margin at the bottom for the legend
         )
@@ -218,7 +218,7 @@ def plot_MT_peripheral(df):
             xaxis=dict(title="Groupe d'âge"),
             yaxis=dict(title="Nombre de Morsure Transdermique"),
             legend=dict(title="Partie du corps", orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.6),
-            height=700,  # Adjust the height as needed
+            height=900,  # Adjust the height as needed
             width=1000,
             margin=dict(b=100)  # Add margin at the bottom for the legend
         )
