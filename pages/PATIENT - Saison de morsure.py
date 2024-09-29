@@ -350,11 +350,12 @@ if 'dataframes' in st.session_state:
                     options=list(unique_ctars))
                 df= df[df['id_ctar'].isin(selected_ctars)]
                 plot_saison_peripheral(df)
-            elif all_ctars_selected:  
+            elif all_ctars_selected: 
+                selected_ctars="" 
                 plot_saison_peripheral(df)
 
             # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
-            elif len(selected_ctars)<1 and not all_ctars_selected:
+            elif selected_ctars=="" and not all_ctars_selected:
                 st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
            
 
