@@ -226,7 +226,6 @@ def plot_MT_peripheral(df):
         # Display the figure
     st.plotly_chart(fig)
 
-    animal_type=[i for i in df.devenir.unique()]
 
         # Create a DataFrame to store the counts of 'MT' values for each body part, age group, gender, and animal type
     mt_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'Gender', 'Animal Type', 'MT Count'])
@@ -234,15 +233,15 @@ def plot_MT_peripheral(df):
         # Count the number of 'MT' values for each body part, age group, gender, and animal type
     for part, column in body_parts.items():
         for gender in df['sexe'].dropna().unique():
-            for animal_type in df['devenir'].dropna().unique():
-                    part_counts = df[(df[column] == 1) & (df.type_contact___5== 1) & (df['sexe'] == gender) & (df['devenir'] == animal_type)].groupby('Age Group').size().reset_index(name='MT Count')
+            for animal_type in df['dev_carac'].dropna().unique():
+                    part_counts = df[(df[column] == 1) & (df.type_contact___5== 1) & (df['sexe'] == gender) & (df['dev_carac'] == animal_type)].groupby('Age Group').size().reset_index(name='MT Count')
                     part_counts['Body Part'] = part
                     part_counts['Gender'] = gender
                     part_counts['Animal Type'] = animal_type
                     mt_counts = pd.concat([mt_counts, part_counts], ignore_index=True)
 
         # Replace 'M' and 'F' with male and female icons
-    gender_icons = {'M': '♂', 'F': '♀'}
+    gender_icons = {'M': 'M', 'F': 'F'}
     mt_counts['Gender'] = mt_counts['Gender'].map(gender_icons)
 
         # Create a multi-bar plot
@@ -264,7 +263,7 @@ def plot_MT_peripheral(df):
                 'Animal Type': ''
             },
             category_orders={
-                'Gender': ['♂', '♀'], 
+                'Gender': ['M', 'F'], 
                 'Animal Type': sorted(animal_type.values())  # Use mapped values for sorting
             }
         )
