@@ -172,6 +172,7 @@ def plot_saison_peripheral(df):
 
 
     st.dataframe(df.head())
+    df['date_de_consultation']=pd.to_datetime(df['date_de_consultation'])
     # Apply the function to create the 'season' column
     df['season'] = df['date_de_consultation'].apply(get_season)
 
