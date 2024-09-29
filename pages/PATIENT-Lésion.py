@@ -131,12 +131,12 @@ def plot_cat1_peripheral(ctar):
     #ctar['nb_lesion_filled'] = ctar['nb_lesion'].fillna(-1).astype(int)
 
         # Calculate statistics, ignoring the marker value for NaNs
-    mean_lesions = ctar[ctar['nb_lesion_filled'] != -1]['nb_lesion_filled'].mean()
-    median_lesions = ctar[ctar['nb_lesion_filled'] != -1]['nb_lesion_filled'].median()
-    variance_lesions = ctar[ctar['nb_lesion_filled'] != -1]['nb_lesion_filled'].var()
+    mean_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].mean()
+    median_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].median()
+    variance_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].var()
 
         # Count the values including NaNs
-    value_counts = ctar['nb_lesion_filled'].value_counts().sort_index()
+    value_counts = ctar['nb_lesion'].value_counts().sort_index()
 
         # Convert the index to a list of strings for x-axis labeling, converting -1 back to 'NaN'
     x_labels = [str(x) if x != -1 else 'NaN' for x in value_counts.index]
