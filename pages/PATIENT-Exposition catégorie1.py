@@ -39,7 +39,7 @@ def plot_cat1_ipm(ipm):
 
         # Count the number of 'LPS' values for each body part and age group
     for part, column in body_parts.items():
-            part_counts = ipm[ipm[column] == 'LPS'].groupby('Age Group').size().reset_index(name='LPS Count')
+            part_counts = ipm[ipm[column] == '1'].groupby('Age Group').size().reset_index(name='LPS Count')
             part_counts['Body Part'] = part
             lps_counts = pd.concat([lps_counts, part_counts], ignore_index=True)
 
@@ -59,10 +59,45 @@ def plot_cat1_ipm(ipm):
 
 def plot_cat1_peripheral(df):
 
-    ## A REMPLIR   
+    bins = list(range(0, 105, 5)) + [float('inf')]
+    labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
 
+        # Categorize ages into defined bins
+    age_groups = pd.cut(df['age'], bins=bins, labels=labels, right=False)
+    df['Age Group'] = age_groups
 
-    fig=''
+        # Define body parts and columns to check for 'LPS' values
+    body_parts = {
+            'Tête et Cou': 'singes_des_legions__1',
+            'Bras et Avant-bras': 'singes_des_legions__2',
+            'Main': 'singes_des_legions__3',
+            'Cuisse et Jambe': 'singes_des_legions__4',
+            'Pied': 'singes_des_legions__5',
+            'Autres': 'singes_des_legions__9',
+            'Dos et Torse': 'singes_des_legions__6',
+            'Parties génitales': 'singes_des_legions__7'
+        }
+
+        # Create a DataFrame to store the counts of 'LPS' values for each body part and age group
+    lps_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'LPS Count'])
+
+        # Count the number of 'LPS' values for each body part and age group
+    for part, column in body_parts.items():
+            part_counts = df[df[column] == 'LPS'].groupby('Age Group').size().reset_index(name='LPS Count')
+            part_counts['Body Part'] = part
+            lps_counts = pd.concat([lps_counts, part_counts], ignore_index=True)
+
+        # Create a multi-bar plot
+    fig = px.bar(
+            lps_counts, 
+            x='Age Group', 
+            y='LPS Count', 
+            color='Body Part', 
+            barmode='group',
+            title="Proportion des patients qui ont l'exposition de catégorie 1 (léchage de la peau saine 'LPS') par âge et partie du corps",
+            labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
+        )
+
 
     # Show the plot in Streamlit
     st.plotly_chart(fig, use_container_width=True)
