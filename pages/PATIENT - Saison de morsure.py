@@ -181,7 +181,7 @@ def plot_saison_peripheral(df):
 
     # Group by month, year, and sexe to count the number of patients for each sex
     monthly_sex_counts = df.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
-    st.show(monthly_sex_counts)
+    st.dataframe(monthly_sex_counts.head())
 
     # Define the month order for consistent x-axis labeling (January to December)
     months = list(range(1, 13))  # January to December
