@@ -179,6 +179,7 @@ def plot_saison_peripheral(df):
     # Create new columns for month and year
     df['mois'] = df['date_de_consultation'].dt.month
     df['Annee'] = df['date_de_consultation'].dt.year
+    df=df[df['Annee']<=2024]
     st.dataframe(df.head())
 
     # Group by month, year, and sexe to count the number of patients for each sex
@@ -354,7 +355,7 @@ if 'dataframes' in st.session_state:
                 plot_saison_peripheral(df)
             elif all_ctars_selected and not selected_ctars :  
                 plot_saison_peripheral(df)
-                
+
             # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
             elif not selected_ctars and not all_ctars_selected:
                 st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
