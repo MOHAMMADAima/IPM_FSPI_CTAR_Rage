@@ -170,6 +170,7 @@ def plot_saison_morsure_ipm(ipm):
     st.plotly_chart(fig, use_container_width=True)
 
 def plot_saison_peripheral(df):
+
     df['date_de_consultation'] = pd.to_datetime(df['date_de_consultation'], format='%d/%m/%Y', errors='coerce')
 
     # Apply the function to create the 'season' column
@@ -332,10 +333,12 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
+            df=dataframes
             plot_saison_morsure_ipm(df)
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
+            df=dataframes
             # Drop rows with NaN in 'id_ctar' column
             df = df.dropna(subset=['id_ctar'])
 
