@@ -336,7 +336,7 @@ if 'dataframes' in st.session_state:
             plot_saison_morsure_ipm(df)
 
         # If the selected file is the peripheral CTAR dataset
-        elif selected_file == "CTAR_data_peripheral.csv":
+        elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
 
 
             # Multi-select for CTAR centers
