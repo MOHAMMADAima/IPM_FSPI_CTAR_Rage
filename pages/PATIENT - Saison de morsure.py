@@ -338,18 +338,31 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
+            # Drop rows with NaN in 'id_ctar' column
+            df = df.dropna(subset=['id_ctar'])
 
+            # Drop rows where 'heure_du_contact_cleaned' contains '00:00' (midnight)
+            df = df[~df['heure_du_contact_cleaned'].astype(str).str.contains('00:00')]
 
-            # Multi-select for CTAR centers
-            unique_ctar_centers = df['id_ctar'].unique().tolist()
-            unique_ctar_centers.insert(0, "Tous les CTAR")
-            selected_ctars = st.multiselect("Sélectionnez les CTAR", options=unique_ctar_centers, default="Tous les CTAR")
+            # Get the unique CTARs
+            unique_ctars = df['id_ctar'].unique()
 
-            if "Tous les CTAR" in selected_ctars:
-                filtered_df = df
-                plot_saison_peripheral(filtered_df)
+            # Separate the "Tous les CTAR" option from the multiselect
+            all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
+
+            if not all_ctars_selected:
+                selected_ctars = st.multiselect(
+                    "Sélectionnez un ou plusieurs CTARs",
+                    options=list(unique_ctars)  # Only specific CTARs
+                )
             else:
-                filtered_df = df[df['id_ctar'].isin(selected_ctars)]
-                plot_saison_peripheral(filtered_df)
+                selected_ctars = ['Tous les CTAR']
 
-          
+            # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
+            if not selected_ctars and not all_ctars_selected:
+                st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
+            else:
+                # Call the first plot function (Gender-based plot)
+                plot_saison_peripheral(df, selected_ctars)
+
+
