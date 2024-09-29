@@ -170,7 +170,6 @@ def plot_saison_morsure_ipm(ipm):
 
 def plot_saison_peripheral(df):
 
-    #df['date_de_consultation'] = pd.to_datetime(df['date_de_consultation'], format='%d/%m/%Y', errors='coerce')
 
     # Apply the function to create the 'season' column
     df['season'] = df['date_de_consultation'].apply(get_season)
@@ -352,8 +351,7 @@ if 'dataframes' in st.session_state:
                 df= df[df['id_ctar'].isin(selected_ctars)]
                 plot_saison_peripheral(df)
             else:
-                selected_ctars = ['Tous les CTAR']
-                df=df[df['id_ctar'].isin(selected_ctars)]
+                
                 plot_saison_peripheral(df)
 
 
