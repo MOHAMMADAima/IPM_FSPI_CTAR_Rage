@@ -116,6 +116,8 @@ def plot_cat1_peripheral(ctar):
             '06': '6', '07': '7', '08': '8', '09': '9', '022': '22', 
             '052': '52', '002': '2', '021': '21'
         })
+    
+    ctar=ctar.dropna(subset=['nb_lesion'])
 
         # Replace NaN values for specific rows and columns
     ctar.at[26659, 'ctar'] = 'Antsohihy'
@@ -124,14 +126,9 @@ def plot_cat1_peripheral(ctar):
     ctar.at[42574, 'ctar'] = 'Fianarantsoa'
     ctar.at[42575, 'ctar'] = 'Fianarantsoa'
 
-    non_rempli_cols = ['lavage_savon', 'sat', 'vat', 'vaccin_antirabique', 'antibiotique']
-    non_rempli_rows = [76734, 76902, 76994]
-    for col in non_rempli_cols:
-        for row in non_rempli_rows:
-            ctar.at[row, col] = 'Non rempli'
-
+   
         # Fill NaNs with -1 and convert to int
-    ctar['nb_lesion_filled'] = ctar['nb_lesion'].fillna(-1).astype(int)
+    #ctar['nb_lesion_filled'] = ctar['nb_lesion'].fillna(-1).astype(int)
 
         # Calculate statistics, ignoring the marker value for NaNs
     mean_lesions = ctar[ctar['nb_lesion_filled'] != -1]['nb_lesion_filled'].mean()
