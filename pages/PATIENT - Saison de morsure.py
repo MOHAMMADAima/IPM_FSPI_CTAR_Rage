@@ -14,16 +14,8 @@ def plot_saison_morsure_ipm(ipm):
     # Get the first dataframe uploaded
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))
 
-    # Convert date columns
-    ipm['dat_consu'] = pd.to_datetime(ipm['dat_consu'], format='%d/%m/%Y', errors='coerce')
-    ipm['vacc_vero_date'] = pd.to_datetime(ipm['vacc_vero_date'], format='%d/%m/%Y', errors='coerce')
-    ipm['vacc_sour_date'] = pd.to_datetime(ipm['vacc_sour_date'], format='%d/%m/%Y', errors='coerce')
-
-    # Create the new date column with the required logic
-    ipm['new_date_column'] = ipm['dat_consu'].fillna(ipm['vacc_vero_date']).fillna(ipm['vacc_sour_date'])
-
-    # Fill missing values in 'sexe' column
-    ipm['sexe'] = ipm.groupby('ref_mordu')['sexe'].transform(lambda x: x.ffill().bfill())
+    
+    
 
     # Define a function to map dates to seasons
     def get_season(date):
@@ -39,11 +31,11 @@ def plot_saison_morsure_ipm(ipm):
             return 'Ritinina (hiver)'
 
     # Apply the function to create the 'season' column
-    ipm['season'] = ipm['new_date_column'].apply(get_season)
+    ipm['season'] = ipm['date_consu'].apply(get_season)
 
     # Create new columns for month and year
-    ipm['month'] = ipm['new_date_column'].dt.month
-    ipm['year'] = ipm['new_date_column'].dt.year
+    ipm['month'] = ipm['date_consu'].dt.month
+    ipm['year'] = ipm['date_consu'].dt.year
 
     # Group by month, year, and sexe to count the number of patients for each sex
     monthly_sex_counts = ipm.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
