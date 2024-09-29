@@ -149,7 +149,7 @@ def plot_cat1_peripheral(ctar):
     fig = go.Figure()
 
     fig.add_trace(go.Bar(
-            x=int(x_labels),
+            x=(x_labels),
             y=value_counts.values,
             marker_color=color_scale,
             name='Nombre de patients'
@@ -157,7 +157,7 @@ def plot_cat1_peripheral(ctar):
 
         # Add mean and median lines
     fig.add_trace(go.Scatter(
-            x=int(x_labels),
+            x=(x_labels),
             y=[mean_lesions] * len(x_labels),
             mode='lines',
             line=dict(color='red', dash='dash'),
@@ -165,7 +165,7 @@ def plot_cat1_peripheral(ctar):
         ))
 
     fig.add_trace(go.Scatter(
-            x=int(x_labels),
+            x=(x_labels),
             y=[median_lesions] * len(x_labels),
             mode='lines',
             line=dict(color='green', dash='solid'),
