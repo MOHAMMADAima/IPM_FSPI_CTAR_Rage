@@ -337,9 +337,6 @@ if 'dataframes' in st.session_state:
             # Drop rows with NaN in 'id_ctar' column
             df = df.dropna(subset=['id_ctar'])
 
-            # Drop rows where 'heure_du_contact_cleaned' contains '00:00' (midnight)
-            df = df[~df['heure_du_contact_cleaned'].astype(str).str.contains('00:00')]
-
             # Get the unique CTARs
             unique_ctars = df['id_ctar'].unique()
 
@@ -349,16 +346,18 @@ if 'dataframes' in st.session_state:
             if not all_ctars_selected:
                 selected_ctars = st.multiselect(
                     "Sélectionnez un ou plusieurs CTARs",
-                    options=list(unique_ctars)  # Only specific CTARs
-                )
+                    options=list(unique_ctars))  # Only specific CTARs
+                df= df[df['id_ctar'].isin(selected_ctars)]
             else:
                 selected_ctars = ['Tous les CTAR']
+                df=df[df['id_ctar'].isin(selected_ctars)]
+
 
             # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
             if not selected_ctars and not all_ctars_selected:
                 st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
             else:
                 # Call the first plot function (Gender-based plot)
-                plot_saison_peripheral(df, selected_ctars)
+                plot_saison_peripheral(df)
 
 
