@@ -329,16 +329,15 @@ if 'dataframes' in st.session_state:
 
     # Load the selected dataframe
     if selected_file:
-        df = dataframes[selected_file]
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
-            df=dataframes
+            df = dataframes[selected_file]
             plot_saison_morsure_ipm(df)
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            df=dataframes
+            df = dataframes[selected_file]
             # Drop rows with NaN in 'id_ctar' column
             df = df.dropna(subset=['id_ctar'])
 
