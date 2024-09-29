@@ -78,6 +78,90 @@ def plot_MT_ipm(ipm):
         # Display the figure
     st.plotly_chart(fig)
 
+    # Map animal type letters to the corresponding labels
+    animal_type_mapping = {
+            'A': 'Sauvage', 
+            'B': 'Errant disparu', 
+            'C': 'Errant vivant', 
+            'D': 'Domestique Propriétaire Connu', 
+            'E': 'Domestique Disparu', 
+            'F': 'Domestique Abbatu', 
+            'G': 'Domestique Mort'
+        }
+
+        # Replace 'typanim' column values with the corresponding labels
+    ipm['typanim'] = ipm['typanim'].map(animal_type_mapping)
+
+        # Create a DataFrame to store the counts of 'MT' values for each body part, age group, gender, and animal type
+    mt_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'Gender', 'Animal Type', 'MT Count'])
+
+        # Count the number of 'MT' values for each body part, age group, gender, and animal type
+    for part, column in body_parts.items():
+        for gender in ipm['sexe'].dropna().unique():
+            for animal_type in ipm['typanim'].dropna().unique():
+                    part_counts = ipm[(ipm[column] == 'MT') & (ipm['sexe'] == gender) & (ipm['typanim'] == animal_type)].groupby('Age Group').size().reset_index(name='MT Count')
+                    part_counts['Body Part'] = part
+                    part_counts['Gender'] = gender
+                    part_counts['Animal Type'] = animal_type
+                    mt_counts = pd.concat([mt_counts, part_counts], ignore_index=True)
+
+        # Replace 'M' and 'F' with male and female icons
+    gender_icons = {'M': '♂', 'F': '♀'}
+    mt_counts['Gender'] = mt_counts['Gender'].map(gender_icons)
+
+        # Create a multi-bar plot
+    fig2 = px.bar(
+            mt_counts, 
+            x='Age Group', 
+            y='MT Count', 
+            color='Body Part', 
+            barmode='group',
+            facet_col='Gender', 
+            facet_col_wrap=2, 
+            facet_row='Animal Type',
+            title="Nombre de lésions 'MT' par groupe d'âge, partie du corps, sexe et type d'animal",
+            labels={
+                'MT Count': 'Nombre de MT', 
+                'Age Group': "Groupe d'âge", 
+                'Body Part': 'Partie du corps', 
+                'Gender': 'Sexe', 
+                'Animal Type': ''
+            },
+            category_orders={
+                'Gender': ['♂', '♀'], 
+                'Animal Type': sorted(animal_type_mapping.values())  # Use mapped values for sorting
+            }
+        )
+
+        # Update layout
+    fig2.update_layout(
+            title="Facteurs de risque des morsures transdermiques (MT) : âge, partie du corps, sexe et type d'animal",
+            xaxis=dict(title="Groupe d'âge", tickfont=dict(size=10)),
+            yaxis=dict(title="Nombre de MT", tickfont=dict(size=10)),
+            legend=dict(title="Partie du corps :", orientation="h", yanchor="bottom", y=1.01, xanchor="auto", x=0.5),
+            height=1600,  # Adjust the height as needed
+            width=1000,
+            margin=dict(b=250)  # Add margin at the bottom for the legend
+        )
+
+        # Zoom into individual subplots
+    fig2.update_yaxes(matches=None)  # Allow individual zooming for subplots
+
+        # Reduce the size of the 'typanim' value labels
+    fig2.for_each_annotation(lambda a: a.update(text=a.text.split('=')[-1]))
+
+        # Set the same size for all x and y labels
+    fig2.update_xaxes(tickfont=dict(size=10))
+    fig2.update_yaxes(tickfont=dict(size=10))
+
+        # Align y-axis labels on the left
+    fig2.update_yaxes(automargin=True)
+
+        # Display the figure
+    st.plotly_chart(fig2)
+
+
+
 def plot_MT_peripheral(df):
 
     bins = list(range(0, 105, 5)) + [float('inf')]
@@ -141,6 +225,9 @@ def plot_MT_peripheral(df):
 
         # Display the figure
     st.plotly_chart(fig)
+
+
+
 
 # Main Streamlit logic
 if 'dataframes' in st.session_state:
