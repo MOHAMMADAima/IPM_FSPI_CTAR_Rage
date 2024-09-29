@@ -139,7 +139,7 @@ def plot_cat1_peripheral(ctar):
     value_counts = ctar['nb_lesion'].value_counts().sort_index()
 
         # Convert the index to a list of strings for x-axis labeling, converting -1 back to 'NaN'
-    x_labels = [str(x) if x != -1 else 'NaN' for x in value_counts.index]
+    x_labels = [int(x) if x != -1 else 'NaN' for x in value_counts.index]
 
         # Create color scale based on counts
     dark_oranges = px.colors.sequential.Oranges[::-1]  # Reverse the Oranges scale to get darker shades
@@ -149,7 +149,7 @@ def plot_cat1_peripheral(ctar):
     fig = go.Figure()
 
     fig.add_trace(go.Bar(
-            x=x_labels,
+            x=int(x_labels),
             y=value_counts.values,
             marker_color=color_scale,
             name='Nombre de patients'
@@ -157,7 +157,7 @@ def plot_cat1_peripheral(ctar):
 
         # Add mean and median lines
     fig.add_trace(go.Scatter(
-            x=x_labels,
+            x=int(x_labels),
             y=[mean_lesions] * len(x_labels),
             mode='lines',
             line=dict(color='red', dash='dash'),
@@ -165,7 +165,7 @@ def plot_cat1_peripheral(ctar):
         ))
 
     fig.add_trace(go.Scatter(
-            x=x_labels,
+            x=int(x_labels),
             y=[median_lesions] * len(x_labels),
             mode='lines',
             line=dict(color='green', dash='solid'),
