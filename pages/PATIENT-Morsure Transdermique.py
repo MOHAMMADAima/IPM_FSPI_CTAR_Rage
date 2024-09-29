@@ -141,7 +141,7 @@ def plot_MT_ipm(ipm):
             legend=dict(title="Partie du corps :", orientation="h", yanchor="bottom", y=1.01, xanchor="auto", x=0.5),
             height=1900,  # Adjust the height as needed
             width=1000,
-            margin=dict(b=250)  # Add margin at the bottom for the legend
+            margin=dict(b=20)  # Add margin at the bottom for the legend
         )
 
         # Zoom into individual subplots
