@@ -26,6 +26,7 @@ def plot_saison_morsure_ipm(ipm):
     
     # Get the first dataframe uploaded
     ipm=ipm.drop_duplicates(subset=['ref_mordu'])
+    ipm['dat_consu'] = pd.to_datetime(ipm['dat_consu'], format='%d/%m/%Y', errors='coerce')
 
     # Apply the function to create the 'season' column
     ipm['season'] = ipm['dat_consu'].apply(get_season)
