@@ -104,7 +104,7 @@ def plot_MT_peripheral(df):
         # Count the number of 'MT' values for each body part, age group, and gender
     for part, column in body_parts.items():
             for gender in df['sexe'].dropna().unique():
-                part_counts = df[(df[column] == '1') & (df.type_contact___5== '1')& (df['sexe'] == gender)].groupby('Age Group').size().reset_index(name='MT Count')
+                part_counts = df[(df[column] == 1) & (df.type_contact___5== 1)& (df['sexe'] == gender)].groupby('Age Group').size().reset_index(name='MT Count')
                 part_counts['Body Part'] = part
                 part_counts['Gender'] = gender
                 mt_counts = pd.concat([mt_counts, part_counts], ignore_index=True)
