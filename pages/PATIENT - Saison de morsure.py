@@ -24,9 +24,9 @@ def get_season(date):
 
 def plot_saison_morsure_ipm(ipm):
     
-    ipm=ipm.drop_duplicates(subset=['ref_mordu'])
     # Get the first dataframe uploaded
     df_name, ipm = next(iter(st.session_state['dataframes'].items()))
+    ipm=ipm.drop_duplicates(subset=['ref_mordu'])
 
     # Apply the function to create the 'season' column
     ipm['season'] = ipm['dat_consu'].apply(get_season)
@@ -170,6 +170,8 @@ def plot_saison_morsure_ipm(ipm):
     st.plotly_chart(fig, use_container_width=True)
 
 def plot_saison_peripheral(df):
+
+    df_name, df = next(iter(st.session_state['dataframes'].items()))
 
     df['date_de_consultation'] = pd.to_datetime(df['date_de_consultation'], format='%d/%m/%Y', errors='coerce')
 
