@@ -264,7 +264,7 @@ def plot_MT_peripheral(df):
             },
             category_orders={
                 'Gender': ['M', 'F'], 
-                'Animal Type': sorted(df['dev_carac'].dropna().unique().values())  # Use mapped values for sorting
+                'Animal Type': sorted(df['dev_carac'].dropna().unique())  # Use mapped values for sorting
             }
         )
 
