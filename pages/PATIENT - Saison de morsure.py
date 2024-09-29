@@ -178,6 +178,7 @@ def plot_saison_peripheral(df):
     # Create new columns for month and year
     df['mois'] = df['date_de_consultation'].dt.month
     df['Annee'] = df['date_de_consultation'].dt.year
+    st.dataframe(df.head())
 
     # Group by month, year, and sexe to count the number of patients for each sex
     monthly_sex_counts = df.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
