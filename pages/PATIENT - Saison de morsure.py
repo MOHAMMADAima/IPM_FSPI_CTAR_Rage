@@ -345,20 +345,18 @@ if 'dataframes' in st.session_state:
 
             # Separate the "Tous les CTAR" option from the multiselect
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
-
-            if not all_ctars_selected:
-                selected_ctars = st.multiselect(
+            selected_ctars = st.multiselect(
                     "Sélectionnez un ou plusieurs CTARs",
-                    options=list(unique_ctars))  # Only specific CTARs
+                    options=list(unique_ctars))
+
+            if not all_ctars_selected and selected_ctars:
                 df= df[df['id_ctar'].isin(selected_ctars)]
                 plot_saison_peripheral(df)
-            else:
-                
+            elif all_ctars_selected and not selected_ctars :  
                 plot_saison_peripheral(df)
-
-
+                
             # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
-            if not selected_ctars and not all_ctars_selected:
+            elif not selected_ctars and not all_ctars_selected:
                 st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
            
 
