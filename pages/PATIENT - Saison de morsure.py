@@ -170,7 +170,7 @@ def plot_saison_morsure_ipm(ipm):
     st.plotly_chart(fig, use_container_width=True)
 
 def plot_saison_peripheral(df):
-    df['date_de_consultation'] = pd.to_datetime(df['date_de_consultation'], format='%Y/%m/%d', errors='coerce')
+    df['date_de_consultation'] = pd.to_datetime(df['date_de_consultation'], format='%d/%m/%Y', errors='coerce')
 
     # Apply the function to create the 'season' column
     df['season'] = df['date_de_consultation'].apply(get_season)
@@ -181,6 +181,7 @@ def plot_saison_peripheral(df):
 
     # Group by month, year, and sexe to count the number of patients for each sex
     monthly_sex_counts = df.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
+    st.show(monthly_sex_counts)
 
     # Define the month order for consistent x-axis labeling (January to December)
     months = list(range(1, 13))  # January to December
