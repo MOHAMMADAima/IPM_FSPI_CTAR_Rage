@@ -68,14 +68,14 @@ def plot_cat1_peripheral(df):
 
         # Define body parts and columns to check for 'LPS' values
     body_parts = {
-            'Tête et Cou': 'singes_des_legions__1',
-            'Bras et Avant-bras': 'singes_des_legions__2',
-            'Main': 'singes_des_legions__3',
-            'Cuisse et Jambe': 'singes_des_legions__4',
-            'Pied': 'singes_des_legions__5',
-            'Autres': 'singes_des_legions__9',
-            'Dos et Torse': 'singes_des_legions__6',
-            'Parties génitales': 'singes_des_legions__7'
+            'Tête et Cou': 'singes_des_legions___1',
+            'Bras et Avant-bras': 'singes_des_legions___2',
+            'Main': 'singes_des_legions___3',
+            'Cuisse et Jambe': 'singes_des_legions___4',
+            'Pied': 'singes_des_legions___5',
+            'Autres': 'singes_des_legions___9',
+            'Dos et Torse': 'singes_des_legions___6',
+            'Parties génitales': 'singes_des_legions___7'
         }
 
         # Create a DataFrame to store the counts of 'LPS' values for each body part and age group
