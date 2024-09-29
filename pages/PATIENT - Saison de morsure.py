@@ -31,11 +31,11 @@ def plot_saison_morsure_ipm(ipm):
             return 'Ritinina (hiver)'
 
     # Apply the function to create the 'season' column
-    ipm['season'] = ipm['date_de_consultation'].apply(get_season)
+    ipm['season'] = ipm['dat_consu'].apply(get_season)
 
     # Create new columns for month and year
-    ipm['month'] = ipm['date_de_consultation'].dt.month
-    ipm['year'] = ipm['date_de_consultation'].dt.year
+    ipm['month'] = ipm['dat_consu'].dt.month
+    ipm['year'] = ipm['dat_consu'].dt.year
 
     # Group by month, year, and sexe to count the number of patients for each sex
     monthly_sex_counts = ipm.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
