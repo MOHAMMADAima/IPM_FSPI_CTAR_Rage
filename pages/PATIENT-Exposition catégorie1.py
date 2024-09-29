@@ -39,7 +39,7 @@ def plot_cat1_ipm(ipm):
 
         # Count the number of 'LPS' values for each body part and age group
     for part, column in body_parts.items():
-            part_counts = ipm[ipm[column] == '1'].groupby('Age Group').size().reset_index(name='LPS Count')
+            part_counts = ipm[ipm[column] == 'LPS'].groupby('Age Group').size().reset_index(name='LPS Count')
             part_counts['Body Part'] = part
             lps_counts = pd.concat([lps_counts, part_counts], ignore_index=True)
 
@@ -83,7 +83,7 @@ def plot_cat1_peripheral(df):
 
         # Count the number of 'LPS' values for each body part and age group
     for part, column in body_parts.items():
-            part_counts = df[df[column] == 'LPS'].groupby('Age Group').size().reset_index(name='LPS Count')
+            part_counts = df[df[column] == '1'].groupby('Age Group').size().reset_index(name='LPS Count')
             part_counts['Body Part'] = part
             lps_counts = pd.concat([lps_counts, part_counts], ignore_index=True)
 
