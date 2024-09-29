@@ -184,7 +184,7 @@ def plot_saison_peripheral(df):
     df['year'] = df['date_de_consultation'].dt.year
 
     # Group by month, year, and sexe to count the number of patients for each sex
-    monthly_sex_counts = df.groupby(['month', 'year', 'sexe']).size().reset_index(name='count')
+    monthly_sex_counts = df.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
 
     # Define the month order for consistent x-axis labeling (January to December)
     months = list(range(1, 13))  # January to December
@@ -206,14 +206,14 @@ def plot_saison_peripheral(df):
     female_colors = pc.sequential.Reds[::-1]  # Shades of pink
 
     # Sort years in descending order to show recent years first
-    years_sorted = sorted(monthly_sex_counts['year'].unique(), reverse=True)
+    years_sorted = sorted(monthly_sex_counts['Annee'].unique(), reverse=True)
 
     # Add scatter plot points for each year and sex (Male and Female)
     sexes = ['M', 'F']
     for i, year in enumerate(years_sorted):
         for j, sex in enumerate(sexes):
-            df_year_sex = monthly_sex_counts[(monthly_sex_counts['year'] == year) & (monthly_sex_counts['sexe'] == sex)]
-            df_year_sex = df_year_sex.set_index('month').reindex(months).reset_index()
+            df_year_sex = monthly_sex_counts[(monthly_sex_counts['Annee'] == year) & (monthly_sex_counts['sexe'] == sex)]
+            df_year_sex = df_year_sex.set_index('mois').reindex(months).reset_index()
             df_year_sex['count'] = df_year_sex['count'].fillna(0)
             
             # Determine color based on gender
@@ -223,7 +223,7 @@ def plot_saison_peripheral(df):
                 color = female_colors[i % len(female_colors)]
 
             fig.add_trace(go.Scatter(
-                x=df_year_sex['month'],
+                x=df_year_sex['mois'],
                 y=df_year_sex['count'],
                 mode='lines+markers',
                 name=f"{int(year)} - {'Homme' if sex == 'M' else 'Femme'}",  # Ensure year and sex are displayed
