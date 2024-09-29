@@ -181,7 +181,6 @@ if 'dataframes' in st.session_state:
             plot_age_sex_savon_distribution(df)
 
         # If the selected file is the peripheral CTAR dataset
-        elif selected_file == "CTAR_data_peripheral.csv":
-            st.info("Chargement des données périphériques...")
+        elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
             # Call the peripheral plot function
             plot_peripheral_data(df)
