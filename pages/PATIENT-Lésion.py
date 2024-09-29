@@ -128,7 +128,7 @@ def plot_cat1_peripheral(ctar):
     non_rempli_rows = [76734, 76902, 76994]
     for col in non_rempli_cols:
         for row in non_rempli_rows:
-                ctar.at[row, col] = 'Non rempli'
+            ctar.at[row, col] = 'Non rempli'
 
         # Fill NaNs with -1 and convert to int
     ctar['nb_lesion_filled'] = ctar['nb_lesion'].fillna(-1).astype(int)
@@ -206,11 +206,6 @@ def plot_cat1_peripheral(ctar):
     st.write(f'Variance des lésions: {variance_lesions:.2f}')
 
     
-
-
-
-    # Show the plot in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
 
 # Main Streamlit logic
 if 'dataframes' in st.session_state:
