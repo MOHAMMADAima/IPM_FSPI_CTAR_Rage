@@ -31,10 +31,6 @@ def plot_saison_morsure_ipm(ipm):
     # Apply the function to create the 'season' column
     ipm['season'] = ipm['dat_consu'].apply(get_season)
 
-    # Create new columns for month and year
-    ipm['month'] = ipm['dat_consu'].dt.month
-    ipm['year'] = ipm['dat_consu'].dt.year
-
     # Group by month, year, and sexe to count the number of patients for each sex
     monthly_sex_counts = ipm.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
 
@@ -180,8 +176,8 @@ def plot_saison_peripheral(df):
     df['season'] = df['date_de_consultation'].apply(get_season)
 
     # Create new columns for month and year
-    df['month'] = df['date_de_consultation'].dt.month
-    df['year'] = df['date_de_consultation'].dt.year
+    df['mois'] = df['date_de_consultation'].dt.month
+    df['Annee'] = df['date_de_consultation'].dt.year
 
     # Group by month, year, and sexe to count the number of patients for each sex
     monthly_sex_counts = df.groupby(['mois', 'Annee', 'sexe']).size().reset_index(name='count')
