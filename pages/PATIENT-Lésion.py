@@ -6,7 +6,7 @@ import plotly.colors as pc
 
 # Set page title
 st.set_page_config(page_title="Saison Morsure", page_icon="")
-st.title("Exposition catégorie 1 (léchage sur peau saine LPS)")
+st.title("Nombre de lésions par patient.")
 
 
 def plot_cat1_ipm(ipm):
