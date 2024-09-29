@@ -329,15 +329,14 @@ if 'dataframes' in st.session_state:
 
     # Load the selected dataframe
     if selected_file:
+        df = dataframes[selected_file]
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
-            df = dataframes[selected_file]
             plot_saison_morsure_ipm(df)
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            df = dataframes[selected_file]
             # Drop rows with NaN in 'id_ctar' column
             df = df.dropna(subset=['id_ctar'])
 
@@ -352,9 +351,11 @@ if 'dataframes' in st.session_state:
                     "Sélectionnez un ou plusieurs CTARs",
                     options=list(unique_ctars))  # Only specific CTARs
                 df= df[df['id_ctar'].isin(selected_ctars)]
+                plot_saison_peripheral(df)
             else:
                 selected_ctars = ['Tous les CTAR']
                 df=df[df['id_ctar'].isin(selected_ctars)]
+                plot_saison_peripheral(df)
 
 
             # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
