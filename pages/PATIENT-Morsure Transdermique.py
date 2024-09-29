@@ -226,9 +226,10 @@ def plot_MT_peripheral(df):
         # Display the figure
     st.plotly_chart(fig)
 
-
+     
         # Create a DataFrame to store the counts of 'MT' values for each body part, age group, gender, and animal type
     mt_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'Gender', 'Animal Type', 'MT Count'])
+    df = df[~df['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
 
         # Count the number of 'MT' values for each body part, age group, gender, and animal type
     for part, column in body_parts.items():
