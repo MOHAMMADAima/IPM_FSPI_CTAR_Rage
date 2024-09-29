@@ -171,6 +171,7 @@ def plot_saison_morsure_ipm(ipm):
 def plot_saison_peripheral(df):
 
 
+    st.dataframe(df.head())
     # Apply the function to create the 'season' column
     df['season'] = df['date_de_consultation'].apply(get_season)
 
