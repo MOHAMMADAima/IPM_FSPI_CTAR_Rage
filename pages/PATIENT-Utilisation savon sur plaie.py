@@ -184,3 +184,8 @@ if 'dataframes' in st.session_state:
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
             # Call the peripheral plot function
             plot_peripheral_data(df)
+
+
+# Sidebar container with fixed width
+with st.sidebar.container():
+    st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
