@@ -3,8 +3,8 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # Set page title
-st.set_page_config(page_title="Espèce responsable pour la morsure", page_icon="🐕")
-st.title("Espèce responsable pour la morsure des patients")
+st.set_page_config(page_title="Espèce responsable et mode de vie.", page_icon="🐕")
+st.title("Espèce responsable et leur mode de vie.")
 
 # Label mapping for typanim values
 label_mapping = {
