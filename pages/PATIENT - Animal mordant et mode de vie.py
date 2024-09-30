@@ -107,38 +107,23 @@ if 'dataframes' in st.session_state:
                     st.plotly_chart(fig_additional_animals, use_container_width=True)
 
         def anim_mord_perif(df):
-            df_clean = df.dropna(subset=['espece'])
+            df = df.dropna(subset=['espece'])
 
-            df_clean = df_clean[~df_clean['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
-
-            # Multi-select for CTAR centers
-            unique_ctar_centers = df_clean['id_ctar'].unique().tolist()
-            unique_ctar_centers.insert(0, "Tous les CTAR")
-            selected_ctars = st.multiselect("Sélectionnez les CTAR", options=unique_ctar_centers, default="Tous les CTAR")
-
-            if "Tous les CTAR" in selected_ctars:
-                filtered_df = df_clean
-            else:
-                filtered_df = df_clean[df_clean['id_ctar'].isin(selected_ctars)]
-
-            # Selection box for animals
-            selected_animal_ctar = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=filtered_df['espece'].dropna().unique())
-            filtered_df_ctar = filtered_df[filtered_df['espece'] == selected_animal_ctar]
-
-            # Plot for dev_carac (donut chart)
-            if not filtered_df_ctar.empty:
-                fig_typanim_ctar = create_donut_chart(filtered_df_ctar, 'dev_carac', 'count', f"Répartition des types d'animaux pour : {len(df_clean)}  {selected_animal_ctar}s ", is_peripherique=True)
-                st.plotly_chart(fig_typanim_ctar, use_container_width=True)
-
+            df = df[~df['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
             # Allow user to select additional animals
-            additional_animals = df_clean['espece'].value_counts().index.tolist()
+            additional_animals = df['espece'].value_counts().index.tolist()
             selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
 
+
+            fig_typanim_ctar = create_donut_chart(df, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df)}  {selected_additional[0]}s ", is_peripherique=True)
+            st.plotly_chart(fig_typanim_ctar, use_container_width=True)
+
+            
             # Filter for selected additional animals
             if selected_additional:
-                filtered_additional = df_clean[df_clean['espece'].isin(selected_additional)]
-                fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)", is_peripherique=True)
-                st.plotly_chart(fig_additional_animals, use_container_width=True)
+                filtered_additional = df[df['espece'].isin(selected_additional)]
+            fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)}Animaux)", is_peripherique=True)
+            st.plotly_chart(fig_additional_animals, use_container_width=True)
             
 
 
