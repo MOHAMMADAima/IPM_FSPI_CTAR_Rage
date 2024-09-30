@@ -42,7 +42,7 @@ def age_sexe(df_clean):
     # Update layout for better visualization
     fig.update_layout(
         barmode='group',  # Use 'group' mode for grouped bars
-        title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patients)',
+        title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patient(s).)',
         xaxis_title='Âge',
         yaxis_title='Nombre de patients',
         legend_title='Genre',
