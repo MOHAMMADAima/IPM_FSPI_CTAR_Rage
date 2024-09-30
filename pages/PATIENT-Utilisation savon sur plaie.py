@@ -179,13 +179,32 @@ if 'dataframes' in st.session_state:
 
         # If the selected file is the IPM dataset
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
-            # Call the IPM plot function
             plot_age_sex_savon_distribution(df)
 
         # If the selected file is the peripheral CTAR dataset
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            # Call the peripheral plot function
-            plot_peripheral_data(df)
+            # Drop rows with NaN in 'id_ctar' column
+            df = df.dropna(subset=['id_ctar'])
+
+            # Get the unique CTARs
+            unique_ctars = df['id_ctar'].unique()
+
+            # Separate the "Tous les CTAR" option from the multiselect
+            all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
+
+            if not all_ctars_selected:
+                selected_ctars = st.multiselect(
+                    "Sélectionnez un ou plusieurs CTARs",
+                    options=list(unique_ctars))
+                if not selected_ctars:
+                    st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
+                else:
+                    df= df[df['id_ctar'].isin(selected_ctars)]
+                    plot_peripheral_data(df)
+            elif all_ctars_selected:  
+                plot_peripheral_data(df)
+           
+
 
 
 # Sidebar container with fixed width
