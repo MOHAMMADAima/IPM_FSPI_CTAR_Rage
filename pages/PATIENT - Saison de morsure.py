@@ -357,6 +357,8 @@ if 'dataframes' in st.session_state:
                 plot_saison_peripheral(df)
            
 
+else:
+    st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
 
 
 # Sidebar container with fixed width

@@ -96,6 +96,10 @@ for idx, row in df.iterrows():
                   popup=popup, tooltip=row['Town']).add_to(m)
 
 
+
+else:
+    st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
+
 # Display the map in Streamlit
 st.title("Distribution mensuelle des vaccins VERORAB dans les CTARs de Madagascar.")
 folium_static(m)
