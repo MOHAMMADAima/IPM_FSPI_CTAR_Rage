@@ -7,51 +7,58 @@ st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
 st.title("Age et sexe des victimes.")
 
 
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
+
 def age_sexe(df_clean):
-           
+    # Ensure 'age' column is numeric for proper sorting
+    df_clean['age'] = pd.to_numeric(df_clean['age'], errors='coerce')
 
-            # Count not null pairs (age, sexe)
-            not_null_pairs = df_clean[['age', 'sexe']].notnull().all(axis=1).sum()
+    # Count not null pairs (age, sexe)
+    not_null_pairs = df_clean[['age', 'sexe']].notnull().all(axis=1).sum()
 
-            # Group by age and sex, and count occurrences
-            age_sex_counts = df_clean.groupby(['age', 'sexe']).size().reset_index(name='count')
+    # Group by age and sex, and count occurrences
+    age_sex_counts = df_clean.groupby(['age', 'sexe']).size().reset_index(name='count')
 
-            # Sort by age
-            age_sex_counts = age_sex_counts.sort_values(by='age')
+    # Sort by age (this will work correctly as we converted age to numeric)
+    age_sex_counts = age_sex_counts.sort_values(by='age')
 
-            # Create the grouped bar chart using Plotly
-            fig = go.Figure()
+    # Create the grouped bar chart using Plotly
+    fig = go.Figure()
 
-            # Iterate over each sex ('M' for male, 'F' for female)
-            for sex in age_sex_counts['sexe'].unique():
-                data = age_sex_counts[age_sex_counts['sexe'] == sex]
-                # Use red color for women ('F'), default color for men ('M')
-                color = 'red' if sex == 'F' else None
-                fig.add_trace(go.Bar(
-                    x=data['age'],
-                    y=data['count'],
-                    name=f'{sex}',  # Add 'F' or 'M' to legend name
-                    marker_color=color  # Apply red color for female bars
-                ))
+    # Iterate over each sex ('M' for male, 'F' for female)
+    for sex in age_sex_counts['sexe'].unique():
+        data = age_sex_counts[age_sex_counts['sexe'] == sex]
+        # Use red color for women ('F'), default color for men ('M')
+        color = 'red' if sex == 'F' else None
+        fig.add_trace(go.Bar(
+            x=data['age'],
+            y=data['count'],
+            name=f'{sex}',  # Add 'F' or 'M' to legend name
+            marker_color=color  # Apply red color for female bars
+        ))
 
-            # Update layout for better visualization
-            fig.update_layout(
-                barmode='group',  # Use 'group' mode for grouped bars
-                title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patients)',
-                xaxis_title='Âge',
-                yaxis_title='Nombre de patients',
-                legend_title='Genre',
-                width=1000,   # Adjust width of the plot (make it wider)
-                height=600,   # Adjust height of the plot
-                xaxis={'type': 'category'},  # Ensure x-axis treats 'age' as categorical labels
-                legend=dict(
-                    orientation='h',  # Horizontal legend
-                    x=0, y=1.1,  # Positioning of the legend
-                )
-            )
+    # Update layout for better visualization
+    fig.update_layout(
+        barmode='group',  # Use 'group' mode for grouped bars
+        title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patients)',
+        xaxis_title='Âge',
+        yaxis_title='Nombre de patients',
+        legend_title='Genre',
+        width=1000,   # Adjust width of the plot (make it wider)
+        height=600,   # Adjust height of the plot
+        xaxis={'type': 'category'},  # Ensure x-axis treats 'age' as categorical labels
+        legend=dict(
+            orientation='h',  # Horizontal legend
+            x=0, y=1.1,  # Positioning of the legend
+        ),
+        xaxis_categoryorder='category ascending'  # Ensure x-axis categories are sorted numerically
+    )
 
-            # Show the plot
-            st.plotly_chart(fig)
+    # Show the plot
+    st.plotly_chart(fig)
+
 
 # Main Streamlit logic
 if 'dataframes' in st.session_state:
