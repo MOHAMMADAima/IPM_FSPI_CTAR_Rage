@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.colors as pc
 
 # Set page title
-st.set_page_config(page_title="Saison Morsure", page_icon="")
+st.set_page_config(page_title="Lésion", page_icon="🩹")
 st.title("Nombre de lésions par patient.")
 
 

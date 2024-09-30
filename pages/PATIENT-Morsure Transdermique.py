@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.colors as pc
 
 # Set page title
-st.set_page_config(page_title="MT", page_icon="")
+st.set_page_config(page_title="MT", page_icon="🐾")
 st.title("Facteurs de risque des morsures transdermiques (MT).")
 
 

@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # Set page title
-st.set_page_config(page_title="Histogram Analysis", page_icon="📊")
+st.set_page_config(page_title="Histogram Analysis", page_icon="⚧️")
 st.title("Age et sexe des victimes.")
 
 

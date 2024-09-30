@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.colors as pc
 
 # Set page title
-st.set_page_config(page_title="Saison Morsure", page_icon="")
+st.set_page_config(page_title="LPS", page_icon="👅")
 st.title("Exposition catégorie 1 (léchage sur peau saine LPS)")
 
 
