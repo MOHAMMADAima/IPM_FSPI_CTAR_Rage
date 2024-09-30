@@ -104,6 +104,8 @@ else:
 st.title("Distribution mensuelle des vaccins VERORAB dans les CTARs de Madagascar.")
 folium_static(m)
 
+st.info("Carte élaborée avzc la donnée du fichier VERORAB. Année inconnue.")
+
 # Sidebar container with fixed width
 with st.sidebar.container():
     st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
