@@ -105,11 +105,13 @@ def anim_mord_perif(df):
             df = df[~df['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
             # Allow user to select additional animals
             additional_animals = df['espece'].value_counts().index.tolist()
+
+
+            fig_typanim_ctar = create_donut_chart(df, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df[df.espece==selected_animal])}  {selected_animal}s ", is_peripherique=True)
+            st.plotly_chart(fig_typanim_ctar, use_container_width=True)
+
             selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
 
-
-            fig_typanim_ctar = create_donut_chart(df, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df)}  {selected_animal}s ", is_peripherique=True)
-            st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
             
             # Filter for selected additional animals
