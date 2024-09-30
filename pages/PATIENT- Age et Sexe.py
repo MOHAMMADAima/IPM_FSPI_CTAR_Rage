@@ -21,7 +21,7 @@ def age_sexe(df_clean):
     # Group by age and sex, and count occurrences
     age_sex_counts = df_clean.groupby(['age', 'sexe']).size().reset_index(name='count')
 
-    # Sort by age (this will work correctly as we converted age to numeric)
+    # Sort by age (ensured to be numeric)
     age_sex_counts = age_sex_counts.sort_values(by='age')
 
     # Create the grouped bar chart using Plotly
@@ -42,18 +42,22 @@ def age_sexe(df_clean):
     # Update layout for better visualization
     fig.update_layout(
         barmode='group',  # Use 'group' mode for grouped bars
-        title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patient(s).)',
+        title_text=f'Distribution des patients par Âge et Genre (sur {not_null_pairs} patients)',
         xaxis_title='Âge',
         yaxis_title='Nombre de patients',
         legend_title='Genre',
         width=1000,   # Adjust width of the plot (make it wider)
         height=600,   # Adjust height of the plot
-        xaxis={'type': 'category'},  # Ensure x-axis treats 'age' as categorical labels
+        xaxis=dict(
+            type='linear',  # Set x-axis to treat 'age' as numeric (linear scale)
+            tickmode='linear',  # Ensure ticks are at consistent intervals
+            tick0=age_sex_counts['age'].min(),  # Start the ticks at the minimum age
+            dtick=1,  # Set tick interval to 1 (optional: adjust if you have many age groups)
+        ),
         legend=dict(
             orientation='h',  # Horizontal legend
             x=0, y=1.1,  # Positioning of the legend
-        ),
-        xaxis_categoryorder='category ascending'  # Ensure x-axis categories are sorted numerically
+        )
     )
 
     # Show the plot
