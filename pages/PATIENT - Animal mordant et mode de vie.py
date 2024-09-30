@@ -60,7 +60,7 @@ def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
             top_margin = 50 if is_peripherique else 100  # Adjust top margin here
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=top_margin, l=70, r=70, b=40),  # Adjust margins
+                margin=dict(t=top_margin, l=40, r=70, b=40),  # Adjust margins
                 height=500,
                 width=600,
                 showlegend=True,
