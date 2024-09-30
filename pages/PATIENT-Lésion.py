@@ -138,7 +138,7 @@ def plot_cat1_peripheral(ctar):
         # Count the values 
     value_counts = ctar['nb_lesion'].value_counts().sort_index()
 
-    if value_counts:
+    if not value_counts.empty:
 
             # Convert the index to a list of strings for x-axis labeling, converting -1 back to 'NaN'
         x_labels = [int(x) if x != -1 else 'NaN' for x in value_counts.index]
