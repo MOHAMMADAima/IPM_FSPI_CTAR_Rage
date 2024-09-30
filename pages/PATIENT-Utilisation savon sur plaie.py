@@ -117,6 +117,7 @@ def plot_peripheral_data(df):
 
     # Sort by age (now integers)
     age_sex_savon_counts = age_sex_savon_counts.sort_values(by='age')
+    st.dataframe(age_sex_savon_counts.head())
 
     # Define color palette for bars
     color_palette = {
