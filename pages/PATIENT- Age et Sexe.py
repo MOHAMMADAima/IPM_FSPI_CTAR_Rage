@@ -14,6 +14,7 @@ import streamlit as st
 def age_sexe(df_clean):
     # Ensure 'age' column is numeric for proper sorting
     df_clean['age'] = pd.to_numeric(df_clean['age'], errors='coerce')
+    df_clean=df_clean[df_clean['age']<=120]
 
     # Count not null pairs (age, sexe)
     not_null_pairs = df_clean[['age', 'sexe']].notnull().all(axis=1).sum()
