@@ -13,7 +13,6 @@ def plot_cat1_ipm(ipm):
     
     # Get the first dataframe uploaded
     ipm=ipm.drop_duplicates(subset=['ref_mordu'])
-    values_counts=len(ipm)
      # Define age groups with 5-year intervals from 0 to 100, with the last group being 100+
     bins = list(range(0, 105, 5)) + [float('inf')]
     labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
@@ -97,7 +96,7 @@ def plot_cat1_ipm(ipm):
 
         # Update layout
     fig.update_layout(
-            title=f"Nombre moyen de lésions, avec variance et médiane par groupe d'âge sur les différentes parties du corps pour {values_counts} patients CTAR IPM.",
+            title=f" Distribution du nombre de lésions sur {len(ipm)} patients de CTAR IPM.",
             xaxis=dict(title="Groupe d'âge", tickangle=-45),  # Adjust tickangle for better readability
             yaxis=dict(title='Nombre de lésions '),
             legend=dict(title="Légende", orientation="v", yanchor="top", y=0.95, xanchor="right", x=1.35,
@@ -175,7 +174,7 @@ def plot_cat1_peripheral(ctar):
 
         # Update layout
     fig.update_layout(
-            title=f'Distribution du nombre de lésions sur {value_counts} patients des CTAR périphériques.',
+            title=f'Distribution du nombre de lésions sur {len(value_counts)} patients des CTAR périphériques.',
             xaxis_title='Nombre de lésions',
             yaxis_title='Nombre de patients',
             xaxis=dict(tickmode='array', tickvals=x_labels, ticktext=x_labels),
