@@ -175,7 +175,7 @@ def plot_cat1_peripheral(ctar):
 
         # Update layout
     fig.update_layout(
-            title=f'Distribution du nombre de lésions sur {value_counts} patients des CTAR périf',
+            title=f'Distribution du nombre de lésions sur {value_counts} patients des CTAR périphériques.',
             xaxis_title='Nombre de lésions',
             yaxis_title='Nombre de patients',
             xaxis=dict(tickmode='array', tickvals=x_labels, ticktext=x_labels),
