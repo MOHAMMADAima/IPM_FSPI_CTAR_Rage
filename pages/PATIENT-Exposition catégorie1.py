@@ -50,7 +50,7 @@ def plot_cat1_ipm(ipm):
             y='LPS Count', 
             color='Body Part', 
             barmode='group',
-            title=f"Proportion des patients qui ont l'exposition de catégorie 1 ('LPS') par âge et partie du corps pour {len(ipm)} patients.",
+            title=f"Proportion de {len(ipm)} patients qui ont l'exposition de catégorie 1 ('LPS') par âge et partie du corps.",
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
@@ -94,7 +94,7 @@ def plot_cat1_peripheral(df):
             y='LPS Count', 
             color='Body Part', 
             barmode='group',
-            title=f"Proportion des patients qui ont l'exposition de catégorie 1 (LPS) par âge et partie du corps pour {len(df)} patients.",
+            title=f"Proportion de {len(df)} patients qui ont l'exposition de catégorie 1 (LPS) par âge et partie du corps.",
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
