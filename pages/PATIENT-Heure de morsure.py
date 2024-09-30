@@ -53,7 +53,7 @@ def plot_hourly_sex_counts(df, selected_ctars):
 
     # Update layout
     fig.update_layout(
-        title='Heure de morsure par sexe pour les patients des CTARs périphériques',
+        title=f'Heure de morsure par sexe pour {len(df_filtered)} patients des CTARs périphériques.',
         xaxis=dict(
             title='Heures',
             tickvals=hourly_sex_counts['Hour'].unique(),  # Ensure correct x-axis ticks
@@ -68,7 +68,6 @@ def plot_hourly_sex_counts(df, selected_ctars):
 
 
 def plot_hourly_species_counts(df, selected_ctars):
-    """Plots the hourly count of bites per animal species."""
     
     # If "Tous les CTAR" is selected, use all CTARs
     if 'Tous les CTAR' in selected_ctars:
@@ -116,7 +115,7 @@ def plot_hourly_species_counts(df, selected_ctars):
 
     # Update layout
     fig.update_layout(
-        title='Heure de morsure par espèce pour les patients des CTARs périphériques',
+        title=f'Heure de morsure par espèce pour {len(df_filtered)} patients des CTARs périphériques.',
         xaxis=dict(
             title='Heures',
             tickvals=sorted(hourly_species_counts['Hour'].unique()),  # Ensure correct x-axis ticks
