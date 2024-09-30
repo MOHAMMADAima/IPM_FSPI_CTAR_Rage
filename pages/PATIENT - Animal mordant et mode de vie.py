@@ -99,7 +99,7 @@ def anim_mord(df):
 
 def anim_mord_perif(df):
             df = df.dropna(subset=['espece'])
-            selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df['animal'].dropna().unique())
+            selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df['espece'].dropna().unique())
 
 
             df = df[~df['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
