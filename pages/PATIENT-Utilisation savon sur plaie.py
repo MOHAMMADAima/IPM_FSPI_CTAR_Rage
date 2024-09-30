@@ -104,6 +104,7 @@ def plot_peripheral_data(df):
 
     # Convert 'age' column to numeric, coerce errors to NaN
     peripheral_data['age'] = pd.to_numeric(peripheral_data['age'], errors='coerce')
+    peripheral_data['lavage_savon']=peripheral_data['lavage_savon'].replace('0', 'NON')
 
     # Drop rows with NaN in 'age' column
     peripheral_data = peripheral_data.dropna(subset=['age'])
