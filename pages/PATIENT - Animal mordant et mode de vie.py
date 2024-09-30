@@ -16,20 +16,8 @@ label_mapping = {
     'F': 'Domestique abbatu',
     'G': 'Domestique mort'
 }
-
-# Check if dataframes are available in session state
-if 'dataframes' in st.session_state:
-    dataframes = st.session_state['dataframes']
-
-    # Select a file to analyze from the uploaded files
-    selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
-
-    # Load the selected dataframe
-    if selected_file:
-        df = dataframes[selected_file]
-
-        # Function to create a donut chart with conditional margin
-        def create_donut_chart(df, label_col, count_col, title, is_peripherique=False):
+# Function to create a donut chart with conditional margin
+def create_donut_chart(df, label_col, count_col, title, is_peripherique=False):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
 
@@ -56,7 +44,7 @@ if 'dataframes' in st.session_state:
             return fig
 
         # Function to create a pie chart with conditional margin
-        def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
+def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
 
@@ -79,8 +67,11 @@ if 'dataframes' in st.session_state:
             )
 
             return fig
+
+
         
-        def anim_mord(df):
+        
+def anim_mord(df):
                 df_clean = df.drop_duplicates(subset=['ref_mordu'])
 
                 # Selection box for animals
@@ -106,8 +97,10 @@ if 'dataframes' in st.session_state:
                     fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")
                     st.plotly_chart(fig_additional_animals, use_container_width=True)
 
-        def anim_mord_perif(df):
+def anim_mord_perif(df):
             df = df.dropna(subset=['espece'])
+            selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
+
 
             df = df[~df['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
             # Allow user to select additional animals
@@ -115,7 +108,7 @@ if 'dataframes' in st.session_state:
             selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
 
 
-            fig_typanim_ctar = create_donut_chart(df, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df)}  {selected_additional[0]}s ", is_peripherique=True)
+            fig_typanim_ctar = create_donut_chart(df, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df)}  {selected_animal}s ", is_peripherique=True)
             st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
             
