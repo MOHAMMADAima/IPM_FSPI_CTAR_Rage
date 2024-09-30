@@ -13,7 +13,7 @@ def plot_cat1_ipm(ipm):
     
     # Get the first dataframe uploaded
     ipm=ipm.drop_duplicates(subset=['ref_mordu'])
-    values_counts=ipm.index[0]
+    values_counts=len(ipm)
      # Define age groups with 5-year intervals from 0 to 100, with the last group being 100+
     bins = list(range(0, 105, 5)) + [float('inf')]
     labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
