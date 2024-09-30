@@ -117,7 +117,7 @@ def anim_mord_perif(df):
             # Filter for selected additional animals
             if selected_additional:
                 filtered_additional = df[df['espece'].isin(selected_additional)]
-            fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)}Animaux)", is_peripherique=True)
+            fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)} animaux)", is_peripherique=True)
             st.plotly_chart(fig_additional_animals, use_container_width=True)
             
 
