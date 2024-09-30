@@ -111,14 +111,12 @@ def plot_peripheral_data(df):
 
     # Count the number of patients
     num_patients = peripheral_data.shape[0]
-    st.write(f"Nombre de patients: {num_patients}")
 
     # Group by age, sex, and soap, and count occurrences
     age_sex_savon_counts = peripheral_data.groupby(['age', 'sexe', 'lavage_savon']).size().reset_index(name='count')
 
     # Sort by age (now integers)
     age_sex_savon_counts = age_sex_savon_counts.sort_values(by='age')
-    st.dataframe(age_sex_savon_counts.head())
 
     # Define color palette for bars
     color_palette = {
