@@ -47,7 +47,7 @@ def age_sexe(df_clean):
         xaxis_title='Âge',
         yaxis_title='Nombre de patients',
         legend_title='Genre',
-        width=1000,   # Adjust width of the plot (make it wider)
+        width=1500,   # Adjust width of the plot (make it wider)
         height=600,   # Adjust height of the plot
         xaxis=dict(
             type='linear',  # Set x-axis to treat 'age' as numeric (linear scale)
