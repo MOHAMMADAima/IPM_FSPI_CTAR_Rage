@@ -13,6 +13,7 @@ def plot_cat1_ipm(ipm):
     
     # Get the first dataframe uploaded
     ipm=ipm.drop_duplicates(subset=['ref_mordu'])
+    values_counts=ipm.index[0]
      # Define age groups with 5-year intervals from 0 to 100, with the last group being 100+
     bins = list(range(0, 105, 5)) + [float('inf')]
     labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
@@ -96,7 +97,7 @@ def plot_cat1_ipm(ipm):
 
         # Update layout
     fig.update_layout(
-            title="Nombre moyen de lésions, avec variance et médiane par groupe d'âge sur les différentes parties du corps",
+            title=f"Nombre moyen de lésions, avec variance et médiane par groupe d'âge sur les différentes parties du corps pour {values_counts} patients CTAR IPM.",
             xaxis=dict(title="Groupe d'âge", tickangle=-45),  # Adjust tickangle for better readability
             yaxis=dict(title='Nombre de lésions '),
             legend=dict(title="Légende", orientation="v", yanchor="top", y=0.95, xanchor="right", x=1.35,
@@ -135,7 +136,7 @@ def plot_cat1_peripheral(ctar):
     median_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].median()
     variance_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].var()
 
-        # Count the values including NaNs
+        # Count the values 
     value_counts = ctar['nb_lesion'].value_counts().sort_index()
 
         # Convert the index to a list of strings for x-axis labeling, converting -1 back to 'NaN'
@@ -174,7 +175,7 @@ def plot_cat1_peripheral(ctar):
 
         # Update layout
     fig.update_layout(
-            title='Distribution du nombre de lésions des patients des CTAR périf',
+            title=f'Distribution du nombre de lésions sur {value_counts} patients des CTAR périf',
             xaxis_title='Nombre de lésions',
             yaxis_title='Nombre de patients',
             xaxis=dict(tickmode='array', tickvals=x_labels, ticktext=x_labels),
