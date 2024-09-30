@@ -138,69 +138,73 @@ def plot_cat1_peripheral(ctar):
         # Count the values 
     value_counts = ctar['nb_lesion'].value_counts().sort_index()
 
-        # Convert the index to a list of strings for x-axis labeling, converting -1 back to 'NaN'
-    x_labels = [int(x) if x != -1 else 'NaN' for x in value_counts.index]
+    if value_counts:
 
-        # Create color scale based on counts
-    dark_oranges = px.colors.sequential.Oranges[::-1]  # Reverse the Oranges scale to get darker shades
-    color_scale = [dark_oranges[int((i) * (len(dark_oranges) - 1) / (len(value_counts) - 1))] for i in range(len(value_counts))]
+            # Convert the index to a list of strings for x-axis labeling, converting -1 back to 'NaN'
+        x_labels = [int(x) if x != -1 else 'NaN' for x in value_counts.index]
 
-        # Create the bar plot
-    fig = go.Figure()
+            # Create color scale based on counts
+        dark_oranges = px.colors.sequential.Oranges[::-1]  # Reverse the Oranges scale to get darker shades
+        color_scale = [dark_oranges[int((i) * (len(dark_oranges) - 1) / (len(value_counts) - 1))] for i in range(len(value_counts))]
 
-    fig.add_trace(go.Bar(
-            x=(x_labels),
-            y=value_counts.values,
-            marker_color=color_scale,
-            name='Nombre de patients'
-        ))
+            # Create the bar plot
+        fig = go.Figure()
 
-        # Add mean and median lines
-    fig.add_trace(go.Scatter(
-            x=(x_labels),
-            y=[mean_lesions] * len(x_labels),
-            mode='lines',
-            line=dict(color='red', dash='dash'),
-            name=f'Moyenne: {mean_lesions:.2f}'
-        ))
+        fig.add_trace(go.Bar(
+                x=(x_labels),
+                y=value_counts.values,
+                marker_color=color_scale,
+                name='Nombre de patients'
+            ))
 
-    fig.add_trace(go.Scatter(
-            x=(x_labels),
-            y=[median_lesions] * len(x_labels),
-            mode='lines',
-            line=dict(color='green', dash='solid'),
-            name=f'Médiane: {median_lesions:.2f}'
-        ))
+            # Add mean and median lines
+        fig.add_trace(go.Scatter(
+                x=(x_labels),
+                y=[mean_lesions] * len(x_labels),
+                mode='lines',
+                line=dict(color='red', dash='dash'),
+                name=f'Moyenne: {mean_lesions:.2f}'
+            ))
 
-        # Update layout
-    fig.update_layout(
-            title=f'Distribution du nombre de lésions sur {len(ctar)} patients des CTAR périphériques.',
-            xaxis_title='Nombre de lésions',
-            yaxis_title='Nombre de patients',
-            xaxis=dict(tickmode='array', tickvals=x_labels, ticktext=x_labels),
-            template='plotly_white'
-        )
+        fig.add_trace(go.Scatter(
+                x=(x_labels),
+                y=[median_lesions] * len(x_labels),
+                mode='lines',
+                line=dict(color='green', dash='solid'),
+                name=f'Médiane: {median_lesions:.2f}'
+            ))
 
-        # Add annotations for mean, median, and variance
-    fig.add_annotation(
-            x=len(x_labels) - 1,
-            y=max(value_counts.values),
-            text=f'Variance: {variance_lesions:.2f}',
-            showarrow=False,
-            yshift=10,
-            xshift=-10,
-            font=dict(color='black', size=12)
-        )
+            # Update layout
+        fig.update_layout(
+                title=f'Distribution du nombre de lésions sur {len(ctar)} patients des CTAR périphériques.',
+                xaxis_title='Nombre de lésions',
+                yaxis_title='Nombre de patients',
+                xaxis=dict(tickmode='array', tickvals=x_labels, ticktext=x_labels),
+                template='plotly_white'
+            )
 
-        # Streamlit App
-    st.title('Analyse des lésions des patients CTAR')
-    st.plotly_chart(fig, use_container_width=True)
+            # Add annotations for mean, median, and variance
+        fig.add_annotation(
+                x=len(x_labels) - 1,
+                y=max(value_counts.values),
+                text=f'Variance: {variance_lesions:.2f}',
+                showarrow=False,
+                yshift=10,
+                xshift=-10,
+                font=dict(color='black', size=12)
+            )
 
-        # Display statistics
-    st.subheader('Statistiques:')
-    st.write(f'Moyenne des lésions: {mean_lesions:.2f}')
-    st.write(f'Médiane des lésions: {median_lesions:.2f}')
-    st.write(f'Variance des lésions: {variance_lesions:.2f}')
+            # Streamlit App
+        st.title('Analyse des lésions des patients CTAR')
+        st.plotly_chart(fig, use_container_width=True)
+
+            # Display statistics
+        st.subheader('Statistiques:')
+        st.write(f'Moyenne des lésions: {mean_lesions:.2f}')
+        st.write(f'Médiane des lésions: {median_lesions:.2f}')
+        st.write(f'Variance des lésions: {variance_lesions:.2f}')
+    else:
+         st.info("Pas de donnée pour ce CTAR périphérique.")
 
     
 
