@@ -51,7 +51,7 @@ def plot_hourly_sex_counts(df, selected_ctars):
         ))
 
     fig.update_layout(
-        title=f'Heure de morsure par sexe pour {len(df_filtered)} patients des CTARs périphériques.',
+        title=f'Heure de morsure par sexe pour {len(df_filtered)} patient(s) des CTARs périphériques.',
         xaxis=dict(
             title='Heures',
             tickvals=hourly_sex_counts['Hour'].unique(), 
@@ -110,7 +110,7 @@ def plot_hourly_species_counts(df, selected_ctars):
         ))
 
     fig.update_layout(
-        title=f'Heure de morsure par espèce pour {len(df_filtered)} patients des CTARs périphériques.',
+        title=f'Heure de morsure par espèce pour {len(df_filtered)} patient(s) des CTARs périphériques.',
         xaxis=dict(
             title='Heures',
             tickvals=sorted(hourly_species_counts['Hour'].unique()),  
