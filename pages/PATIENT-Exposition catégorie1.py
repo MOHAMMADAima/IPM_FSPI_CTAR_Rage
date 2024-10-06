@@ -52,9 +52,8 @@ def plot_cat1_ipm(ipm):
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
-## A CORRIGER
-    st.plotly_chart(fig, use_container_width=True)
-    st.info('Pas de visualisation disponible pour le moment.')
+
+    st.info('Pas de visualisation disponible.')
 
 def plot_cat1_peripheral(df):
      
