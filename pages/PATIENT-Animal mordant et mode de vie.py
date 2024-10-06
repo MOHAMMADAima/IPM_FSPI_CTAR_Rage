@@ -58,7 +58,7 @@ def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
             fig.update_layout(
                 title_text=title,
                 margin=dict(t=top_margin, l=40, r=70, b=70), 
-                height=500,
+                height=800,
                 width=600,
                 showlegend=True,
             )
