@@ -2,14 +2,13 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-# Set page title
+# Titre page
 st.set_page_config(page_title="Heure de morsure", page_icon="🕒")
 st.title("Heure de morsure des patients.")
 
 
-def plot_hourly_sex_counts(df, selected_ctars):
-    """Plots the hourly count of bites per gender."""
-    
+def plot_hourly_sex_counts(df, selected_ctars): 
+
     # If "Tous les CTAR" is selected, use all CTARs
     if 'Tous les CTAR' in selected_ctars:
         selected_ctars = df['id_ctar'].unique()
@@ -21,6 +20,8 @@ def plot_hourly_sex_counts(df, selected_ctars):
         st.warning("Aucune donnée disponible pour les CTARs sélectionnés.")
         return
 
+    # Drop rows where 'heure_du_contact_cleaned' contains '00:00' (midnight)
+    df_filtered = df_filtered[~df_filtered['heure_du_contact_cleaned'].astype(str).str.contains('00:00')]
     # Extract hours and minutes for plotting
     df_filtered[['Hour', 'Minute']] = df_filtered['heure_du_contact_cleaned'].str.split(':', expand=True)
     
@@ -31,10 +32,8 @@ def plot_hourly_sex_counts(df, selected_ctars):
     # Group by time and sex to count occurrences
     hourly_sex_counts = df_filtered.groupby(['Hour', 'sexe']).size().reset_index(name='count')
 
-    # Create a scatter plot with lines for each gender
     fig = go.Figure()
 
-    # Define color scales for male and female
     male_color = 'blue'
     female_color = 'pink'
 
@@ -51,19 +50,16 @@ def plot_hourly_sex_counts(df, selected_ctars):
             line=dict(width=2)
         ))
 
-    # Update layout
     fig.update_layout(
         title=f'Heure de morsure par sexe pour {len(df_filtered)} patients des CTARs périphériques.',
         xaxis=dict(
             title='Heures',
-            tickvals=hourly_sex_counts['Hour'].unique(),  # Ensure correct x-axis ticks
-            tickangle=0  # Optional: Adjust angle for better readability
+            tickvals=hourly_sex_counts['Hour'].unique(), 
+            tickangle=0 
         ),
         yaxis=dict(title='Nombre de morsures'),
         legend_title='Sexe'
     )
-
-    # Show the plot
     st.plotly_chart(fig)
 
 
@@ -75,6 +71,9 @@ def plot_hourly_species_counts(df, selected_ctars):
     
     # Filter the dataframe by the selected CTARs
     df_filtered = df[df['id_ctar'].isin(selected_ctars)]
+
+    # Drop rows where 'heure_du_contact_cleaned' contains '00:00' (midnight)
+    df_filtered = df_filtered[~df_filtered['heure_du_contact_cleaned'].astype(str).str.contains('00:00')]
 
     if df_filtered.empty:
         st.warning("Aucune donnée disponible pour les CTARs sélectionnés.")
@@ -90,17 +89,14 @@ def plot_hourly_species_counts(df, selected_ctars):
     # Group by time and species to count occurrences
     hourly_species_counts = df_filtered.groupby(['Hour', 'espece']).size().reset_index(name='count')
 
-    # Create a scatter plot with lines for each species
     fig = go.Figure()
 
-    # Define colors for each species
     colors = {
         'Chien': 'brown',
         'Chat': 'orange',
-        'Autre': 'green'  # Add a color for 'Autre'
+        'Autre': 'green'  
     }
 
-    # Add traces for each species
     for species, color in colors.items():
         df_species = hourly_species_counts[hourly_species_counts['espece'] == species]
 
@@ -113,72 +109,63 @@ def plot_hourly_species_counts(df, selected_ctars):
             line=dict(width=2)
         ))
 
-    # Update layout
     fig.update_layout(
         title=f'Heure de morsure par espèce pour {len(df_filtered)} patients des CTARs périphériques.',
         xaxis=dict(
             title='Heures',
-            tickvals=sorted(hourly_species_counts['Hour'].unique()),  # Ensure correct x-axis ticks
-            tickangle=0  # Optional: Adjust angle for better readability
+            tickvals=sorted(hourly_species_counts['Hour'].unique()),  
+            tickangle=0  
         ),
         yaxis=dict(title='Nombre de morsures'),
         legend_title='Espèce'
     )
 
-    # Show the plot
     st.plotly_chart(fig)
 
 
-# Main Streamlit logic
+# Main 
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
 
-    # Select a file to analyze from the uploaded files
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
-    # Load the selected dataframe
     if selected_file:
         df = dataframes[selected_file]
 
-        # If the selected file is the IPM dataset
-        if selected_file == "CTAR_ipmdata20022024_cleaned.csv" and 'ref_mordu' in df.columns:
+        # BDD CTAR IPM
+        if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             st.warning("Donnée de l'heure de morsure non disponible pour CTAR IPM.")
 
-        # If the selected file is the peripheral CTAR dataset
-        elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv" and 'id_ctar' in df.columns:
-            # Drop rows with NaN in 'id_ctar' column
+        # BDD CTAR périphériques
+        elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
+            #  Ne pas comptabiliser les lignes sans ID 'id_ctar' = CTAR périphériques inconnues 
             df = df.dropna(subset=['id_ctar'])
 
-            # Drop rows where 'heure_du_contact_cleaned' contains '00:00' (midnight)
-            df = df[~df['heure_du_contact_cleaned'].astype(str).str.contains('00:00')]
-
-            # Get the unique CTARs
+            # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
 
-            # Separate the "Tous les CTAR" option from the multiselect
+            # Analyse de l'ensemble des CTAR périphériques
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
 
             if not all_ctars_selected:
                 selected_ctars = st.multiselect(
                     "Sélectionnez un ou plusieurs CTARs",
-                    options=list(unique_ctars)  # Only specific CTARs
-                )
+                    options=list(unique_ctars) )
             else:
                 selected_ctars = ['Tous les CTAR']
 
-            # Show a warning if no CTAR is selected and "Tous les CTAR" is not checked
             if not selected_ctars and not all_ctars_selected:
                 st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
             else:
-                # Call the first plot function (Gender-based plot)
                 plot_hourly_sex_counts(df, selected_ctars)
 
-                # Call the second plot function (Species-based plot)
                 plot_hourly_species_counts(df, selected_ctars)
-
+        else:
+            st.warning('Veuillez sélectionner un fichier entre "CTAR_peripheriquedata20022024_cleaned.csv" et "CTAR_ipmdata20022024_cleaned.csv".')        
+  
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
 
-# Sidebar container with fixed width
+# Sidebar de la page
 with st.sidebar.container():
     st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")

@@ -2,39 +2,33 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-import plotly.colors as pc
 
-# Set page title
+# Titre page 
 st.set_page_config(page_title="Lésion", page_icon="🩹")
 st.title("Nombre de lésions par patient.")
 
 
 def plot_cat1_ipm(ipm):
-    
-    # Get the first dataframe uploaded
+    # 1 patient= 1 ID ref_mordu
     ipm=ipm.drop_duplicates(subset=['ref_mordu'])
-     # Define age groups with 5-year intervals from 0 to 100, with the last group being 100+
-    bins = list(range(0, 105, 5)) + [float('inf')]
-    labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
-        
-        # Categorize ages into defined bins
-    age_groups = pd.cut(ipm['age'], bins=bins, labels=labels, right=False)
-        
-        # Ensure all lesion columns are integers
+
+   # Nettoyage colonne nombre lésions : format integer  :TOUTE COLONNES NULLE ALORS  DROP 
     lesion_columns = ['nbtet', 'nb_sup', 'nb_extr_s', 'nb_inf', 'nb_extr_i', 'nb_abdo', 'nb_dos', 'nb_genit']
     for col in lesion_columns:
             ipm[col] = ipm[col].dropna().astype(int)
 
-        # Add the age group to the DataFrame
-    ipm['Age Group'] = age_groups
+    # Définir les tranches d'âge (de 5 en 5)
+    bins = list(range(0, 105, 5)) + [float('inf')]
+    labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
+    age_groups = pd.cut(ipm['age'], bins=bins, labels=labels, right=False)
+    ipm['Age Group'] = age_groups 
 
-        # Group by age group and calculate mean and median lesions for each body part
+    # Grouper par âge et calculer la moyenne et la médiane des lésions par partie du corps
     grouped = ipm.groupby('Age Group').agg({col: ['mean', 'median', 'var'] for col in lesion_columns}).reset_index()
-
-        # Flatten multi-index columns
+    
     grouped.columns = ['Age Group'] + [f'{col}_{stat}' for col, stat in grouped.columns[1:]]
 
-        # Rename columns for better readability
+    # Renommer les colonnes pour la légende
     grouped.rename(columns={
             'nbtet_mean': 'Tête_mean', 'nbtet_median': 'Tête_median', 'nbtet_var': 'Tête_var',
             'nb_sup_mean': 'Bras et avant-bras_mean', 'nb_sup_median': 'Bras et avant-bras_median', 'nb_sup_var': 'Bras et avant-bras_var',
@@ -46,20 +40,14 @@ def plot_cat1_ipm(ipm):
             'nb_genit_mean': 'Parties génitales_mean', 'nb_genit_median': 'Parties génitales_median', 'nb_genit_var': 'Parties génitales_var'
         }, inplace=True)
 
-        # Fill NaN values with 0
-        # Convert all categorical columns to strings before filling NaNs
+    # Colonne des categories en type string 
     for col in grouped.select_dtypes(include='category').columns:
-            grouped[col] = grouped[col].astype(str)
-        
+            grouped[col] = grouped[col].astype(str)    
     grouped.fillna(0, inplace=True)
         
-        # Convert back to categorical if needed
-        # (Optional, based on your use case)
-
-        # Create a combined plot
     fig = go.Figure()
 
-        # Add bubbles for each body part lesions
+    # Légende couleurs pour chaque partie du corps
     body_parts = [
             ('Tête', 'blue'),
             ('Bras et avant-bras', 'green'),
@@ -74,14 +62,12 @@ def plot_cat1_ipm(ipm):
     sizeref = 70 * max(grouped[f'{part}_mean'].max() for part, _ in body_parts) / (100. ** 2)
 
     for part, color in body_parts:
-            # Add markers for mean values
         fig.add_trace(go.Scatter(
                 x=grouped['Age Group'], y=grouped[f'{part}_mean'], mode='markers', name=f'{part} Moyenne',
                 marker=dict(size=grouped[f'{part}_mean'] * 4, sizemode='area', sizeref=sizeref, sizemin=1, color=color),
                 showlegend=True
             ))
 
-            # Add variance lines alongside mean and median lines
         variance_val = grouped[f'{part}_var']
         fig.add_trace(go.Scatter(
                 x=grouped['Age Group'], y=variance_val, mode='lines',
@@ -94,32 +80,28 @@ def plot_cat1_ipm(ipm):
                 line=dict(color=color, width=2, dash='dash'), name=f'{part} Médiane', showlegend=True, visible='legendonly'
             ))
 
-        # Update layout
     fig.update_layout(
             title=f" Distribution du nombre de lésions sur {len(ipm)} patients de CTAR IPM.",
-            xaxis=dict(title="Groupe d'âge", tickangle=-45),  # Adjust tickangle for better readability
+            xaxis=dict(title="Groupe d'âge", tickangle=-45),  
             yaxis=dict(title='Nombre de lésions '),
             legend=dict(title="Légende", orientation="v", yanchor="top", y=0.95, xanchor="right", x=1.35,
                         traceorder="normal", tracegroupgap=20),
-            height=850,  # Increase figure height
+            height=850,  
             width=1000,
-            margin=dict(b=250)  # Add margin at the bottom for title and legend
+            margin=dict(b=250) 
         )
 
-  
     st.plotly_chart(fig, use_container_width=True)
 
 def plot_cat1_peripheral(ctar):
-    # Apply preprocessing
+    #Nettoyage cas particulier colonnes 'ctar' et 'nb_lesion'
     ctar['nb_lesion'] = ctar['nb_lesion'].replace({
             '01': '1', '02': '2', '03': '3', '04': '4', '05': '5', 
             '06': '6', '07': '7', '08': '8', '09': '9', '022': '22', 
             '052': '52', '002': '2', '021': '21'
         })
-    
     ctar=ctar.dropna(subset=['nb_lesion'])
 
-        # Replace NaN values for specific rows and columns
     ctar.at[26659, 'ctar'] = 'Antsohihy'
     ctar.at[36582, 'ctar'] = 'Morondava'
     ctar.at[38479, 'ctar'] = 'Vangaindrano'
@@ -130,7 +112,7 @@ def plot_cat1_peripheral(ctar):
         # Fill NaNs with -1 and convert to int
     #ctar['nb_lesion_filled'] = ctar['nb_lesion'].fillna(-1).astype(int)
 
-        # Calculate statistics, ignoring the marker value for NaNs
+    # Calculate statistics, ignoring the marker value for NaNs
     mean_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].mean()
     median_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].median()
     variance_lesions = ctar[ctar['nb_lesion'] != -1]['nb_lesion'].var()
@@ -139,15 +121,13 @@ def plot_cat1_peripheral(ctar):
     value_counts = ctar['nb_lesion'].value_counts().sort_index()
 
     if (len(value_counts) - 1)>0:
-
             # Convert the index to a list of strings for x-axis labeling, converting -1 back to 'NaN'
         x_labels = [int(x) if x != -1 else 'NaN' for x in value_counts.index]
 
-            # Create color scale based on counts
-        dark_oranges = px.colors.sequential.Oranges[::-1]  # Reverse the Oranges scale to get darker shades
+         # Gradient de couleur (orange) basé sur le nombre de lésions
+        dark_oranges = px.colors.sequential.Oranges[::-1] 
         color_scale = [dark_oranges[int((i) * (len(dark_oranges) - 1) / (len(value_counts) - 1))] for i in range(len(value_counts))]
 
-            # Create the bar plot
         fig = go.Figure()
 
         fig.add_trace(go.Bar(
@@ -157,7 +137,6 @@ def plot_cat1_peripheral(ctar):
                 name='Nombre de patients'
             ))
 
-            # Add mean and median lines
         fig.add_trace(go.Scatter(
                 x=(x_labels),
                 y=[mean_lesions] * len(x_labels),
@@ -174,7 +153,6 @@ def plot_cat1_peripheral(ctar):
                 name=f'Médiane: {median_lesions:.2f}'
             ))
 
-            # Update layout
         fig.update_layout(
                 title=f'Distribution du nombre de lésions sur {len(ctar)} patients des CTAR périphériques.',
                 xaxis_title='Nombre de lésions',
@@ -183,7 +161,6 @@ def plot_cat1_peripheral(ctar):
                 template='plotly_white'
             )
 
-            # Add annotations for mean, median, and variance
         fig.add_annotation(
                 x=len(x_labels) - 1,
                 y=max(value_counts.values),
@@ -194,11 +171,8 @@ def plot_cat1_peripheral(ctar):
                 font=dict(color='black', size=12)
             )
 
-            # Streamlit App
-        st.title('Analyse des lésions des patients CTAR')
         st.plotly_chart(fig, use_container_width=True)
 
-            # Display statistics
         st.subheader('Statistiques:')
         st.write(f'Moyenne des lésions: {mean_lesions:.2f}')
         st.write(f'Médiane des lésions: {median_lesions:.2f}')
@@ -207,31 +181,27 @@ def plot_cat1_peripheral(ctar):
          st.info("Pas de donnée pour ce CTAR périphérique.")
 
     
-
-# Main Streamlit logic
+# Main 
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
 
-    # Select a file to analyze from the uploaded files
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
-    # Load the selected dataframe
     if selected_file:
         df = dataframes[selected_file]
 
-        # If the selected file is the IPM dataset
+        # BDD CTAR IPM
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             plot_cat1_ipm(df)
 
-        # If the selected file is the peripheral CTAR dataset
+        # BDD CTAR périphérique
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            # Drop rows with NaN in 'id_ctar' column
             df = df.dropna(subset=['id_ctar'])
 
-            # Get the unique CTARs
+            # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
 
-            # Separate the "Tous les CTAR" option from the multiselect
+            # Analyse de l'ensemble des CTAR périphériques
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
 
             if not all_ctars_selected:
@@ -250,6 +220,6 @@ if 'dataframes' in st.session_state:
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
 
-# Sidebar container with fixed width
+# Sidebar de la page
 with st.sidebar.container():
     st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")

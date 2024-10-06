@@ -43,7 +43,7 @@ st.markdown(
 # Header
 st.title("Bienvenue sur CTAR Indicateurs")
 st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("###### Une application d'analyse des indicateurs de performance des CTAR de Madagascar, à l'initiative de IPM.")
+st.markdown("###### Une application d'analyse des indicateurs de performance des CTAR de Madagascar, à l'initiative de l'Institut Pasteur de Madagascar.")
 
 
 def main():
@@ -85,7 +85,6 @@ if __name__ == '__main__':
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 st.write("Pour toute question/information : aima.mohammad.pro@gmail.com ")
 st.markdown("---")
-st.write("Auteur : MOHAMMAD Aima")
 st.write("IPM © 2024")
 
 # Sidebar container with fixed width

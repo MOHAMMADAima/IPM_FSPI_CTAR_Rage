@@ -2,11 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-# Set page title
+# Titre page
 st.set_page_config(page_title="Espèce responsable et mode de vie.", page_icon="🐕")
 st.title("Espèce responsable et leur mode de vie.")
 
-# Label mapping for typanim values
+# Correspondance typanim valeurs pour la légende
 label_mapping = {
     'A': 'Sauvage',
     'B': 'Errant disparu',
@@ -16,12 +16,11 @@ label_mapping = {
     'F': 'Domestique abbatu',
     'G': 'Domestique mort'
 }
-# Function to create a donut chart with conditional margin
+
 def create_donut_chart(df, label_col, count_col, title, is_peripherique=False):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
 
-            # Create the donut chart
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
@@ -31,11 +30,11 @@ def create_donut_chart(df, label_col, count_col, title, is_peripherique=False):
                 direction='clockwise'
             ))
 
-            # Update layout for better visualization, reduce top margin if CSV is peripherique
-            top_margin = 50 if is_peripherique else 100  # Adjust top margin here
+            # Esthétique de la visualisation
+            top_margin = 50 if is_peripherique else 100  
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=top_margin, l=70, r=70, b=40),  # Adjust margins
+                margin=dict(t=top_margin, l=70, r=70, b=40),  
                 height=800,
                 width=1000,
                 showlegend=True,
@@ -43,12 +42,10 @@ def create_donut_chart(df, label_col, count_col, title, is_peripherique=False):
 
             return fig
 
-        # Function to create a pie chart with conditional margin
 def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
             counts = df[label_col].value_counts().reset_index()
             counts.columns = [label_col, count_col]
 
-            # Create the pie chart
             fig = go.Figure(go.Pie(
                 labels=counts[label_col],
                 values=counts[count_col],
@@ -56,97 +53,89 @@ def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
                 marker=dict(colors=['#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'][:len(counts)]),
             ))
 
-            # Update layout for better visualization, reduce top margin if CSV is peripherique
-            top_margin = 50 if is_peripherique else 100  # Adjust top margin here
+            # Esthétique de la visualisation
+            top_margin = 50 if is_peripherique else 100  
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=top_margin, l=40, r=70, b=40),  # Adjust margins
+                margin=dict(t=top_margin, l=40, r=70, b=40), 
                 height=500,
                 width=600,
                 showlegend=True,
             )
 
             return fig
-
-
-        
+      
         
 def anim_mord(df):
-                df_clean = df.drop_duplicates(subset=['ref_mordu'])
+    df_clean = df.drop_duplicates(subset=['ref_mordu'])
 
-                # Selection box for animals
-                selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
+    # Selection box pour animal
+    selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df_clean['animal'].dropna().unique())
 
-                # Filter DataFrame for the selected animal
-                filtered_df = df_clean[df_clean['animal'] == selected_animal]
+    # Filter la BDD pour l'animal sélectionné
+    filtered_df = df_clean[df_clean['animal'] == selected_animal]
 
-                # Replace typanim labels with mapped values
-                filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
+    # Remplacer dans le colonne 'typanim' lettres par valuers pour la légende de la visualisation
+    filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
 
-                # Plot for typanim (donut chart) first
-                fig_typanim = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition des types d'animaux pour : {selected_animal} (IPM)")
-                st.plotly_chart(fig_typanim, use_container_width=True)
+    # Visualisation pour le mode de vie de l'animal
+    fig_typanim = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition du mode de vie de l'animal pour : {selected_animal} (IPM)")
+    st.plotly_chart(fig_typanim, use_container_width=True)
 
-                # Allow user to select additional animals
-                additional_animals = df_clean['animal'].value_counts().index.tolist()
-                selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
+    # Selectionnez d'autres animaux à analyser
+    additional_animals = df_clean['animal'].value_counts().index.tolist()
+    selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
 
-                # Filter for selected additional animals
-                if selected_additional:
-                    filtered_additional = df_clean[df_clean['animal'].isin(selected_additional)]
-                    fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', "Répartition des espèces responsables de morsures (Animaux Sélectionnés)")
-                    st.plotly_chart(fig_additional_animals, use_container_width=True)
+    # Visualisation pour l(es) animal(aux) sélectionné(s)
+    if selected_additional:
+        filtered_additional = df_clean[df_clean['animal'].isin(selected_additional)]
+        fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)} animaux)")
+        st.plotly_chart(fig_additional_animals, use_container_width=True)
 
 def anim_mord_perif(df):
-            df = df.dropna(subset=['espece'])
-            selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df['espece'].dropna().unique())
+    df = df.dropna(subset=['espece'])
+    selected_animal = st.selectbox("Sélectionnez un animal pour voir le type d'animal", options=df['espece'].dropna().unique())
 
+    df = df[~df['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
 
-            df = df[~df['dev_carac'].astype(str).str.contains('nan-nan|nan-|nan-|-nan', regex=True)]
-            # Allow user to select additional animals
-            additional_animals = df['espece'].value_counts().index.tolist()
+    # Selectionnez d'autres animaux à analyser
+    additional_animals = df['espece'].value_counts().index.tolist()
 
+    # Visualisation pour le mode de vie de l'animal
+    fig_typanim_ctar = create_donut_chart(df, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df[df.espece==selected_animal])}  {selected_animal}s ", is_peripherique=True)
+    st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
-            fig_typanim_ctar = create_donut_chart(df, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df[df.espece==selected_animal])}  {selected_animal}s ", is_peripherique=True)
-            st.plotly_chart(fig_typanim_ctar, use_container_width=True)
-
-            selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
-
-
+    selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
             
-            # Filter for selected additional animals
-            if selected_additional:
-                filtered_additional = df[df['espece'].isin(selected_additional)]
-            fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)} animaux)", is_peripherique=True)
-            st.plotly_chart(fig_additional_animals, use_container_width=True)
+    # Visualisation pour l(es) animal(aux) sélectionné(s)
+    if selected_additional:
+        filtered_additional = df[df['espece'].isin(selected_additional)]
+        fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)} animaux)", is_peripherique=True)
+        st.plotly_chart(fig_additional_animals, use_container_width=True)
             
 
-
-
-# Main Streamlit logic
+# Main 
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
 
-    # Select a file to analyze from the uploaded files
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
-    # Load the selected dataframe
     if selected_file:
         df = dataframes[selected_file]
 
-        # If the selected file is the IPM dataset
+        # BDD CTAR IPM
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             anim_mord(df)
 
-        # If the selected file is the peripheral CTAR dataset
+        #  BDD CTAR Périphériques
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            # Drop rows with NaN in 'id_ctar' column
+            #  Ne pas comptabiliser les lignes sans ID 'id_ctar' = CTAR périphériques inconnues 
             df = df.dropna(subset=['id_ctar'])
 
-            # Get the unique CTARs
+            # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
 
-            # Separate the "Tous les CTAR" option from the multiselect
+            # Analyse de l'ensemble des CTAR périphériques
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
 
             if not all_ctars_selected:
@@ -160,12 +149,15 @@ if 'dataframes' in st.session_state:
                     anim_mord_perif(df)
             elif all_ctars_selected:  
                 anim_mord_perif(df)
+        else:
+            st.warning('Veuillez sélectionner un fichier entre "CTAR_peripheriquedata20022024_cleaned.csv" et "CTAR_ipmdata20022024_cleaned.csv".')        
+
            
 
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
 
-# Sidebar container with fixed width
+# Sidebar de la page
 with st.sidebar.container():
     st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
 

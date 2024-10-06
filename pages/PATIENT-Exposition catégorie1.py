@@ -4,25 +4,23 @@ import plotly.graph_objects as go
 import plotly.express as px
 import plotly.colors as pc
 
-# Set page title
+# Page titre
 st.set_page_config(page_title="LPS", page_icon="👅")
 st.title("Exposition catégorie 1 (léchage sur peau saine LPS)")
 
 
 def plot_cat1_ipm(ipm):
     
-    # Get the first dataframe uploaded
+    # 1 patient = 1 ID ref_mordu 
     ipm=ipm.drop_duplicates(subset=['ref_mordu'])
-    # Define age groups with 5-year intervals from 0 to 100, with the last group being 100+
     
+    # Définir les tranches d'âge (de 5 en 5)
     bins = list(range(0, 105, 5)) + [float('inf')]
     labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
-
-        # Categorize ages into defined bins
     age_groups = pd.cut(ipm['age'], bins=bins, labels=labels, right=False)
     ipm['Age Group'] = age_groups
 
-        # Define body parts and columns to check for 'LPS' values
+    # Correspondance valeurs parties du corps pour la légende
     body_parts = {
             'Tête': 'tet_cont',
             'Bras et avant-bras': 'm_sup_cont',
@@ -34,16 +32,16 @@ def plot_cat1_ipm(ipm):
             'Parties génitales': 'geni_cont'
         }
 
-        # Create a DataFrame to store the counts of 'LPS' values for each body part and age group
+    # Sous tableau pour compter le nombre de catégorie LPS pour chaque partie du corps et groupe d'âge
     lps_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'LPS Count'])
 
-        # Count the number of 'LPS' values for each body part and age group
+    # Remplir le tableau lps_counts
     for part, column in body_parts.items():
             part_counts = ipm[ipm[column] == 'LPS'].groupby('Age Group').size().reset_index(name='LPS Count')
             part_counts['Body Part'] = part
             lps_counts = pd.concat([lps_counts, part_counts], ignore_index=True)
 
-        # Create a multi-bar plot
+    # Visualisation
     fig = px.bar(
             lps_counts, 
             x='Age Group', 
@@ -54,20 +52,19 @@ def plot_cat1_ipm(ipm):
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
-    # Show the plot in Streamlit
-    #st.plotly_chart(fig, use_container_width=True)
+## A CORRIGER
+    st.plotly_chart(fig, use_container_width=True)
     st.info('Pas de visualisation disponible pour le moment.')
 
 def plot_cat1_peripheral(df):
-
+     
+    # Définir les tranches d'âge (de 5 en 5)
     bins = list(range(0, 105, 5)) + [float('inf')]
     labels = [f'{i}-{i+4}' for i in bins[:-2]] + ['100+']
-
-        # Categorize ages into defined bins
     age_groups = pd.cut(df['age'], bins=bins, labels=labels, right=False)
     df['Age Group'] = age_groups
 
-        # Define body parts and columns to check for 'LPS' values
+    # Correspondance valeurs parties du corps pour la légende
     body_parts = {
             'Tête et Cou': 'singes_des_legions___1',
             'Bras et Avant-bras': 'singes_des_legions___2',
@@ -79,16 +76,16 @@ def plot_cat1_peripheral(df):
             'Parties génitales': 'singes_des_legions___7'
         }
 
-        # Create a DataFrame to store the counts of 'LPS' values for each body part and age group
+    # Sous tableau pour compter le nombre de catégorie LPS pour chaque partie du corps et groupe d'âge
     lps_counts = pd.DataFrame(columns=['Age Group', 'Body Part', 'LPS Count'])
 
-        # Count the number of 'LPS' values for each body part and age group
+    # Remplir le tableau lps_counts
     for part, column in body_parts.items():
             part_counts = df[(df[column] == 1)&(df.type_contact___1=='OUI')].groupby('Age Group').size().reset_index(name='LPS Count')
             part_counts['Body Part'] = part
             lps_counts = pd.concat([lps_counts, part_counts], ignore_index=True)
 
-        # Create a multi-bar plot
+    # Visualisation
     fig = px.bar(
             lps_counts, 
             x='Age Group', 
@@ -99,34 +96,30 @@ def plot_cat1_peripheral(df):
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
-
-    # Show the plot in Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
-# Main Streamlit logic
+# Main
 if 'dataframes' in st.session_state:
     dataframes = st.session_state['dataframes']
 
-    # Select a file to analyze from the uploaded files
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
 
-    # Load the selected dataframe
     if selected_file:
         df = dataframes[selected_file]
 
-        # If the selected file is the IPM dataset
+        # BDD IPM CTAR
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             plot_cat1_ipm(df)
 
-        # If the selected file is the peripheral CTAR dataset
+        #  BDD IPM périphériques
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
-            # Drop rows with NaN in 'id_ctar' column
+            #  Ne pas comptabiliser les lignes sans ID 'id_ctar' = CTAR périphériques inconnues 
             df = df.dropna(subset=['id_ctar'])
 
-            # Get the unique CTARs
+            # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
 
-            # Separate the "Tous les CTAR" option from the multiselect
+            # Analyse de l'ensemble des CTAR périphériques
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
 
             if not all_ctars_selected:
@@ -140,12 +133,13 @@ if 'dataframes' in st.session_state:
                     plot_cat1_peripheral(df)
             elif all_ctars_selected:  
                 plot_cat1_peripheral(df)
-           
 
+        else:
+            st.warning('Veuillez sélectionner un fichier entre "CTAR_peripheriquedata20022024_cleaned.csv" et "CTAR_ipmdata20022024_cleaned.csv".')        
+  
 else:
     st.error("Aucun fichier n'a été téléchargé. Veuillez retourner à la page d'accueil pour télécharger un fichier.")
 
-
-# Sidebar container with fixed width
+# Sidebar de la page
 with st.sidebar.container():
     st.image("Logo-CORAMAD.jpg", use_column_width=True, width=250, caption="FSPI Rage")
