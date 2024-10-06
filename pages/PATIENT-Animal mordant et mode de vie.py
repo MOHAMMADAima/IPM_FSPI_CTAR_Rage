@@ -31,7 +31,7 @@ def create_donut_chart(df, label_col, count_col, title, is_peripherique=False):
             ))
 
             # Esthétique de la visualisation
-            top_margin = 50 if is_peripherique else 100  
+            top_margin = 70 if is_peripherique else 100  
             fig.update_layout(
                 title_text=title,
                 margin=dict(t=top_margin, l=70, r=70, b=40),  
