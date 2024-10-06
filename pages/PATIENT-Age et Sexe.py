@@ -78,6 +78,7 @@ if 'dataframes' in st.session_state:
 
         # BDD CTAR périphériques
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
+
             #  Ne pas comptabiliser les lignes sans ID 'id_ctar' = CTAR périphériques inconnues 
             df = df.dropna(subset=['id_ctar'])
 
@@ -95,8 +96,10 @@ if 'dataframes' in st.session_state:
                     st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
                 else:
                     df= df[df['id_ctar'].isin(selected_ctars)]
+                    st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
                     age_sexe(df)
             elif all_ctars_selected:  
+                st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
                 age_sexe(df)   
 
         else:
