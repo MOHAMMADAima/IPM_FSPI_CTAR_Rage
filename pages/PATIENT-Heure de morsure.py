@@ -57,7 +57,7 @@ def plot_hourly_sex_counts(df, selected_ctars):
             tickvals=hourly_sex_counts['Hour'].unique(), 
             tickangle=0 
         ),
-        yaxis=dict(title='Nombre de morsures'),
+        yaxis=dict(title='Nombre de patients'),
         legend_title='Sexe'
     )
     st.plotly_chart(fig)
@@ -116,7 +116,7 @@ def plot_hourly_species_counts(df, selected_ctars):
             tickvals=sorted(hourly_species_counts['Hour'].unique()),  
             tickangle=0  
         ),
-        yaxis=dict(title='Nombre de morsures'),
+        yaxis=dict(title="Nombre d'animaux"),
         legend_title='Espèce'
     )
 
