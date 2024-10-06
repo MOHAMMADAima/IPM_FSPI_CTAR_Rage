@@ -73,6 +73,7 @@ if 'dataframes' in st.session_state:
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
             # 1 patient = 1 ID ref_mordu
             df = df.drop_duplicates(subset=['ref_mordu'])
+            st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
             age_sexe(df)
 
         # BDD CTAR périphériques
