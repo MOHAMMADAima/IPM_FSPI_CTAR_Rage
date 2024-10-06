@@ -103,7 +103,7 @@ def anim_mord_perif(df):
     additional_animals = df['espece'].value_counts().index.tolist()
 
     # Visualisation pour le mode de vie de l'animal
-    animal_type = df[df['espece'].isin(selected_animal)]
+    animal_type = df[df['espece']==selected_animal]
     fig_typanim_ctar = create_donut_chart(animal_type, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df[df.espece==selected_animal])}  {selected_animal}s ", is_peripherique=True)
     st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
