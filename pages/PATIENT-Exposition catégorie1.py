@@ -6,7 +6,7 @@ import plotly.colors as pc
 
 # Page titre
 st.set_page_config(page_title="LPS", page_icon="👅")
-st.title("Exposition catégorie 1 (léchage sur peau saine LPS)")
+st.title("Exposition catégorie 1 : Léchage sur Peau Saine (LPS).")
 
 
 def plot_cat1_ipm(ipm):
