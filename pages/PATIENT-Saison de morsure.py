@@ -302,6 +302,7 @@ if 'dataframes' in st.session_state:
 
         # BDD CTAR IPM 
         if selected_file == "CTAR_ipmdata20022024_cleaned.csv":
+            st.info("Cliquez sur agrandir l'image en haut à droite.")
             plot_saison_morsure_ipm(df)
 
         # BDD CTAR périphérique
