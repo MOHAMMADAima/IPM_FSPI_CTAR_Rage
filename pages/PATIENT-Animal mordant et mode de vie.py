@@ -80,7 +80,7 @@ def anim_mord(df):
     filtered_df['typanim'] = filtered_df['typanim'].map(label_mapping)
 
     # Visualisation pour le mode de vie de l'animal
-    fig_typanim = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition du mode de vie de l'animal pour : {len(filtered_df)} {selected_animal} ")
+    fig_typanim = create_donut_chart(filtered_df, 'typanim', 'count', f"Répartition du mode de vie de l'animal pour : {len(filtered_df)} {selected_animal}(s) ")
     st.plotly_chart(fig_typanim, use_container_width=True)
 
     # Selectionnez d'autres animaux à analyser
