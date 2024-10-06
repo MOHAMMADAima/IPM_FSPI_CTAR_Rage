@@ -57,7 +57,7 @@ def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
             top_margin = 50 if is_peripherique else 100  
             fig.update_layout(
                 title_text=title,
-                margin=dict(t=top_margin, l=70, r=70, b=40), 
+                margin=dict(t=top_margin, l=40, r=70, b=70), 
                 height=500,
                 width=600,
                 showlegend=True,
@@ -67,7 +67,7 @@ def create_pie_chart(df, label_col, count_col, title, is_peripherique=False):
       
         
 def anim_mord(df):
-
+    
     df_clean = df.drop_duplicates(subset=['ref_mordu'])
 
     # Selection box pour animal
