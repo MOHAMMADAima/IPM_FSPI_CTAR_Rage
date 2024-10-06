@@ -90,7 +90,7 @@ def anim_mord(df):
     # Visualisation pour l(es) animal(aux) sélectionné(s)
     if selected_additional:
         filtered_additional = df_clean[df_clean['animal'].isin(selected_additional)]
-        fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)} animaux)")
+        fig_additional_animals = create_pie_chart(filtered_additional, 'animal', 'count', f"Répartition des espèces responsables (tout type de contact) ({len(filtered_additional)} animaux)")
         st.plotly_chart(fig_additional_animals, use_container_width=True)
 
 def anim_mord_perif(df):
@@ -111,7 +111,7 @@ def anim_mord_perif(df):
     # Visualisation pour l(es) animal(aux) sélectionné(s)
     if selected_additional:
         filtered_additional = df[df['espece'].isin(selected_additional)]
-        fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables de morsures ({len(filtered_additional)} animaux)", is_peripherique=True)
+        fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables (tout type de contact) ({len(filtered_additional)} animaux)", is_peripherique=True)
         st.plotly_chart(fig_additional_animals, use_container_width=True)
             
 
