@@ -92,14 +92,13 @@ def plot_cat1_peripheral(df):
             y='LPS Count', 
             color='Body Part', 
             barmode='group',
-            title=f"Proportion de  patients qui ont l'exposition de catégorie 1 (LPS) par âge et partie du corps.",
+            title=f"Proportion de patients qui ont l'exposition de catégorie 1 (LPS) par âge et partie du corps.",
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
-    if len(lps_counts)>2:
-     return (st.plotly_chart(fig, use_container_width=True))
-    else:
-        return (st.info('Données indisponibles pour ce CTAR périphérique.'))
+    
+    return (st.plotly_chart(fig, use_container_width=True))
+
 
 # Main
 if 'dataframes' in st.session_state:
