@@ -96,7 +96,7 @@ def plot_cat1_peripheral(df):
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
-    if len(lps_counts)>0:
+    if len(lps_counts)>2:
      return (st.plotly_chart(fig, use_container_width=True))
     else:
         return (st.info('Données indisponibles pour ce CTAR périphérique.'))
