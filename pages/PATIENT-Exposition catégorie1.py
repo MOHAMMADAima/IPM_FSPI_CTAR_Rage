@@ -130,7 +130,10 @@ if 'dataframes' in st.session_state:
                     st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
                 else:
                     df= df[df['id_ctar'].isin(selected_ctars)]
-                    plot_cat1_peripheral(df)
+                    if len(df)>0:
+                        plot_cat1_peripheral(df)
+                    else:
+                         st.info("Données indisponibles pour ce CTAR périphérique.")
             elif all_ctars_selected:  
                 plot_cat1_peripheral(df)
 
