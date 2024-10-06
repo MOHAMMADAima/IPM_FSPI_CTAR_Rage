@@ -96,7 +96,10 @@ def plot_cat1_peripheral(df):
             labels={'LPS Count': 'Nombre de LPS', 'Age Group': 'Groupe d\'âge', 'Body Part': 'Partie du corps'}
         )
 
-    st.plotly_chart(fig, use_container_width=True)
+    if len(lps_counts)>O:
+     return (st.plotly_chart(fig, use_container_width=True))
+    else:
+        return (st.info('Données indisponibles pour ce CTAR périphérique.'))
 
 # Main
 if 'dataframes' in st.session_state:
@@ -130,10 +133,8 @@ if 'dataframes' in st.session_state:
                     st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
                 else:
                     df= df[df['id_ctar'].isin(selected_ctars)]
-                    if len(df)>0:
-                        plot_cat1_peripheral(df)
-                    else:
-                         st.info("Données indisponibles pour ce CTAR périphérique.")
+                    plot_cat1_peripheral(df)
+                    
             elif all_ctars_selected:  
                 plot_cat1_peripheral(df)
 
