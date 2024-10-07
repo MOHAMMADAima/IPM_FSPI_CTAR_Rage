@@ -168,9 +168,9 @@ if 'dataframes' in st.session_state:
             elif all_ctars_selected and selected_year:  
                 st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
                 df= df[df['Annee'].isin(selected_year)]
-                plot_hourly_sex_counts(df, all_ctars_selected)
+                plot_hourly_sex_counts(df, unique_ctars)
 
-                plot_hourly_species_counts(df, all_ctars_selected) 
+                plot_hourly_species_counts(df, unique_ctars) 
             elif all_ctars_selected and not selected_year:
                 st.warning("Veuillez sélectionner au moins une année pour afficher l'analyse.")
            
