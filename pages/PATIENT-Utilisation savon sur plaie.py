@@ -55,7 +55,7 @@ def plot_age_sex_savon_distribution(ipm):
         if not data_non.empty:
             fig.add_trace(go.Bar(
                 x=data_non['age'],
-                y=data_non['percentage'],
+                y=data_non['count'],
                 name=f'{sex} - Savon: NON',
                 marker_color=color_palette[(sex, 'NON')],
                 base=0,  
@@ -67,7 +67,7 @@ def plot_age_sex_savon_distribution(ipm):
         barmode='stack', 
         title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {not_null_pairs} patients IPM)',
         xaxis_title='Âge',
-        yaxis_title='Pourcentage de patients',
+        yaxis_title='Nombre de patients',
         legend_title='Genre et Savon',
         width=1000,
         height=600,
