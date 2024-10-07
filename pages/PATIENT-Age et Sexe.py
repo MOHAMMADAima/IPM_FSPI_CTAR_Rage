@@ -85,6 +85,10 @@ if 'dataframes' in st.session_state:
             # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
 
+            df['date_de_consultation']=pd.to_datetime(df['date_de_consultation'])
+
+            df['Annee'] = df['date_de_consultation'].dt.year
+
             unique_year=df['Annee'].unique()
 
             # Analyse de l'ensemble des CTAR périphériques
