@@ -288,7 +288,7 @@ def plot_saison_peripheral(df):
 
     fig.for_each_trace(lambda trace: trace.update(showlegend=False) if trace.name in season_backgrounds else None)
 
-    if len(df_year_sex['count'])>3:
+    if len(df_year_sex['count'].unique())>3:
         return(st.plotly_chart(fig, use_container_width=True))
     else:
         return(st.info('Données indisponibles pour ce CTAR périphérique.'))
