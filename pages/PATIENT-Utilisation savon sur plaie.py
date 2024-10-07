@@ -45,7 +45,7 @@ def plot_age_sex_savon_distribution(ipm):
         if not data_oui.empty:
             fig.add_trace(go.Bar(
                 x=data_oui['age'],
-                y=data_oui['percentage'],
+                y=data_oui['count'],
                 name=f'{sex} - Savon: OUI',
                 marker_color=color_palette[(sex, 'OUI')],
                 base=0,  
