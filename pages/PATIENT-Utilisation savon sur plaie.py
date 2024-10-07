@@ -136,10 +136,14 @@ def plot_peripheral_data(df):
         )
     )
 
-    st.plotly_chart(fig)
+    if num_patients>1:
+        return(st.plotly_chart(fig))
+    else:
+        return(st.info('Données indisponibles pour ce CTAR périphérique.'))
 
 # Main
 if 'dataframes' in st.session_state:
+
     dataframes = st.session_state['dataframes']
 
     selected_file = st.selectbox("Sélectionnez un fichier pour l'analyse", options=list(dataframes.keys()))
