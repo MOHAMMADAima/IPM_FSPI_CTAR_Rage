@@ -126,7 +126,7 @@ def plot_saison_morsure_ipm(ipm):
             showarrow=False,
             font=dict(size=15, color=text_color),
             xanchor="center",
-            yanchor="top"
+            yanchor="bottom"
         ))
 
     fig.update_layout(
@@ -148,7 +148,7 @@ def plot_saison_morsure_ipm(ipm):
             'x': 0.5,
             'xanchor': 'center'
         },
-        height=900,  
+        height=700,  
         width=7400,  
         legend_title='Légende'
     )
@@ -259,7 +259,7 @@ def plot_saison_peripheral(df):
             showarrow=False,
             font=dict(size=15, color=text_color),
             xanchor="center",
-            yanchor="top"
+            yanchor="bottom"
         ))
 
     fig.update_layout(
