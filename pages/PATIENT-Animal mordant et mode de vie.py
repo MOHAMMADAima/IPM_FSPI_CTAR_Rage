@@ -104,7 +104,7 @@ def anim_mord_perif(df):
 
     # Visualisation pour le mode de vie de l'animal
     animal_type = df[df['espece']==selected_animal]
-    fig_typanim_ctar = create_donut_chart(animal_type, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df[df.espece==selected_animal])}  {selected_animal}s ", is_peripherique=True)
+    fig_typanim_ctar = create_donut_chart(animal_type, 'dev_carac', 'count', f"Répartition du mode de vie de l'animal pour : {len(df[df.espece==selected_animal])}  {selected_animal}(s) ", is_peripherique=True)
     st.plotly_chart(fig_typanim_ctar, use_container_width=True)
 
     selected_additional = st.multiselect("Sélectionnez d'autres animaux à afficher", options=additional_animals, default=additional_animals[:4])
@@ -112,7 +112,7 @@ def anim_mord_perif(df):
     # Visualisation pour l(es) animal(aux) sélectionné(s)
     if selected_additional:
         filtered_additional = df[df['espece'].isin(selected_additional)]
-        fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables (tout type de contact) ({len(filtered_additional)} animaux)", is_peripherique=True)
+        fig_additional_animals = create_pie_chart(filtered_additional, 'espece', 'count', f"Répartition des espèces responsables (tout type de contact) ({len(filtered_additional)} animaux/animal)", is_peripherique=True)
         st.plotly_chart(fig_additional_animals, use_container_width=True)
             
 
