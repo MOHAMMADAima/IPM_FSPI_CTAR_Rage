@@ -148,7 +148,7 @@ def plot_saison_morsure_ipm(ipm):
             'x': 0.5,
             'xanchor': 'center'
         },
-        height=700,  
+        height=900,  
         width=7400,  
         legend_title='Légende'
     )
