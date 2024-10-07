@@ -13,6 +13,7 @@ def plot_age_sex_savon_distribution(ipm):
     ipm['age'] = pd.to_numeric(ipm['age'], errors='coerce')
 
     ipmm = ipm.dropna(subset=['age'])
+    ipmm=ipmm[ipmm.age>0]
 
     not_null_pairs = ipmm[['age', 'sexe', 'savon']].notnull().all(axis=1).sum()
 
