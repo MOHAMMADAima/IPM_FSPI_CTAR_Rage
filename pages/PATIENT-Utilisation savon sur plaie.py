@@ -123,7 +123,7 @@ def plot_peripheral_data(df):
 
     fig.update_layout(
         barmode='stack',
-        title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {num_patients} patients)',
+        title_text=f'Distribution des patients par Âge, Genre et Lavage au savon (sur {num_patients} patient(s))',
         xaxis_title='Âge',
         yaxis_title='Nombre de patients',
         legend_title='Genre et Savon',
