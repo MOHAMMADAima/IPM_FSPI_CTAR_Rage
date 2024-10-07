@@ -9,9 +9,7 @@ st.title("Heure de morsure des patients.")
 
 def plot_hourly_sex_counts(df, selected_ctars): 
 
-    # If "Tous les CTAR" is selected, use all CTARs
-    if 'Tous les CTAR' in selected_ctars:
-        selected_ctars = df['id_ctar'].unique()
+   
     
     # Filter the dataframe by the selected CTARs
     df_filtered = df[df['id_ctar'].isin(selected_ctars)]
@@ -64,10 +62,7 @@ def plot_hourly_sex_counts(df, selected_ctars):
 
 
 def plot_hourly_species_counts(df, selected_ctars):
-    
-    # If "Tous les CTAR" is selected, use all CTARs
-    if 'Tous les CTAR' in selected_ctars:
-        selected_ctars = df['id_ctar'].unique()
+
     
     # Filter the dataframe by the selected CTARs
     df_filtered = df[df['id_ctar'].isin(selected_ctars)]
