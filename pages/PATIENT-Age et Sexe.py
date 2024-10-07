@@ -85,8 +85,13 @@ if 'dataframes' in st.session_state:
             # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
 
+            unique_year=df['Annee'].unique()
+
             # Analyse de l'ensemble des CTAR périphériques
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
+            selected_year = st.multiselect(
+                    "Sélectionnez une ou plusieurs année(s)",
+                    options=list(unique_year))
 
             if not all_ctars_selected:
                 selected_ctars = st.multiselect(
@@ -95,11 +100,12 @@ if 'dataframes' in st.session_state:
                 if not selected_ctars:
                     st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
                 else:
-                    df= df[df['id_ctar'].isin(selected_ctars)]
+                    df= df[df['id_ctar'].isin(selected_ctars)&df['Annee'].isin(selected_year)]
                     st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
                     age_sexe(df)
             elif all_ctars_selected:  
                 st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
+                df= df[df['Annee'].isin(selected_year)]
                 age_sexe(df)   
 
         else:
