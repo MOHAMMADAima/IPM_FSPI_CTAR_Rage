@@ -288,10 +288,8 @@ def plot_saison_peripheral(df):
 
     fig.for_each_trace(lambda trace: trace.update(showlegend=False) if trace.name in season_backgrounds else None)
 
-    if len(df_year_sex['count'].unique())>3:
-        return(st.plotly_chart(fig, use_container_width=True))
-    else:
-        return(st.info('Données indisponibles pour ce CTAR périphérique.'))
+
+    st.plotly_chart(fig, use_container_width=True)
 
 # Main
 if 'dataframes' in st.session_state:
@@ -310,42 +308,25 @@ if 'dataframes' in st.session_state:
         # BDD CTAR périphérique
         elif selected_file == "CTAR_peripheriquedata20022024_cleaned.csv":
 
-             #  Ne pas comptabiliser les lignes sans ID 'id_ctar' = CTAR périphériques inconnues 
             df = df.dropna(subset=['id_ctar'])
-            df = df.dropna(subset=['date_de_consultation'])
 
             # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
 
-            df['date_de_consultation']=pd.to_datetime(df['date_de_consultation'])
-
-            df['Annee'] = df['date_de_consultation'].dt.year
-            df['Annee']=df['Annee'].astype(int)
-            df=df[df['Annee']<=2024]
-            unique_year=df['Annee'].unique()
-
             # Analyse de l'ensemble des CTAR périphériques
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
-            selected_year = st.multiselect(
-                    "Sélectionnez une ou plusieurs année(s)",
-                    options=sorted(list(unique_year)))
 
             if not all_ctars_selected:
                 selected_ctars = st.multiselect(
                     "Sélectionnez un ou plusieurs CTARs",
                     options=list(unique_ctars))
-                if not selected_ctars or not selected_year:
-                    st.warning("Veuillez sélectionner au moins un CTAR et une année pour afficher l'analyse.")
+                if not selected_ctars:
+                    st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
                 else:
-                    df= df[df['id_ctar'].isin(selected_ctars)&df['Annee'].isin(selected_year)]
-                    st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
+                    df= df[df['id_ctar'].isin(selected_ctars)]
                     plot_saison_peripheral(df)
-            elif all_ctars_selected and selected_year:  
-                st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
-                df= df[df['Annee'].isin(selected_year)]
-                plot_saison_peripheral(df) 
-            elif all_ctars_selected and not selected_year:
-                st.warning("Veuillez sélectionner au moins une année pour afficher l'analyse.")
+            elif all_ctars_selected:  
+                plot_saison_peripheral(df)
            
 
 else:
