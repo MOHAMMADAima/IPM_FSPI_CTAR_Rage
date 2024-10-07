@@ -90,7 +90,7 @@ if 'dataframes' in st.session_state:
 
             df['Annee'] = df['date_de_consultation'].dt.year
             df['Annee']=df['Annee'].astype(int)
-            unique_year=df['Annee'].unique().notnull()
+            unique_year=df['Annee'].unique()
 
             # Analyse de l'ensemble des CTAR périphériques
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
