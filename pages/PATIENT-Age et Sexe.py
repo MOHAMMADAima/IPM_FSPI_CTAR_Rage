@@ -102,16 +102,19 @@ if 'dataframes' in st.session_state:
                 selected_ctars = st.multiselect(
                     "Sélectionnez un ou plusieurs CTARs",
                     options=list(unique_ctars))
-                if not selected_ctars:
-                    st.warning("Veuillez sélectionner au moins un CTAR pour afficher l'analyse.")
+                if not selected_ctars or not selected_year:
+                    st.warning("Veuillez sélectionner au moins un CTAR et une année pour afficher l'analyse.")
                 else:
                     df= df[df['id_ctar'].isin(selected_ctars)&df['Annee'].isin(selected_year)]
                     st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
                     age_sexe(df)
-            elif all_ctars_selected:  
+            elif all_ctars_selected and selected_year:  
                 st.info("Cliquez sur agrandir l'image en haut à droite du graphique.")
                 df= df[df['Annee'].isin(selected_year)]
-                age_sexe(df)   
+                age_sexe(df) 
+            elif all_ctars_selected and not selected_year:
+                st.warning("Veuillez sélectionner au moins une année pour afficher l'analyse.")
+
 
         else:
             st.warning('Veuillez sélectionner un fichier entre "CTAR_peripheriquedata20022024_cleaned.csv" et "CTAR_ipmdata20022024_cleaned.csv".')        
