@@ -149,7 +149,7 @@ if 'dataframes' in st.session_state:
             all_ctars_selected = st.checkbox("Sélectionnez tous les CTARs")
             selected_year = st.multiselect(
                     "Sélectionnez une ou plusieurs année(s)",
-                    options=list(unique_year))
+                    options=sorted(list(unique_year)))
 
             if not all_ctars_selected:
                 selected_ctars = st.multiselect(
