@@ -90,6 +90,7 @@ if 'dataframes' in st.session_state:
 
             df['Annee'] = df['date_de_consultation'].dt.year
             df['Annee']=df['Annee'].astype(int)
+            df=df[df['Annee']<=2024]
             unique_year=df['Annee'].unique()
 
             # Analyse de l'ensemble des CTAR périphériques
