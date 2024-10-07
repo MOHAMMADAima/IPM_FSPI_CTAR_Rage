@@ -81,6 +81,7 @@ if 'dataframes' in st.session_state:
 
             #  Ne pas comptabiliser les lignes sans ID 'id_ctar' = CTAR périphériques inconnues 
             df = df.dropna(subset=['id_ctar'])
+            df = df.dropna(subset=['date_de_consultation'])
 
             # Liste des CTARs périphériques pour leur sélection
             unique_ctars = df['id_ctar'].unique()
