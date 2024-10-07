@@ -259,7 +259,7 @@ def plot_saison_peripheral(df):
             showarrow=False,
             font=dict(size=15, color=text_color),
             xanchor="center",
-            yanchor="bottom"
+            yanchor="top"
         ))
 
     fig.update_layout(
